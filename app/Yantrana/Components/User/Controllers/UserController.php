@@ -66,6 +66,14 @@ class UserController extends BaseController
 
         //check reaction code equal to 1
         if ($processReaction['reaction_code'] === 1) {
+            // Check if user is admin and redirect to admin dashboard
+            if (isAdmin()) {
+                return $this->responseAction(
+                    $this->processResponse($processReaction, [], [], true),
+                    $this->redirectTo('manage.dashboard')
+                );
+            }
+            
             return $this->responseAction(
                 $this->processResponse($processReaction, [], [], true),
                 $this->redirectTo('user.profile_view', ['username' => getUserAuthInfo('profile.username')])
@@ -118,11 +126,25 @@ class UserController extends BaseController
         //check reaction code is 1 then redirect to login page
         if ($processReaction['reaction_code'] === 1) {
             $profileUserName = getUserAuthInfo('profile.username');
-            return $this->responseAction(
-                $this->processResponse($processReaction, [], [], true),
-                // $this->redirectTo('user.login')
-                $profileUserName ? $this->redirectTo('user.profile_view', ['username' => getUserAuthInfo('profile.username')]) : $this->redirectTo('user.login')
-            );
+            if ($profileUserName) {
+                // Check if user is admin and redirect to admin dashboard
+                if (isAdmin()) {
+                    return $this->responseAction(
+                        $this->processResponse($processReaction, [], [], true),
+                        $this->redirectTo('manage.dashboard')
+                    );
+                }
+                
+                return $this->responseAction(
+                    $this->processResponse($processReaction, [], [], true),
+                    $this->redirectTo('user.profile_view', ['username' => getUserAuthInfo('profile.username')])
+                );
+            } else {
+                return $this->responseAction(
+                    $this->processResponse($processReaction, [], [], true),
+                    $this->redirectTo('user.login')
+                );
+            }
         } else {
             return $this->responseAction(
                 $this->processResponse($processReaction, [], [], true)
@@ -352,6 +374,10 @@ class UserController extends BaseController
         $processReaction = $this->userEngine->prepareUserProfile($userName);
         // check if record does not exists
         if ($processReaction['reaction_code'] == 18) {
+            // Check if user is admin and redirect to admin dashboard
+            if (isAdmin()) {
+                return redirect()->route('manage.dashboard');
+            }
             return redirect()->route('user.profile_view', ['username' => getUserAuthInfo('profile.username')]);
         }
         $processReaction['data']['is_profile_page'] = true;
@@ -798,6 +824,14 @@ class UserController extends BaseController
         $processReaction = $this->userEngine->verifyOtpProcess($request->all());
         //check reaction code equal to 1
         if ($processReaction['reaction_code'] === 1) {
+            // Check if user is admin and redirect to admin dashboard
+            if (isAdmin()) {
+                return $this->responseAction(
+                    $this->processResponse($processReaction, [], [], true),
+                    $this->redirectTo('manage.dashboard')
+                );
+            }
+            
             return $this->responseAction(
                 $this->processResponse($processReaction, [], [], true),
                 $this->redirectTo('user.profile_view', ['username' => getUserAuthInfo('profile.username')])

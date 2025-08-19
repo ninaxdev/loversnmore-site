@@ -182,6 +182,15 @@ Route::group([
             'as' => 'home_page',
             'uses' => 'Home\Controllers\HomeController@homePage',
         ]);
+        // Admin user special handling - redirect /@admin to admin dashboard
+        Route::get('/@admin', function() {
+            if (isAdmin()) {
+                return redirect()->route('manage.dashboard');
+            }
+            // If not admin user trying to access /@admin, let it fall through to regular profile route
+            return redirect()->route('user.login');
+        });
+        
         // Get User Profile view
         Route::get('/@{username}', [
             'as' => 'user.profile_view',

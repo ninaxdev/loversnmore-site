@@ -102,6 +102,14 @@ class SocialAccessController extends BaseController
 
         //check reaction code equal to 1
         if ($processReaction['reaction_code'] === 1) {
+            // Check if user is admin and redirect to admin dashboard
+            if (isAdmin()) {
+                return redirect()->route('manage.dashboard')->with([
+                    'success' => true,
+                    'message' => __tr('Welcome, you are logged in successfully'),
+                ]);
+            }
+            
             return redirect()->route('user.profile_view', ['username' => getUserAuthInfo('profile.username')])->with([
                 'success' => true,
                 'message' => __tr('Welcome, you are logged in successfully'),
