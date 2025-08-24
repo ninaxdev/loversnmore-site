@@ -13,106 +13,129 @@
 @include('includes.header')
 <!-- /include header -->
 
-<body class="lw-login-register-page">
-    <img class="lw-logo-img-on-bg" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>">
-    <div class="lw-page-bg lw-lazy-img" data-src="<?= __yesset("imgs/home/random/*.jpg", false, [
+<body class="lw-login-register-page lw-new-login-design">
+    <!-- Background Image for larger screens -->
+    <div class="lw-page-bg lw-lazy-img d-none d-lg-block" data-src="<?= __yesset("imgs/home/random/*.jpg", false, [
                                                         'random' => true
                                                     ]) ?>"></div>
-    <div class="container">
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-            <div class="col-lg-6 col-md-9">
-                <div class="card o-hidden border-0 shadow-lg">
-                    <div class="card-body">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <a href="<?= url(''); ?>">
-                                            <img class="lw-logo-img" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>">
-                                        </a>
-                                        <hr class="mt-4 mb-4">
-                                        <h4 class="text-gray-200 mb-4"><?= __tr('Login to your account')  ?></h4>
-                                        @if(session('errorStatus'))
-                                        <!--  success message when email sent  -->
-                                        <div class="alert alert-danger alert-dismissible lw-alert-dismissible">
-                                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                            <?= session('message') ?>
-                                        </div>
-                                        <!--  /success message when email sent  -->
-                                        @endif
-                                    </div>
-                                    <!-- login form -->
-                                    <form class="user lw-ajax-form lw-form" data-callback="onLoginCallback" method="post" action="<?= route('user.login.process') ?>" data-show-processing="true" data-secured="true">
-                                        <!-- email input field -->
-                                        <div class="form-group">
-                                            <label for="lwEmail"><?= __tr('Username/Email') ?>@if(getStoreSettings('allow_user_login_with_mobile_number'))/<span title="{{ __tr('Use mobile number with country code with 0 prefix') }}">{{ __tr('Mobile Number') }}</span>@endif</label>
-                                            <input type="text" class="form-control d-block" name="email_or_username" aria-describedby="emailHelp"
-                                            required>
-                                        </div>
-                                        <!-- / email input field -->
-
-                                        <!-- password input field -->
-                                        <div class="form-group">
-                                            <label for="lwPassword"><?= __tr('Password') ?></label>
-                                            <input type="password" class="form-control d-block" name="password" required minlength="6">
-                                        </div>
-                                        <!-- password input field -->
-
-                                        <!-- remember me input field -->
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="rememberMeCheckbox" name="remember_me">
-                                                <label class="custom-control-label text-gray-200" for="rememberMeCheckbox"><?= __tr('Remember Me')  ?></label>
-                                            </div>
-                                        </div>
-                                        <!-- remember me input field -->
-                                        @if(getStoreSettings('allow_recaptcha'))
-                                        <div class="form-group text-center">
-                                            <div class="g-recaptcha d-inline-block" data-sitekey="{{ getStoreSettings('recaptcha_site_key') }}"></div>
-                                        </div>
-                                        @endif
-
-                                        <!-- login button -->
-                                        <button type="submit" value="Login" class="lw-ajax-form-submit-action btn btn-primary btn-user btn-block"><?= __tr('Login')  ?></button>
-                                        <!-- / login button -->
-                                        <!-- social login links -->
-                                        @if(getStoreSettings('allow_google_login'))
-                                        <a href="<?= route('social.user.login', [getSocialProviderKey('google')]) ?>" class="btn btn-google btn-user btn-block">
-                                            <i class="fab fa-google fa-fw"></i> <?= __tr('Login with Google')  ?>
-                                        </a>
-                                        @endif
-                                        @if(getStoreSettings('allow_facebook_login'))
-                                        <a href="<?= route('social.user.login', [getSocialProviderKey('facebook')]) ?>" class="btn btn-facebook btn-user btn-block">
-                                            <i class="fab fa-facebook-f fa-fw"></i> <?= __tr('Login with Facebook')  ?>
-                                        </a>
-                                        @endif
-                                        <!-- social login links -->
-                                     <!-- / login form -->
-                                    @if(getStoreSettings('enable_otp_Login'))
-                                    <hr class="my-4">
-                                    <!-- Login With OTP button -->
-                                    <div class="text-center mt-3">
-                                        <a href="<?= route('login.with.otp') ?>" class="btn btn-secondary btn-user btn-block"></i> <?= __tr('Login with OTP')  ?></a>
-                                    </div>
-                                    <!-- / Login With OTP button -->
-                                @endif
-                                    </form>
-                                    <!-- forgot password button -->
-                                    <div class="text-center mt-3">
-                                        <a class="small" href="<?= route('user.forgot_password') ?>"><?= __tr('Forgot Password?')  ?></a>
-                                    </div>
-                                    <!-- / forgot password button -->
-                                    <hr class="mt-4 mb-3">
-                                    <!-- create account button -->
-                                    <div class="text-center">
-                                        <p><?= __tr("Don't have a Account? Create one its Free!!") ?></p>
-                                        <a class="btn btn-success btn-lg btn-block-on-mobile" href="<?= route('user.sign_up') ?>"><?= __tr('Create an Account!')  ?></a>
-                                    </div>
-                                    <!-- / create account button -->
-                                </div>
+    
+    <!-- Background gradients -->
+    <div class="lw-gradient-bg-bottom"></div>
+    <div class="lw-gradient-bg-top"></div>
+    
+    <div class="container-fluid p-lg-0">
+        <div class="row no-gutters min-vh-100">
+            <!-- Left side image (larger screens) -->
+            <div class="col-lg-7 d-none d-lg-block lw-login-left-bg">
+                <div class="lw-page-bg lw-lazy-img" data-src="<?= __yesset("imgs/home/random/*.jpg", false, [
+                                                        'random' => true
+                                                    ]) ?>"></div>
+                <div class="lw-login-bg-overlay">
+                    <img class="lw-logo-img-on-bg" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>">
+                </div>
+            </div>
+            
+            <!-- Right side form -->
+            <div class="col-lg-5 col-12 lw-login-form-container">
+                <div class="lw-login-form-wrapper">
+                    <div class="lw-login-header">
+                        <!-- Logo for mobile -->
+                        <div class="d-lg-none text-center mb-4">
+                            <a href="<?= url(''); ?>">
+                                <img class="lw-mobile-logo" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>">
+                            </a>
+                        </div>
+                        
+                        <h1 class="lw-login-title"><?= __tr('Login')  ?></h1>
+                        <p class="lw-login-subtitle"><?= __tr('Please enter your valid email address.')  ?><br><?= __tr('We will help you sign in to your account')  ?></p>
+                        
+                        @if(session('errorStatus'))
+                        <div class="alert alert-danger alert-dismissible lw-alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <?= session('message') ?>
+                        </div>
+                        @endif
+                    </div>
+                    <!-- login form -->
+                    <form class="lw-new-login-form user lw-ajax-form lw-form" data-callback="onLoginCallback" method="post" action="<?= route('user.login.process') ?>" data-show-processing="true" data-secured="true">
+                        <!-- email input field -->
+                        <div class="lw-form-group">
+                            <div class="lw-input-container">
+                                <input type="text" class="lw-form-input" name="email_or_username" placeholder="<?= __tr('Username/Email') ?>@if(getStoreSettings('allow_user_login_with_mobile_number')){{ __tr(' or Mobile Number') }}@endif" required>
                             </div>
+                        </div>
+                        <!-- / email input field -->
+
+                        <!-- password input field -->
+                        <div class="lw-form-group">
+                            <div class="lw-input-container">
+                                <input type="password" class="lw-form-input" name="password" placeholder="<?= __tr('Password') ?>" required minlength="6">
+                            </div>
+                        </div>
+                        <!-- / password input field -->
+
+                        <!-- remember me input field -->
+                        <div class="lw-form-group lw-remember-me-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="rememberMeCheckbox" name="remember_me">
+                                <label class="custom-control-label lw-remember-label" for="rememberMeCheckbox"><?= __tr('Remember Me')  ?></label>
+                            </div>
+                        </div>
+                        <!-- / remember me input field -->
+                        
+                        @if(getStoreSettings('allow_recaptcha'))
+                        <div class="lw-form-group text-center">
+                            <div class="g-recaptcha d-inline-block" data-sitekey="{{ getStoreSettings('recaptcha_site_key') }}"></div>
+                        </div>
+                        @endif
+
+                        <!-- login button -->
+                        <button type="submit" value="Login" class="lw-gradient-btn lw-ajax-form-submit-action"><?= __tr('Submit')  ?></button>
+                        <!-- / login button -->
+                        @if(getStoreSettings('enable_otp_Login'))
+                        <!-- Login With OTP button -->
+                        <div class="lw-form-group text-center">
+                            <a href="<?= route('login.with.otp') ?>" class="lw-otp-link"><?= __tr('Login with OTP')  ?></a>
+                        </div>
+                        @endif
+                    </form>
+                    <!-- / login form -->
+                    
+                    <!-- OR divider -->
+                    @if(getStoreSettings('allow_google_login') || getStoreSettings('allow_facebook_login'))
+                    <div class="lw-or-divider">
+                        <div class="lw-divider-line"></div>
+                        <div class="lw-or-circle">
+                            <span class="lw-or-text"><?= __tr('OR') ?></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Social login section -->
+                    <div class="lw-social-login-section">
+                        <h6 class="lw-social-title"><?= __tr('Login using') ?></h6>
+                        <div class="lw-social-buttons">
+                            @if(getStoreSettings('allow_facebook_login'))
+                            <a href="<?= route('social.user.login', [getSocialProviderKey('facebook')]) ?>" class="lw-social-btn lw-facebook-btn">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            @endif
+                            @if(getStoreSettings('allow_google_login'))
+                            <a href="<?= route('social.user.login', [getSocialProviderKey('google')]) ?>" class="lw-social-btn lw-google-btn">
+                                <i class="fab fa-google"></i>
+                            </a>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
+                    
+                    <!-- Forgot password and signup links -->
+                    <div class="lw-bottom-links">
+                        <div class="text-center mb-3">
+                            <a class="lw-forgot-link" href="<?= route('user.forgot_password') ?>"><?= __tr('Forgot Password?')  ?></a>
+                        </div>
+                        <div class="text-center">
+                            <p class="lw-signup-text"><?= __tr("Don't have an Account?") ?></p>
+                            <a class="lw-signup-btn" href="<?= route('user.sign_up') ?>"><?= __tr('Create an Account!')  ?></a>
                         </div>
                     </div>
                 </div>

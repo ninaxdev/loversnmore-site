@@ -53,12 +53,23 @@
 		"dist/css/vendorlibs-smartwizard.css",
 		'dist/css/custom*.css',
 		'dist/css/messenger*.css',
-		'dist/css/login-register*.css'
+		'dist/css/login-register*.css',
+		'dist/css/new-login-design.css'
 	], true) ?>
     <style>
         body:not(.lw-ajax-form-ready) form.lw-ajax-form:before {
             content: "{{ __tr('please wait ...') }}";
         }
+        /* PWA Meta Theme Color */
+        meta[name="theme-color"] {
+            content: "#33196b";
+        }
     </style>
+    <!-- PWA and Mobile Optimization -->
+    <meta name="theme-color" content="#33196b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="<?= getStoreSettings('name') ?>">
+    <meta name="mobile-web-app-capable" content="yes">
 	@stack('header')
 </head>
