@@ -10,7 +10,7 @@
 
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-	<h4 class="h5 mb-0 text-gray-200">
+	<h4 class="h5 mb-0">
 		<span class="text-primary"><i class="fas fa-fire"></i></span> <?= __tr('Encounter') ?>
 	</h4>
 </div>
@@ -21,7 +21,7 @@
 </div>
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-	<h4 class="h5 mb-0 text-gray-200">
+	<h4 class="h5 mb-0 ">
 		<span class="text-primary"><i class="fas fa-users"></i></span> <?= __tr('Random Users') ?>
 	</h4>
 </div>

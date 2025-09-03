@@ -1,0 +1,86 @@
+@import url('../../public/dist/css/main-design-system.css');
+
+@tailwind base; 
+@tailwind components;
+@tailwind utilities;
+/* Import our custom design system */
+
+/* Additional custom styles can go here */
+
+/* Component layer for reusable Tailwind components */
+@layer components {
+  .lw-input-tailwind {
+    @apply w-full h-15 bg-white border-2 border-lw-gradient-start rounded-full px-5 font-lw font-medium text-lg text-lw-primary transition-all duration-300 outline-none;
+  }
+  
+  .lw-input-tailwind:focus {
+    @apply border-lw-gradient-end shadow-lw-gradient;
+  }
+  
+  .lw-btn-tailwind {
+    @apply inline-flex items-center justify-center font-lw font-semibold text-white bg-gradient-lw rounded-full px-8 py-4 transition-all duration-300 outline-none border-none cursor-pointer;
+  }
+  
+  .lw-btn-tailwind:hover {
+    @apply transform -translate-y-0.5 shadow-lw-gradient;
+  }
+  
+  .lw-card-tailwind {
+    @apply bg-white rounded-xl shadow-lw border border-white/20;
+  }
+  
+  .lw-card-glass-tailwind {
+    @apply bg-white/95 backdrop-blur-lw rounded-xl shadow-lw border border-white/20;
+  }
+}
+
+/* Utility layer for additional utilities */
+@layer utilities {
+  .text-gradient-lw {
+    @apply bg-gradient-lw bg-clip-text text-transparent;
+  }
+  
+  .shadow-gradient-lw {
+    box-shadow: 0 10px 25px rgba(197, 62, 141, 0.3);
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  /* PWA specific utilities */
+  .pwa-safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .pwa-safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .pwa-no-select {
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Custom keyframes */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+  0% { 
+    transform: translateY(10px); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}

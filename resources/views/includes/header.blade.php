@@ -44,6 +44,8 @@
 	<meta property="twitter:image" content="@yield('page-image')">
 
 	<!-- Custom styles for this template-->
+	@vite(['resources/css/app.css', 'resources/js/app.js'])
+	
 	<?= __yesset([
 		'dist/css/bootstrap-assets-app*.css',
 		'dist/css/public-assets-app*.css',
@@ -54,7 +56,10 @@
 		'dist/css/custom*.css',
 		'dist/css/messenger*.css',
 		'dist/css/login-register*.css',
-		'dist/css/new-login-design.css'
+		'dist/css/new-login-design.css',
+		'dist/css/main-design-system.css',
+		'dist/css/top-bar.css',
+		'dist/css/component-patterns.css'
 	], true) ?>
     <style>
         body:not(.lw-ajax-form-ready) form.lw-ajax-form:before {
