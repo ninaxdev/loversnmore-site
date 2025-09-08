@@ -59,6 +59,7 @@
                     <!-- login form -->
                     <form class="lw-new-login-form user lw-ajax-form lw-form" data-callback="onLoginCallback" method="post" action="<?= route('user.login.process') ?>" data-show-processing="true" data-secured="true">
                         <!-- email input field -->
+                         @csrf
                         <div class="lw-form-group">
                             <div class="lw-input-container">
                                 <input type="text" class="lw-form-input" name="email_or_username" placeholder="<?= __tr('Username/Email') ?>@if(getStoreSettings('allow_user_login_with_mobile_number')){{ __tr(' or Mobile Number') }}@endif" required>
