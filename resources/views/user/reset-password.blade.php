@@ -57,7 +57,7 @@
                     </div>
                     
                     <!-- reset password form -->
-                    <form class="lw-new-login-form user lw-ajax-form lw-form" method="post" action="<?= route('user.reset_password.process', ['reminderToken' => request()->get('reminderToken')]) ?>" data-show-processing="true" data-secured="true">
+                    <form class="lw-new-login-form user lw-ajax-form lw-form" method="post" action="<?= route('user.reset_password.process', ['reminderToken' => request()->get('reminderToken')]) ?>" data-show-processing="true">
                         <!-- email input field -->
                         <div class="lw-form-group">
                             <div class="lw-input-container">
