@@ -1,82 +1,124 @@
+@section('page-title', __tr('Reset Your Password'))
+@section('head-title', __tr('Reset Your Password'))
+@section('keywordName', strip_tags(__tr('Reset Your Password')))
+@section('keyword', strip_tags(__tr('Reset Your Password')))
+@section('description', strip_tags(__tr('Reset Your Password')))
+@section('keywordDescription', strip_tags(__tr('Reset Your Password')))
+@section('page-image', getStoreSettings('logo_image_url'))
+@section('twitter-card-image', getStoreSettings('logo_image_url'))
+@section('page-url', url()->current())
+
 <!-- include header -->
 @include('includes.header')
 <!-- /include header -->
-<style>
-	.lw-login-register-page .lw-page-bg {
-		background-image: url(<?= __yesset("imgs/home/random/*.jpg", false, [
-									'random' => true
-								]) ?>);
-	}
-</style>
-<body class="bg-gradient-primary lw-login-register-page">
-    <img class="lw-logo-img-on-bg" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>">
-    <div class="lw-page-bg lw-lazy-img" data-src="<?= __yesset(" imgs/home/random/*.jpg", false, [ 'random'=> true
-        ]) ?>"></div>
-	<div class="container">
-		<!-- Outer Row -->
-		<div class="row justify-content-center">
-			<div class="card o-hidden border-0 shadow-lg col-xl-3 col-lg-6 col-md-8">
-				<div class="card-body">
-					<div class="row">
-						<!-- Nested Row within Card Body -->
-						<div class="col-12">
-							<div class="p-5">
-									<!-- heading -->
-									<div class="text-center">
-										<img class="lw-logo-img" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>">
-										<hr class="mt-4 mb-4">
-										<h4 class="text-gray-200 mb-4"><?= __tr('Reset Your Password?') ?></h4>
-										<p class="mb-4"><?= __tr("We get it, stuff happens. Just enter your email address below and we'll send you a link to reset your password!") ?></p>
-									</div>
-									<!-- / heading -->
-									<!-- reset password form form -->
-									<form class="user lw-ajax-form lw-form" method="post" action="<?= route('user.reset_password.process', ['reminderToken' => request()->get('reminderToken')]) ?>">
-										<!-- email input field -->
-										<div class="form-group">
-											<label for="lwEmail"><?= __tr('Email') ?></label>
-											<input type="email" class="form-control form-control-user" name="email" aria-describedby="emailHelp" required>
-										</div>
-										<!-- / email input field -->
 
-										<!-- new password input field -->
-										<div class="form-group">
-											<label for="lwPassword"><?= __tr('New Password') ?></label>
-											<input type="password" class="form-control form-control-user" name="password" required minlength="6">
-										</div>
-										<!-- / new password input field -->
+<body class="lw-login-register-page lw-new-login-design">
+    <!-- Background Image for larger screens -->
+    <div class="lw-page-bg lw-lazy-img d-none d-lg-block" data-src="<?= __yesset("imgs/home/random/*.jpg", false, [
+                                                        'random' => true
+                                                    ]) ?>"></div>
+    
+    <!-- Background gradients -->
+    <div class="lw-gradient-bg-bottom"></div>
+    <div class="lw-gradient-bg-top"></div>
+    
+    <div class="container-fluid p-lg-0">
+        <div class="row no-gutters min-vh-100">
+            <!-- Left side image (larger screens) -->
+            <div class="col-lg-7 d-none d-lg-block lw-login-left-bg">
+                <div class="lw-page-bg lw-lazy-img" data-src="<?= __yesset("imgs/home/random/*.jpg", false, [
+                                                        'random' => true
+                                                    ]) ?>"></div>
+                <div class="lw-login-bg-overlay">
+                    <img class="lw-logo-img-on-bg" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>">
+                </div>
+            </div>
+            
+            <!-- Right side form -->
+            <div class="col-lg-5 col-12 lw-login-form-container">
+                <div class="lw-login-form-wrapper">
+                    <div class="lw-login-header">
+                        <!-- Logo for mobile -->
+                        <div class="d-lg-none text-center mb-4">
+                            <a href="<?= url(''); ?>">
+                                <img class="lw-mobile-logo" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>">
+                            </a>
+                        </div>
+                        
+                        <h1 class="lw-login-title"><?= __tr('Reset Your Password')  ?></h1>
+                        <p class="lw-login-subtitle"><?= __tr('Enter your email and new password.')  ?><br><?= __tr('We will help you reset your password securely.')  ?></p>
+                        
+                        @if(session('errorStatus'))
+                        <div class="alert alert-danger alert-dismissible lw-alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <?= session('message') ?>
+                        </div>
+                        @endif
+                    </div>
+                    
+                    <!-- reset password form -->
+                    <form class="lw-new-login-form user lw-ajax-form lw-form" method="post" action="<?= route('user.reset_password.process', ['reminderToken' => request()->get('reminderToken')]) ?>" data-show-processing="true" data-secured="true">
+                        <!-- email input field -->
+                        <div class="lw-form-group">
+                            <div class="lw-input-container">
+                                <input type="email" class="lw-form-input" name="email" placeholder="<?= __tr('Email Address') ?>" required>
+                            </div>
+                        </div>
+                        <!-- / email input field -->
 
-										<!-- new password confirmation input field -->
-										<div class="form-group">
-											<label for="lwPassword"><?= __tr('Confirm password') ?></label>
-											<input type="password" class="form-control form-control-user" name="password_confirmation" required minlength="6">
-										</div>
-										<!-- new password confirmation input field -->
+                        <!-- new password input field -->
+                        <div class="lw-form-group">
+                            <div class="lw-input-container">
+                                <input type="password" class="lw-form-input" name="password" placeholder="<?= __tr('New Password') ?>" required minlength="6">
+                            </div>
+                        </div>
+                        <!-- / new password input field -->
 
-										<!-- Reset Password button -->
-										<button type="submit" class="lw-ajax-form-submit-action btn btn-primary btn-user btn-block">
-											<?= __tr('Reset Password') ?>
-										</button>
-										<!-- Reset Password button -->
-									</form>
-									<!-- reset password form form -->
-									<hr class="my-4">
-                                    <div class="text-center">
-                                        <!-- Login Link -->
-                                        <h5 class="mb-3"> <?= __tr('Have a Password?') ?></h5>
-                                        <a class="btn btn-small btn-secondary" href="<?= route('user.login') ?>">
-                                            <?= __tr('Back to Login') ?>
-                                        </a>
-                                        <!-- /Login Link -->
-                                    </div>
-									<!-- / account and login page link -->
-							</div>
-						</div>
-						<!-- /Nested Row within Card Body -->
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- /Outer Row -->
-	</div>
+                        <!-- confirm password input field -->
+                        <div class="lw-form-group">
+                            <div class="lw-input-container">
+                                <input type="password" class="lw-form-input" name="password_confirmation" placeholder="<?= __tr('Confirm New Password') ?>" required minlength="6">
+                            </div>
+                        </div>
+                        <!-- / confirm password input field -->
+
+                        @if(getStoreSettings('allow_recaptcha'))
+                        <div class="lw-form-group text-center">
+                            <div class="g-recaptcha d-inline-block" data-sitekey="{{ getStoreSettings('recaptcha_site_key') }}"></div>
+                        </div>
+                        @endif
+
+                        <!-- Reset Password button -->
+                        <button type="submit" class="lw-gradient-btn lw-ajax-form-submit-action"><?= __tr('Reset Password')  ?></button>
+                        <!-- / Reset Password button -->
+                    </form>
+                    <!-- / reset password form -->
+                    
+                    <!-- Bottom Links -->
+                    <div class="lw-bottom-links">
+                        <div class="text-center">
+                            <p class="lw-signup-text"><?= __tr('Remember your password?') ?></p>
+                            <a class="lw-signup-btn" href="<?= route('user.login') ?>"><?= __tr('Back to Login')  ?></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
+@lwPush('appScripts')
+<script>
+    var recaptchaInstance = "<?= getStoreSettings('allow_recaptcha') ?>";
+    //on reset password success callback
+    function onResetPasswordCallback(response) {
+        if(recaptchaInstance){
+            grecaptcha.reset();
+        }
+    }
+</script>
+@lwPushEnd
+
+<!-- include footer -->
 @include('includes.footer')
+<!-- /include footer -->

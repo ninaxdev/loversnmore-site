@@ -15,7 +15,7 @@ $isLcOk = true;
         <!-- /include sidebar -->
 
         <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column bg-gray-900">
+        <div id="content-wrapper" class="d-flex flex-column bg-white">
             <div id="content">
                 <!-- include top bar -->
                 @if(isLoggedIn())
@@ -24,21 +24,7 @@ $isLcOk = true;
                 <!-- /include top bar -->
                 <!-- Begin Page Content -->
                 <div class="container-fluid lw-page-content">
-                @if(!getStoreSettings('product_registration', 'registration_id'))
-                    @include('configuration.licence-information')
-                    @php
-                        $isLcOk = false;
-                    @endphp
-                @elseif(sha1(
-                    array_get($_SERVER, 'HTTP_HOST', '') .
-                    getStoreSettings('product_registration', 'registration_id')) !== getStoreSettings('product_registration', 'signature'))
-                    @include('configuration.licence-information')
-                    @php
-                        $isLcOk = false;
-                    @endphp
-                @elseif(isset($pageRequested))
-                    <?php echo $pageRequested; ?>
-                    @endif
+             <?php echo $pageRequested; ?>
                 </div>
                 <!-- /.container-fluid -->
             </div>

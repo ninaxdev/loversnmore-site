@@ -9,8 +9,8 @@
 @section('page-url', url()->current())
 
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-200"><?= __tr('Settings') ?></h1>
+<div class="d-sm-flex align-items-center justify-content-between mb-4  bg-gradient-to-br from-gray-50 to-white">
+    <h1 class="h3 mb-0 text-lw-primary"><?= __tr('Settings') ?></h1>
 </div>
 <!-- Page Heading -->
 <?php $pageType = request()->pageType ?>
@@ -19,7 +19,7 @@
         <!-- card start -->
         <div class="card">
             <!-- card body -->
-            <div class="card-body">
+            <div class="card-body bg-white">
                 <!-- include related view -->
                 @include('configuration.'. $pageType)
                 <!-- /include related view -->

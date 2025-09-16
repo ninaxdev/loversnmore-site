@@ -1,239 +1,251 @@
-<!-- Page Heading -->
-<h3><?= __tr('User Settings') ?></h3>
-<!-- /Page Heading -->
-<hr>
-<!-- User Setting Form -->
-<form class="lw-ajax-form lw-form" method="post" action="<?= route('manage.configuration.write', ['pageType' => request()->pageType]) ?>">
-	<!-- Activation Required For New User -->
-	<div class="form-group mt-2 lw-fieldset">
-		<!-- Activation required for new user -->
-		<label><?= __tr('Email activation required for new user') ?></label>
-		<!-- /Activation required for new user -->
-		<!-- Yes -->
-		<div class="custom-control custom-radio custom-control-inline">
-			<input type="radio" id="activation_required_yes" name="activation_required_for_new_user" class="custom-control-input" value="1" <?= $configurationData['activation_required_for_new_user'] == true ? 'checked' : '' ?>>
-			<label class="custom-control-label" for="activation_required_yes"><?= __tr('Yes') ?></label>
-		</div>
-		<!-- /Yes -->
-		<!-- No -->
-		<div class="custom-control custom-radio custom-control-inline">
-			<input type="radio" id="activation_required_no" name="activation_required_for_new_user" class="custom-control-input" value="0" <?= $configurationData['activation_required_for_new_user'] == false ? 'checked' : '' ?>>
-			<label class="custom-control-label" for="activation_required_no"><?= __tr('No') ?></label>
-		</div>
-		<!-- /No -->
-        <small class="mt-3 text-muted d-block">
-            <strong>{{  __tr('Note:') }}</strong> {{  __tr('To update content of activation email you need to edit /resources/views/emails/account/activation.blade.php file.') }}
-        </small>
-        <!-- /Activation Required For New User -->
-	</div>
-	<div class="lw-fieldset">
-        		<!-- Activation required for change email -->
-		<label><?= __tr('Activation required for change email') ?></label>
-		<!-- /Activation required for change email -->
-        <!-- Activation Required For Change Email -->
-	<div class="form-group mt-2 mb-4">
-		<!-- Yes -->
-		<div class="custom-control custom-radio custom-control-inline">
-			<input type="radio" id="activation_required_change_email_yes" name="activation_required_for_change_email" class="custom-control-input" value="1" <?= $configurationData['activation_required_for_change_email'] == true ? 'checked' : '' ?>>
-			<label class="custom-control-label" for="activation_required_change_email_yes"><?= __tr('Yes') ?></label>
-		</div>
-		<!-- /Yes -->
-		<!-- No -->
-		<div class="custom-control custom-radio custom-control-inline">
-			<input type="radio" id="activation_required_change_email_no" name="activation_required_for_change_email" class="custom-control-input" value="0" <?= $configurationData['activation_required_for_change_email'] == false ? 'checked' : '' ?>>
-			<label class="custom-control-label" for="activation_required_change_email_no"><?= __tr('No') ?></label>
-		</div>
-		<!-- /No -->
-	</div>
-    <small class="mt-3 text-muted d-block">
-        <strong>{{  __tr('Note:') }}</strong> {{  __tr('To update content of welcome email you need to edit /resources/views/emails/account/new-email-activation.blade.php file.') }}
-    </small>
-	<!-- /Activation Required For Change Email -->
-    </div>
-
-    <div class="lw-fieldset mt-3">
-        <div class="form-group">
-            	<!-- /Send welcome email to newly registered users -->
-            <div class="custom-control custom-checkbox custom-control-inline">
-                <input type="hidden" name="send_welcome_email_to_newly_registered_users" value="0">
-                <input type="checkbox" class="custom-control-input" id="forWelcomeEmailSetting" name="send_welcome_email_to_newly_registered_users" value="1" <?= $configurationData['send_welcome_email_to_newly_registered_users'] == true ? 'checked' : '' ?>>
-                <label class="custom-control-label" for="forWelcomeEmailSetting"><?= __tr('Send welcome email to newly registered users') ?></label>
+<!-- Page Container -->
+<div class="max-w-4xl mx-auto">
+    <!-- Page Header -->
+    <x-lw.card class="mb-6">
+        <div class="flex items-center space-x-4">
+            <div class="bg-gradient-lw p-3 rounded-full">
+                <i class="fas fa-users text-white text-xl"></i>
             </div>
-            <small class="mt-3 text-muted d-block">
-                <strong>{{  __tr('Note:') }}</strong> {{  __tr('To update content of welcome email you need to edit /resources/views/emails/account/welcome.blade.php file.') }}
-            </small>
-            <!-- /Send welcome email to newly registered users -->
-        </div>
-    </div>
-
-	<!-- Include / Exclude Admin in public side list -->
-	<div class="lw-fieldset mt-3">
-        <div class="form-group mt-2 mb-4">
-            <!-- Include admin in search result, encounter, random users & featured users -->
-            <label><?= __tr('Include admin in search result, encounter, random users & featured users') ?></label>
-            <!-- /Include admin in search result, encounter, random users & featured users -->
-            <!-- Yes -->
-            <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="include_exclude_admin_yes" name="include_exclude_admin" class="custom-control-input" value="1" <?= $configurationData['include_exclude_admin'] == true ? 'checked' : '' ?>>
-                <label class="custom-control-label" for="include_exclude_admin_yes"><?= __tr('Yes') ?></label>
+            <div>
+                <h1 class="font-lw font-bold text-2xl text-lw-primary">{{ __tr('User Settings') }}</h1>
+                <p class="font-lw text-lw-secondary">{{ __tr('Configure user registration, authentication and account management settings') }}</p>
             </div>
-            <!-- /Yes -->
-            <!-- No -->
-            <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="include_exclude_admin_no" name="include_exclude_admin" class="custom-control-input" value="0" <?= $configurationData['include_exclude_admin'] == false ? 'checked' : '' ?>>
-                <label class="custom-control-label" for="include_exclude_admin_no"><?= __tr('No') ?></label>
+        </div>
+    </x-lw.card>
+
+    <!-- User Settings Form -->
+    <form class="lw-ajax-form lw-form" method="post" action="{{ route('manage.configuration.write', ['pageType' => request()->pageType]) }}">
+        
+        <!-- Account Activation Settings -->
+        <x-lw.card title="{{ __tr('Account Activation Settings') }}" subtitle="{{ __tr('Configure email activation requirements for new users') }}" class="mb-6">
+            <!-- Email activation required for new user -->
+            <x-lw.form-field label="{{ __tr('Email activation required for new user') }}" name="activation_required_for_new_user">
+                <x-lw.radio-group 
+                    name="activation_required_for_new_user"
+                    layout="horizontal"
+                    :options="[
+                        '1' => __tr('Yes'),
+                        '0' => __tr('No')
+                    ]"
+                    value="{{ $configurationData['activation_required_for_new_user'] ? '1' : '0' }}"
+                />
+                <div class="mt-2">
+                    <small class="font-lw text-xs text-lw-secondary">
+                        <strong>{{ __tr('Note:') }}</strong> {{ __tr('To update content of activation email you need to edit /resources/views/emails/account/activation.blade.php file.') }}
+                    </small>
+                </div>
+            </x-lw.form-field>
+
+            <!-- Activation required for change email -->
+            <x-lw.form-field label="{{ __tr('Activation required for change email') }}" name="activation_required_for_change_email">
+                <x-lw.radio-group 
+                    name="activation_required_for_change_email"
+                    layout="horizontal"
+                    :options="[
+                        '1' => __tr('Yes'),
+                        '0' => __tr('No')
+                    ]"
+                    value="{{ $configurationData['activation_required_for_change_email'] ? '1' : '0' }}"
+                />
+                <div class="mt-2">
+                    <small class="font-lw text-xs text-lw-secondary">
+                        <strong>{{ __tr('Note:') }}</strong> {{ __tr('To update content of welcome email you need to edit /resources/views/emails/account/new-email-activation.blade.php file.') }}
+                    </small>
+                </div>
+            </x-lw.form-field>
+
+            <!-- Send welcome email to newly registered users -->
+            <x-lw.form-field label="{{ __tr('Welcome Email Settings') }}" name="send_welcome_email_to_newly_registered_users">
+                <x-lw.checkbox 
+                    name="send_welcome_email_to_newly_registered_users"
+                    value="1"
+                    :checked="$configurationData['send_welcome_email_to_newly_registered_users']"
+                    label="{{ __tr('Send welcome email to newly registered users') }}"
+                />
+                <div class="mt-2">
+                    <small class="font-lw text-xs text-lw-secondary">
+                        <strong>{{ __tr('Note:') }}</strong> {{ __tr('To update content of welcome email you need to edit /resources/views/emails/account/welcome.blade.php file.') }}
+                    </small>
+                </div>
+            </x-lw.form-field>
+        </x-lw.card>
+
+        <!-- Admin & User Management -->
+        <x-lw.card title="{{ __tr('Admin & User Management') }}" subtitle="{{ __tr('Configure admin visibility and user account settings') }}" class="mb-6">
+            <!-- Include admin in search result -->
+            <x-lw.form-field label="{{ __tr('Include admin in search result, encounter, random users & featured users') }}" name="include_exclude_admin">
+                <x-lw.radio-group 
+                    name="include_exclude_admin"
+                    layout="horizontal"
+                    :options="[
+                        '1' => __tr('Yes'),
+                        '0' => __tr('No')
+                    ]"
+                    value="{{ $configurationData['include_exclude_admin'] ? '1' : '0' }}"
+                />
+            </x-lw.form-field>
+
+            <!-- Display Mobile Number -->
+            <x-lw.form-field label="{{ __tr('Display Mobile Number') }}" name="display_mobile_number">
+                <x-lw.radio-group 
+                    name="display_mobile_number"
+                    layout="vertical"
+                    :options="$configurationData['admin_choice_display_mobile_number']"
+                    value="{{ $configurationData['display_mobile_number'] }}"
+                />
+            </x-lw.form-field>
+        </x-lw.card>
+
+        <!-- Credits & Bonus Settings -->
+        <x-lw.card title="{{ __tr('Credits & Bonus Settings') }}" subtitle="{{ __tr('Configure bonus credits for new users') }}" class="mb-6">
+            <!-- Allocate Bonus Credits -->
+            <x-lw.form-field label="{{ __tr('Bonus Credits Configuration') }}" name="enable_bonus_credits">
+                <x-lw.checkbox 
+                    name="enable_bonus_credits"
+                    value="1"
+                    :checked="$configurationData['enable_bonus_credits']"
+                    label="{{ __tr('Allocate Bonus Credits to new users') }}"
+                    id="lwEnableBonusCredits"
+                />
+            </x-lw.form-field>
+
+            <!-- Number of credits -->
+            <div id="lwNumberOfCredits" style="{{ $configurationData['enable_bonus_credits'] ? '' : 'display: none;' }}">
+                <x-lw.form-field label="{{ __tr('How many free credits, do you want to offer to the newly registered user?') }}" name="number_of_credits">
+                    <x-lw.input 
+                        type="number"
+                        name="number_of_credits"
+                        placeholder="{{ __tr('Enter number of credits') }}"
+                        value="{{ $configurationData['number_of_credits'] }}"
+                        min="0"
+                    />
+                </x-lw.form-field>
             </div>
-            <!-- /No -->
-        </div>
-    </div>
-	<!-- /Include / Exclude Admin in public side list -->
+        </x-lw.card>
 
-	<div class="lw-fieldset mt-3">
-        <!-- Display Mobile Number -->
-	<div class="form-group mt-2 mb-4">
-		<!-- Display Mobile Number -->
-		<label><?= __tr('Display Mobile Number') ?></label>
-		@foreach($configurationData['admin_choice_display_mobile_number'] as $key => $adminChoice)
-		<div class="custom-control custom-radio custom-control-inline">
-			<input type="radio" id="admin_choice_<?= $key ?>" name="display_mobile_number" class="custom-control-input" value="<?= $key ?>" <?= $configurationData['display_mobile_number'] == $key ? 'checked' : '' ?>>
-			<label class="custom-control-label" for="admin_choice_<?= $key ?>"><?= $adminChoice ?></label>
-		</div>
-		@endforeach
-	</div>
-	<!-- /Display Mobile Number -->
-    </div>
-
-	<!-- Allocate Bonus Credit To User -->
-	<div class="lw-fieldset mt-3 mb-4">
-		<!-- Allocate Bonus Credits field -->
-		<div class="custom-control custom-checkbox custom-control-inline">
-			<input type="hidden" name="enable_bonus_credits" value="">
-			<input type="checkbox" class="custom-control-input" id="lwEnableBonusCredits" name="enable_bonus_credits" value="1" <?= $configurationData['enable_bonus_credits'] == true ? 'checked' : '' ?>>
-			<label class="custom-control-label" for="lwEnableBonusCredits"><?= __tr('Allocate Bonus Credits')  ?></label>
-		</div>
-		<!-- / Allocate Bonus Credits field -->
-
-		<!-- Number of credits -->
-		<div class="mt-3" id="lwNumberOfCredits">
-			<label for="lwNumberOfCredits"><?= __tr('How many free credits, do you want to offer to the newly registered user?') ?></label>
-			<input type="number" class="form-control form-control-user" value="<?= $configurationData['number_of_credits'] ?>" name="number_of_credits" id="lwNumberOfCredits">
-		</div>
-		<!-- / Number of credits -->
-	</div>
-    <!-- /Allocate Bonus Credit To User -->
-	<div class="lw-fieldset mt-3">
-        <h5>{{  __tr('URLs') }}</h5>
-        <small class="mt-3 text-muted d-block alert alert-info">
-            <strong>{{  __tr('Tip:') }}</strong> {{  __tr('You can use any external urls for this alternatively you can create pages and use that link here for terms condition and for privacy policy.') }}
-        </small>
-	<div class="form-group row">
-        <div class="col-sm-12 mb-3 mb-sm-0">
-		<!-- URL for Terms And Conditions -->
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">{{  __tr('Terms And Conditions') }}</span>
-              </div>
-              <input type="text" name="terms_and_conditions_url" class="form-control form-control-user" id="termsAndConditionsUrl" required value="<?= $configurationData['terms_and_conditions_url'] ?>">
-        </div>
-        <small class="text-muted help-text">{{  __tr('Register page will use this url so the user can read terms and conditions.') }}</small>
-    </div>
-	</div>
-    <!-- / URL for Terms And Conditions -->
-    <div class="form-group row">
-		<!-- URL for Privacy Policy -->
-        <div class="col-sm-12 mb-3 mb-sm-0">
-            <!-- URL for Terms And Conditions -->
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">{{  __tr('Privacy Policy') }}</span>
-                  </div>
-                  <input type="text" name="privacy_policy_url" class="form-control form-control-user" id="privacyPolicyUrl" value="<?= $configurationData['privacy_policy_url'] ?>">
+        <!-- URLs Configuration -->
+        <x-lw.card title="{{ __tr('Legal URLs Configuration') }}" subtitle="{{ __tr('Configure terms, conditions and privacy policy URLs') }}" class="mb-6">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-500 mt-1 mr-3"></i>
+                    <div>
+                        <p class="font-lw font-medium text-blue-800 mb-1">{{ __tr('Tip:') }}</p>
+                        <p class="font-lw text-sm text-blue-700">{{ __tr('You can use any external urls for this alternatively you can create pages and use that link here for terms condition and for privacy policy.') }}</p>
+                    </div>
+                </div>
             </div>
-            <small class="text-muted help-text">{{  __tr('Privacy policy page will use this url so the user can read it.') }}</small>
-        </div>
-		<!-- / URL for Privacy Policy -->
-	</div>
-    </div>
-	<div class="lw-fieldset mt-3">
-        <!-- Photos restrictions for user -->
-	<div class="form-group">
-		<label for="lwUserPhotoRestriction"><?= __tr('User Photos Restriction') ?></label>
-		<input type="number" min="1" class="form-control form-control-user" value="<?= $configurationData['user_photo_restriction'] ?>" name="user_photo_restriction" id="lwUserPhotoRestriction">
-	</div>
-	<!-- / Photos restrictions for user -->
-    <small class="text-muted help-text">{{  __tr('Maximum photos you want to allow user to upload in photos section.') }}</small>
-    </div>
-    <div class="lw-fieldset mt-3">
-        <div class="form-group mb-4">
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Terms And Conditions URL -->
+                <x-lw.form-field label="{{ __tr('Terms And Conditions URL') }}" name="terms_and_conditions_url" required>
+                    <x-lw.input 
+                        type="url"
+                        name="terms_and_conditions_url"
+                        placeholder="{{ __tr('Enter terms and conditions URL') }}"
+                        value="{{ $configurationData['terms_and_conditions_url'] }}"
+                        required
+                    />
+                    <div class="mt-2">
+                        <small class="font-lw text-xs text-lw-secondary">{{ __tr('Register page will use this url so the user can read terms and conditions.') }}</small>
+                    </div>
+                </x-lw.form-field>
+
+                <!-- Privacy Policy URL -->
+                <x-lw.form-field label="{{ __tr('Privacy Policy URL') }}" name="privacy_policy_url">
+                    <x-lw.input 
+                        type="url"
+                        name="privacy_policy_url"
+                        placeholder="{{ __tr('Enter privacy policy URL') }}"
+                        value="{{ $configurationData['privacy_policy_url'] }}"
+                    />
+                    <div class="mt-2">
+                        <small class="font-lw text-xs text-lw-secondary">{{ __tr('Privacy policy page will use this url so the user can read it.') }}</small>
+                    </div>
+                </x-lw.form-field>
+            </div>
+        </x-lw.card>
+
+        <!-- User Restrictions & Authentication -->
+        <x-lw.card title="{{ __tr('User Restrictions & Authentication') }}" subtitle="{{ __tr('Configure photo limits and login options') }}" class="mb-6">
+            <!-- Photos restrictions for user -->
+            <x-lw.form-field label="{{ __tr('User Photos Restriction') }}" name="user_photo_restriction">
+                <x-lw.input 
+                    type="number"
+                    name="user_photo_restriction"
+                    placeholder="{{ __tr('Enter maximum number of photos') }}"
+                    value="{{ $configurationData['user_photo_restriction'] }}"
+                    min="1"
+                />
+                <div class="mt-2">
+                    <small class="font-lw text-xs text-lw-secondary">{{ __tr('Maximum photos you want to allow user to upload in photos section.') }}</small>
+                </div>
+            </x-lw.form-field>
+
             <!-- Allow User login with Mobile Number -->
-            <label><?= __tr('Allow User login with Mobile Number') ?></label>
-            <!-- /Allow User login with Mobile Number -->
-            <!-- Yes -->
-            <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="allow_user_login_with_mobile_number_yes" name="allow_user_login_with_mobile_number" class="custom-control-input" value="1" <?= $configurationData['allow_user_login_with_mobile_number'] == true ? 'checked' : '' ?>>
-                <label class="custom-control-label" for="allow_user_login_with_mobile_number_yes"><?= __tr('Yes') ?></label>
-            </div>
-            <!-- /Yes -->
-            <!-- No -->
-            <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="allow_user_login_with_mobile_number_no" name="allow_user_login_with_mobile_number" class="custom-control-input" value="0" <?= $configurationData['allow_user_login_with_mobile_number'] == false ? 'checked' : '' ?>>
-                <label class="custom-control-label" for="allow_user_login_with_mobile_number_no"><?= __tr('No') ?></label>
-            </div>
-            <!-- /No -->
+            <x-lw.form-field label="{{ __tr('Allow User login with Mobile Number') }}" name="allow_user_login_with_mobile_number">
+                <x-lw.radio-group 
+                    name="allow_user_login_with_mobile_number"
+                    layout="horizontal"
+                    :options="[
+                        '1' => __tr('Yes'),
+                        '0' => __tr('No')
+                    ]"
+                    value="{{ $configurationData['allow_user_login_with_mobile_number'] ? '1' : '0' }}"
+                />
+                <div class="mt-2">
+                    <small class="font-lw text-xs text-lw-secondary">{{ __tr('Enabling it will allow user to login with mobile number along with email and username') }}</small>
+                </div>
+            </x-lw.form-field>
+
+            <!-- Enable OTP Login -->
+            <x-lw.form-field label="{{ __tr('Enable OTP Login') }}" name="enable_otp_Login">
+                <x-lw.radio-group 
+                    name="enable_otp_Login"
+                    layout="horizontal"
+                    :options="[
+                        '1' => __tr('Yes'),
+                        '0' => __tr('No')
+                    ]"
+                    value="{{ $configurationData['enable_otp_Login'] ? '1' : '0' }}"
+                />
+                <div class="mt-2">
+                    <small class="font-lw text-xs text-lw-secondary">{{ __tr('For the SMS OTP you should have working SMS gateway configured from Email and SMS settings.') }}</small>
+                </div>
+            </x-lw.form-field>
+        </x-lw.card>
+
+        <!-- Submit Button -->
+        <div class="flex justify-end pt-6 border-t border-gray-200">
+            <x-lw.button 
+                type="button"
+                variant="primary"
+                size="lg"
+                class="lw-ajax-form-submit-action px-12"
+            >
+                <i class="fas fa-save mr-2"></i>
+                {{ __tr('Update Settings') }}
+            </x-lw.button>
         </div>
-        <small class="text-muted help-text">{{  __tr('Enabling it will allow user to login with mobile number along with email and username') }}</small>
-    </div>
-    <div class="lw-fieldset mt-3">
-        <div class="form-group mb-4">
-            <!-- Allow User login with Mobile Number -->
-            <label><?= __tr('Enable OTP Login') ?></label>
-            <!-- /Allow User login with Mobile Number -->
-            <!-- Yes -->
-            <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="enable_otp_Login_yes" name="enable_otp_Login" class="custom-control-input" value="1" <?= $configurationData['enable_otp_Login'] == true ? 'checked' : '' ?>>
-                <label class="custom-control-label" for="enable_otp_Login_yes"><?= __tr('Yes') ?></label>
-            </div>
-            <!-- /Yes -->
-            <!-- No -->
-            <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="enable_otp_Login_no" name="enable_otp_Login" class="custom-control-input" value="0" <?= $configurationData['enable_otp_Login'] == false ? 'checked' : '' ?>>
-                <label class="custom-control-label" for="enable_otp_Login_no"><?= __tr('No') ?></label>
-            </div>
-            <!-- /No -->
-        </div>
-        <small class="text-muted help-text">{!! __tr('For the SMS OTP you should have working SMS gateway configured from Email & SMS settings.') !!}</small>
-    </div>
-    <hr class="mt-4">
-	<!-- Update Button -->
-	<a href class="lw-ajax-form-submit-action btn btn-primary btn-user lw-btn-block-mobile mt-2">
-		<?= __tr('Update') ?>
-	</a>
-	<!-- /Update Button -->
-</form>
-<!-- /User Setting Form -->
+    </form>
+</div>
 
 @lwPush('appScripts')
 <script>
-	$(document).ready(function() {
-		var enableBonusCredits = '<?= $configurationData['enable_bonus_credits'] ?>';
-		//check is false then disabled input price field
-		if (!enableBonusCredits) {
-			//hide number of credits input field
-			$("#lwNumberOfCredits").hide();
-		}
-
-		// on change enable credits event
-		$("#lwEnableBonusCredits").on('change', function() {
-			enableBonusCredits = $(this).is(':checked');
-			//check is enable true
-			if (enableBonusCredits) {
-				//show number of credits input field
-				$("#lwNumberOfCredits").show();
-			} else {
-				//hide number of credits input field
-				$("#lwNumberOfCredits").hide();
-			}
-		});
-	});
+    $(document).ready(function() {
+        var enableBonusCredits = {{ $configurationData['enable_bonus_credits'] ? 'true' : 'false' }};
+        
+        // on change enable credits event
+        $("#lwEnableBonusCredits").on('change', function() {
+            enableBonusCredits = $(this).is(':checked');
+            //check is enable true
+            if (enableBonusCredits) {
+                //show number of credits input field
+                $("#lwNumberOfCredits").show();
+            } else {
+                //hide number of credits input field
+                $("#lwNumberOfCredits").hide();
+            }
+        });
+    });
 </script>
 @lwPushEnd
