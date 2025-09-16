@@ -23,6 +23,7 @@ use App\Yantrana\Components\User\Requests\UserChangeEmailRequest;
 use App\Yantrana\Components\User\Requests\UserResetPasswordRequest;
 use App\Yantrana\Components\User\Requests\UserForgotPasswordRequest;
 use App\Yantrana\Components\User\Requests\UserUpdatePasswordRequest;
+use Log;
 
 class UserController extends BaseController
 {
@@ -341,9 +342,10 @@ class UserController extends BaseController
      * @return json object
      *---------------------------------------------------------------- */
     public function processRestPassword(
-        UserResetPasswordRequest $request,
+        Request $request,
         $reminderToken
     ) {
+        Log::info(json_encode($request->all()));
         $processReaction = $this->userEngine
             ->processResetPassword(
                 $request->all(),
