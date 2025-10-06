@@ -130,7 +130,7 @@
             <a class="nav-link lw-nav-icon" onclick="getChatMessenger('<?= route('user.read.all_conversation') ?>', true)" id="lwAllMessageChatButton" data-chat-loaded="false" data-toggle="modal" data-target="#messengerDialog" title="<?= __tr('Messages') ?>">
                <div class="lw-icon-wrapper">
                    <i class="far fa-comments"></i>
-                   <span class="lw-notification-badge" x-show="totalUnreadMsgCount > 0" x-cloak x-text="totalUnreadMsgCount > 99 ? '99+' : totalUnreadMsgCount"></span>
+                   <span class="lw-notification-badge" data-model="totalUnreadMsgCount" x-show="totalUnreadMsgCount > 0" x-cloak x-text="totalUnreadMsgCount > 99 ? '99+' : totalUnreadMsgCount"></span>
                </div>
             </a>
         </li>

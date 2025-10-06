@@ -487,6 +487,16 @@ Route::group([
                     'as' => 'user.write.send_message',
                     'uses' => 'MessengerController@sendMessage',
                 ]);
+                // Typing status
+                Route::post('/typing-status', [
+                    'as' => 'user.write.typing_status',
+                    'uses' => 'MessengerController@updateTypingStatus',
+                ]);
+                // Mark messages as read
+                Route::post('/mark-messages-read', [
+                    'as' => 'user.write.mark_messages_read',
+                    'uses' => 'MessengerController@markMessagesRead',
+                ]);
                   // update Conversation List
                   Route::get('/{userId}/update-user-conversation', [
                     'as' => 'user.update.user_conversation',

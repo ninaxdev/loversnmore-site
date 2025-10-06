@@ -36,6 +36,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\BasicAuthMiddleware::class, // Beta testing password protection
         ],
 
         'api' => [
@@ -65,6 +66,7 @@ class Kernel extends HttpKernel
         'admin.auth' => \App\Http\Middleware\AdminAuthenticate::class,
         'api.authenticate' => \App\Http\Middleware\ApiAuthenticateMiddleware::class,
         'common.entrance' => \App\Http\Middleware\CommonEntranceMiddleware::class,
+        'basic.auth' => \App\Http\Middleware\BasicAuthMiddleware::class,
     ];
 
     /**

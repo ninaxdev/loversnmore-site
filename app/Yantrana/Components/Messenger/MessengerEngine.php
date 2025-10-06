@@ -316,9 +316,10 @@ class MessengerEngine extends BaseEngine implements MessengerEngineInterface
                       ];
                       $this->messengerRepository->updateMessages($messageUpdateData);
                 }
-
+                   
                 $userConversations[] = [
-                    'chat_id' => $messageChat->_id,
+                    'chat_id' => $messageChat->integrity_id,
+                    'message_id'=>$messageChat->_id,
                     'message' => $message,
                     'created_on' => $this->formatDateTimeForMessage($messageChat->created_at),
                     'message_from' => $messageChat->message_from_first_name . ' ' . $messageChat->message_from_last_name,
@@ -326,6 +327,7 @@ class MessengerEngine extends BaseEngine implements MessengerEngineInterface
                     'is_message_received' => ($messageChat->message_from_user_id == $userId) ? true : false,
                     'type' => $messageChat->type,
                     'optionalLoggedInUserId' => $optionalLoggedInUserId,
+                    'status'=> $messageChat->status
                 ];
             }
         }
@@ -545,15 +547,15 @@ class MessengerEngine extends BaseEngine implements MessengerEngineInterface
              $filteredNewUnreadMsgCollection = $messageCollection->filter(function ($message) {
                  return $message->status == 2; // fetch data based on status
                  });
-            //for count unread message 
+            //for count unread message
               foreach($filteredNewUnreadMsgCollection as $newMessage){
                  if(($newMessage['from_users__id'] == $loggedInUserId)  && ($newMessage['to_users__id'] == $userDetails->_id && $newMessage['users__id'] == $userDetails->_id )){
                      $msgCount++;
                      $unreadMsgCount=$msgCount; //unread message count
                  }
              }
-                // Fetch message collection count
-                $totalUnreadMsgCount= getUsersAllConversationCount($loggedInUserId,$optionalLoggedInUserId);
+                // Fetch message collection count for the receiver
+                $totalUnreadMsgCount= getUsersAllConversationCount($userDetails->_id, $optionalLoggedInUserId);
               // Get the count of the filtered collection
                updateClientModels([
                'usersUnreadMessageCount' . $userDetails->_id => '',
@@ -596,6 +598,7 @@ class MessengerEngine extends BaseEngine implements MessengerEngineInterface
 
                 $createdOn = $this->formatDateTimeForMessage();
                 $inputData['created_on'] = $createdOn;
+                $inputData['chat_id'] =  !empty($userChatGeneratedUid) ? $userChatGeneratedUid : null;
                 $data = [
                     'type' => $inputData['type'],
                     'userId' => $loggedInUserId,
@@ -606,6 +609,7 @@ class MessengerEngine extends BaseEngine implements MessengerEngineInterface
                     'message' => $message,
                     'createdOn' => $createdOn,
                     'toUserUid' => $userUid, //$userDetails->_uid,
+                    'chat_id' => !empty($userChatGeneratedUid) ? $userChatGeneratedUid : null, // Include chat_id for read receipts
                     'messageRequestStatus' => $isMessageRequestReceived
                         ? 'MESSAGE_REQUEST_RECEIVED'
                         : 'SEND_NEW_MESSAGE',
@@ -1487,6 +1491,77 @@ class MessengerEngine extends BaseEngine implements MessengerEngineInterface
             updateClientModels([
             'totalUnreadMsgCount'=>$totalunreadMsgCount,
            ]);
+        return $this->engineResponse(1, null);
+    }
+
+    /**
+     * Process typing status
+     *
+     * @param array $inputData
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function processTypingStatus($inputData)
+    {
+        $toUserUid = $inputData['to_user_uid'] ?? null;
+        $isTyping = $inputData['is_typing'] ?? false;
+
+        if (!$toUserUid) {
+            return $this->engineResponse(2, null, __tr('Invalid user'));
+        }
+
+        $currentUserUid = getUserUID();
+
+        // Broadcast typing status via Pusher
+        PushBroadcast::notifyViaPusher(
+            'event.user.typing',
+            [$toUserUid],
+            [
+                'is_typing' => $isTyping,
+                'from_user_uid' => $currentUserUid
+            ]
+        );
+
+        return $this->engineResponse(1, null);
+    }
+
+    /**
+     * Process mark messages as read
+     *
+     * @param array $inputData
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function processMarkMessagesRead($inputData)
+    {
+        $chatIds = $inputData['chat_ids'] ?? [];
+        $toUserUid = $inputData['to_user_uid'] ?? null;
+
+        if (empty($chatIds) || !$toUserUid) {
+            return $this->engineResponse(2, null, __tr('Invalid data'));
+        }
+
+        $currentUserId = getUserID();
+
+        // Update message status to read (status = 1)
+        foreach ($chatIds as $chatId) {
+                $this->messengerRepository->updateMessages([
+                    [
+                        'status' => 1,
+                        '_id' => $chatId,
+                        'updated_at' => now(),
+                    ]
+                ]);
+        }
+
+        // Broadcast read receipt via Pusher
+            PushBroadcast::notifyViaPusher(
+                'event.message.read',
+                [$toUserUid],
+                [
+                'chat_ids' => $chatIds,
+                    'read_by_user_id' => $currentUserId
+                ]
+            );
+
         return $this->engineResponse(1, null);
     }
 }

@@ -1,43 +1,65 @@
 @foreach($usersData as $user)
 <div class="col mb-4">
-	<div class="card text-center lw-user-thumbnail-block <?= (isset($user['isPremiumUser']) and $user['isPremiumUser'] == true) ? 'lw-has-premium-badge' : '' ?>">
+	<div class="lw-user-card <?= (isset($user['isPremiumUser']) and $user['isPremiumUser'] == true) ? 'lw-has-premium-badge' : '' ?>">
 		<!-- show user online, idle or offline status -->
 		@if($user['userOnlineStatus'])
-		<div class="pt-2">
+		<div class="lw-user-card-status">
 			@if($user['userOnlineStatus'] == 1)
-			<span class="lw-dot lw-dot-success" title="Online"></span>
+			<span class="lw-status-dot lw-status-online" title="<?= __tr('Online') ?>"></span>
 			@elseif($user['userOnlineStatus'] == 2)
-			<span class="lw-dot lw-dot-warning" title="Idle"></span>
+			<span class="lw-status-dot lw-status-idle" title="<?= __tr('Idle') ?>"></span>
 			@elseif($user['userOnlineStatus'] == 3)
-			<span class="lw-dot lw-dot-danger" title="Offline"></span>
+			<span class="lw-status-dot lw-status-offline" title="<?= __tr('Offline') ?>"></span>
 			@endif
 		</div>
 		@endif
 		<!-- /show user online, idle or offline status -->
+		
+		<!-- User Image -->
 		<a class="lw-ajax-link-action lw-action-with-url" href="<?= route('user.profile_view', ['username' => $user['username']]) ?>">
-			<img data-src="<?= imageOrNoImageAvailable($user['userImageUrl']) ?>" class="lw-user-thumbnail lw-lazy-img" />
+			<div class="lw-user-card-image-wrapper">
+				<img data-src="<?= imageOrNoImageAvailable($user['userImageUrl']) ?>" class="lw-user-card-image lw-lazy-img" alt="<?= $user['userFullName'] ?>" />
+			</div>
 		</a>
-		<div class="card-title">
-			<h5>
-				<a class="text-secondary" href="<?= route('user.profile_view', ['username' => $user['username']]) ?>">
-					<?= $user['userFullName'] ?>
-				</a>
-				<?= $user['detailString'] ?> <br>
-				@if($user['countryName'])
-				<?= $user['countryName'] ?>
-				@endif
-			</h5>
-			<span><?= $user['updated_at'] ?></span>
+		
+		<!-- User Info -->
+		<div class="lw-user-card-info">
+			<a class="lw-user-card-name" href="<?= route('user.profile_view', ['username' => $user['username']]) ?>">
+				<?= $user['userFullName'] ?>
+			</a>
+			<div class="lw-user-card-details">
+				<?= $user['detailString'] ?>
+			</div>
+			@if($user['countryName'])
+			<div class="lw-user-card-location">
+				<i class="fas fa-map-marker-alt"></i>
+				<span><?= $user['countryName'] ?></span>
+			</div>
+			@endif
+			@if($user['updated_at'])
+			<div class="lw-user-card-details mt-2">
+				<small class="text-muted"><?= $user['updated_at'] ?></small>
+			</div>
+			@endif
 		</div>
 	</div>
 </div>
 @endforeach
 
-
 @if(!__isEmpty($nextPageUrl))
-<div id="lwNextPageLink" class="col-sm-12 col-md-12 col-lg-12">
-	<a href="<?= $nextPageUrl ?>" class="btn btn-dark btn-block lw-ajax-link-action" data-method="get" data-callback="loadNextLikedUsers"><?= __tr('Load more') ?></a>
+<div id="lwNextPageLink" class="col-12">
+	<div class="lw-load-more-container">
+		<a href="<?= $nextPageUrl ?>" class="lw-load-more-btn lw-ajax-link-action" data-method="get" data-callback="loadNextLikedUsers">
+			<i class="fas fa-sync-alt mr-2"></i><?= __tr('Load more') ?>
+		</a>
+	</div>
 </div>
 @else
-<div class="col-sm-12 col-md-12 col-lg-12 alert alert-dark text-center bg-dark text-secondary border-0 mt-5"><?= __tr('Looks like you reached the end.') ?></div>
+<div class="col-12">
+	<div class="lw-end-message">
+		<p class="lw-end-message-text">
+			<i class="fas fa-check-circle mr-2"></i><?= __tr('Looks like you reached the end.') ?>
+		</p>
+	</div>
+</div>
 @endIf

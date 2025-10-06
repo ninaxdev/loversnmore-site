@@ -2,8 +2,15 @@
 "use strict";
 // Create a object for messenger
 var optionalUserId = optionalLoggedInUserId;
+var typingTimeout = null;
+var isUserTyping = false;
 var __Messenger = {
     sendMessageUrl: null,
+    sendMessageRawUrl: null,
+    buyStickerUrl: null,
+    giphyKey: null,
+    loggedInUserProfilePicture: null,
+    currentChatUserUid: null,
     // Load Uploader instance
     loadUploaderInstance: function () {
         var pond = null,
@@ -29,7 +36,7 @@ var __Messenger = {
                             var storedData = requestData.storedData;
 
                             if (responseData.reaction == 1) {
-                                __Messenger.replaceMessage(storedData.type, storedData.message, storedData.unique_id, storedData.created_on);
+                                __Messenger.replaceMessage(storedData.type, storedData.message, storedData.unique_id, storedData.created_on, storedData.chat_id);
                             } else {
                                 //  __Messenger.removeMessage(storedData.type, storedData.unique_id);
                                 __Messenger.removeMessage(2, uniqueId);
@@ -274,6 +281,7 @@ var __Messenger = {
 
     // Send message
     sendMessage: function (type, formData) {
+        console.log('here')
         var uniqueId = Math.random().toString(36).substr(2, 9),
             message = formData.message;
         if (!_.isEmpty(message)) {
@@ -289,7 +297,7 @@ var __Messenger = {
             var requestData = responseData.data,
                 storedData = requestData.storedData;
             if (responseData.reaction == 1) {
-                __Messenger.replaceMessage(storedData.type, storedData.message, storedData.unique_id, storedData.created_on);
+                __Messenger.replaceMessage(storedData.type, storedData.message, storedData.unique_id, storedData.created_on, storedData.chat_id);
             } else {
                 __Messenger.removeMessage(type, uniqueId);
             }
@@ -302,21 +310,69 @@ var __Messenger = {
             appendText = '';
 
         if (type == 1) {
-            appendText = '<div class="lw-messenger-chat-message lw-messenger-chat-sender row col-md-12" id="' + uniqueId + '"><p class="lw-messenger-chat-item lw-messenger-new-message">' + message + '<span class="lw-messenger-chat-meta">Now</span></p><img src="' + __Messenger.loggedInUserProfilePicture + '" class="lw-profile-picture lw-online" alt=""></div>';
+            // Text message with new Tailwind design matching user-conversation.blade.php
+            appendText = '<div class="flex items-start gap-3 justify-end" id="' + uniqueId + '">' +
+                '<div class="flex-1 flex justify-end">' +
+                '<div class="lw-message-bubble lw-message-sent group relative max-w-md" data-message-id="' + uniqueId + '">' +
+                '<p class="lw-body-text mb-1 text-white">' + message + '</p>' +
+                '<div class="flex items-center gap-2 justify-end">' +
+                '<span class="lw-small-text text-white opacity-75">Now</span>' +
+                '<span class="lw-read-receipt" title="Delivered"><i class="fas fa-check text-white opacity-75" style="font-size: 10px;"></i></span>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<img src="' + __Messenger.loggedInUserProfilePicture + '" class="w-10 h-10 rounded-full object-cover lw-lazy-img flex-shrink-0" alt="">' +
+                '</div>';
         } else {
-            appendText = '<div class="lw-messenger-chat-message lw-messenger-chat-sender row col-md-12" id="' + uniqueId + '"><p class="lw-messenger-chat-item lw-messenger-new-message"><p class="lw-messenger-chat-item lw-messenger-new-message col-md-8"><span class="lw-messenger-image-loading"> loading ...please wait</span><span class="lw-messenger-chat-meta">Now</span></p><span class="lw-messenger-chat-meta">Now</span></p><img src="' + __Messenger.loggedInUserProfilePicture + '" class="lw-profile-picture lw-online" alt=""></div>';
+            // Image/File message with new Tailwind design
+            appendText = '<div class="flex items-start gap-3 justify-end" id="' + uniqueId + '">' +
+                '<div class="flex-1 flex justify-end">' +
+                '<div class="lw-message-bubble lw-message-sent group relative max-w-sm" data-message-id="' + uniqueId + '">' +
+                '<span class="lw-messenger-image-loading">Loading... please wait</span>' +
+                '<div class="flex items-center gap-2 justify-end mt-2">' +
+                '<span class="lw-small-text text-white opacity-75">Now</span>' +
+                '<span class="lw-read-receipt" title="Delivered"><i class="fas fa-check text-white opacity-75" style="font-size: 10px;"></i></span>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<img src="' + __Messenger.loggedInUserProfilePicture + '" class="w-10 h-10 rounded-full object-cover lw-lazy-img flex-shrink-0" alt="">' +
+                '</div>';
         }
 
         $messengerChatWindow.append(appendText);
         __Messenger.$emojiElement[0].emojioneArea.setText('');
 
-        $(".lw-messenger-chat-window").scrollTop(1000000);
+        $(".lw-messenger-chat-window").scrollTop($(".lw-messenger-chat-window")[0].scrollHeight);
     },
 
     // replace message with existing message
-    replaceMessage: function (type, message, uniqueId, createdOn) {
-        if (type != 1) {
-            var replaceContainer = '<div class="lw-messenger-chat-message lw-messenger-chat-sender row col-md-12"><p class="lw-messenger-chat-item lw-messenger-new-message"><img src="' + message + '" alt=""><span class="lw-messenger-chat-meta">' + createdOn + '</span></p><img src="' + __Messenger.loggedInUserProfilePicture + '" class="lw-profile-picture lw-online" alt=""></div>';
+    replaceMessage: function (type, message, uniqueId, createdOn, chatId) {
+        var messageIdAttr = chatId ? ' data-message-id="' + chatId + '"' : '';
+
+        if (type == 1) {
+            // Text message replacement - update timestamp and add chat_id
+            var $messageElement = $('#' + uniqueId);
+            if ($messageElement.length) {
+                var $bubble = $messageElement.find('.lw-message-bubble');
+                if (chatId) {
+                    $bubble.attr('data-message-id', chatId);
+                }
+                $bubble.find('.lw-small-text').text(createdOn);
+            }
+        } else {
+            // Image/File message replacement with new Tailwind design
+            var replaceContainer = '<div class="flex items-start gap-3 justify-end">' +
+                '<div class="flex-1 flex justify-end">' +
+                '<div class="lw-message-bubble lw-message-sent group relative max-w-sm"' + messageIdAttr + '>' +
+                '<img class="chat-lazy-item rounded-lg" src="' + message + '" alt="" style="max-width: 250px;">' +
+                '<div class="flex items-center gap-2 justify-end mt-2">' +
+                '<span class="lw-small-text text-white opacity-75">' + createdOn + '</span>' +
+                '<span class="lw-read-receipt" title="Delivered"><i class="fas fa-check text-white opacity-75" style="font-size: 10px;"></i></span>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<img src="' + __Messenger.loggedInUserProfilePicture + '" class="w-10 h-10 rounded-full object-cover lw-lazy-img flex-shrink-0" alt="">' +
+                '</div>';
 
             $('#' + uniqueId).replaceWith(replaceContainer);
         }
@@ -330,16 +386,37 @@ var __Messenger = {
     },
 
     // Append received message
-    appendReceivedMessage: function (type, message, createdOn) {
+    appendReceivedMessage: function (type, message, createdOn, chatId, isRead) {
         var $messengerChatWindow = $('.lw-messenger-chat-window'),
             appendText = '';
+        var messageIdAttr = chatId ? ' data-message-id="' + chatId + '"' : '';
+        var readAttr = isRead ? ' data-read="true"' : '';
+
         if (type == 1) {
-            appendText = '<div class="lw-messenger-chat-message align-self-center row col-md-12 lw-messenger-chat-recipient"><img src="' + __Messenger.recipientUserProfilePicture + '" class="lw-profile-picture lw-online" alt=""><p class="lw-messenger-chat-item lw-messenger-new-message col-md-8">' + message + '<span class="lw-messenger-chat-meta">' + createdOn + '</span></p></div>';
+            // Text message with new Tailwind design matching user-conversation.blade.php
+            appendText = '<div class="flex items-start gap-3">' +
+                '<img src="' + __Messenger.recipientUserProfilePicture + '" class="w-10 h-10 rounded-full object-cover lw-lazy-img flex-shrink-0" alt="">' +
+                '<div class="flex-1">' +
+                '<div class="lw-message-bubble lw-message-received group relative max-w-md"' + messageIdAttr + readAttr + '>' +
+                '<p class="lw-body-text mb-1">' + message + '</p>' +
+                '<span class="lw-small-text block" style="color: var(--lw-gray-500);">' + createdOn + '</span>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
         } else {
-            appendText = '<div class="lw-messenger-chat-message align-self-center row col-md-12 lw-messenger-chat-recipient"><img src="' + __Messenger.recipientUserProfilePicture + '" class= "lw-profile-picture lw-online" alt=""><p class="lw-messenger-chat-item lw-messenger-new-message col-md-8"><img src="' + message + '" alt=""><span class="lw-messenger-chat-meta">' + createdOn + '</span></p></div>';
+            // Image/File message with new Tailwind design
+            appendText = '<div class="flex items-start gap-3">' +
+                '<img src="' + __Messenger.recipientUserProfilePicture + '" class="w-10 h-10 rounded-full object-cover lw-lazy-img flex-shrink-0" alt="">' +
+                '<div class="flex-1">' +
+                '<div class="lw-message-bubble lw-message-received group relative max-w-sm"' + messageIdAttr + readAttr + '>' +
+                '<img class="chat-lazy-item rounded-lg" src="' + message + '" alt="" style="max-width: 250px;">' +
+                '<span class="lw-small-text block mt-2" style="color: var(--lw-gray-500);">' + createdOn + '</span>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
         }
         $messengerChatWindow.append(appendText);
-        $(".lw-messenger-chat-window").scrollTop(1000000);
+        $(".lw-messenger-chat-window").scrollTop($(".lw-messenger-chat-window")[0].scrollHeight);
     },
 
     // Hide / Show sidebar on mobile view
@@ -398,6 +475,129 @@ var __Messenger = {
         $(".lw-messenger .lw-not-accepted-dialog-close-btn, .lw-messenger .lw-not-accepted-dialog-close-btn").on("click", function () {
             $('.lw-messenger #lwUserNotAcceptedMsgRequest').modal('hide');
         });
+    },
+
+    // Initialize typing indicator functionality
+    initTypingIndicator: function() {
+        var $chatInput = $("#lwChatMessage");
+        var emojioneArea = $chatInput.data("emojioneArea");
+
+        if (emojioneArea) {
+            // For emojioneArea input
+            emojioneArea.on("keydown", function(editor, event) {
+                __Messenger.handleTypingStart();
+            });
+        } else {
+            // For regular input
+            $chatInput.on("keydown", function() {
+                __Messenger.handleTypingStart();
+            });
+        }
+    },
+
+    // Handle typing start event
+    handleTypingStart: function() {
+        if (!isUserTyping && __Messenger.currentChatUserUid) {
+            isUserTyping = true;
+            __Messenger.broadcastTypingStatus(true);
+        }
+
+        // Clear existing timeout
+        clearTimeout(typingTimeout);
+
+        // Set new timeout to stop typing after 2 seconds of inactivity
+        typingTimeout = setTimeout(function() {
+            __Messenger.handleTypingStop();
+        }, 2000);
+    },
+
+    // Handle typing stop event
+    handleTypingStop: function() {
+        if (isUserTyping && __Messenger.currentChatUserUid) {
+            isUserTyping = false;
+            __Messenger.broadcastTypingStatus(false);
+        }
+    },
+
+    // Broadcast typing status via Pusher
+    broadcastTypingStatus: function(isTyping) {
+        if (!__Messenger.currentChatUserUid) return;
+
+        __DataRequest.post({
+            url: __Utils.apiURL( __Messenger.broadcastTypingStatusUrl),
+            data: {
+                to_user_uid: __Messenger.currentChatUserUid,
+                is_typing: isTyping
+            }
+        });
+    },
+
+    // Show typing indicator
+    showTypingIndicator: function() {
+        $("#lwTypingIndicator").fadeIn(300);
+        $(".lw-messenger-chat-window").scrollTop($(".lw-messenger-chat-window")[0].scrollHeight);
+    },
+
+    // Hide typing indicator
+    hideTypingIndicator: function() {
+        $("#lwTypingIndicator").fadeOut(300);
+    },
+
+    // Mark messages as read
+    markMessagesAsRead: function(chatIds) {
+        if (!chatIds || chatIds.length === 0) return;
+
+        __DataRequest.post({
+            url: __Utils.apiURL(__Messenger.markMessagesAsReadUrl),
+            data: {
+                chat_ids: chatIds,
+                to_user_uid: __Messenger.currentChatUserUid
+            }
+        });
+    },
+
+    // Update read receipt UI
+    updateReadReceiptUI: function(chatIds) {
+        if (!chatIds || chatIds.length === 0) return;
+
+        chatIds.forEach(function(chatId) {
+            var $message = $('.lw-message-bubble[data-message-id="' + chatId + '"]');
+            var $receipt = $message.find('.lw-read-receipt');
+
+            if ($receipt.length) {
+                $receipt.addClass('read');
+                $receipt.attr('title', __Utils.getTranslation('read_receipt_label', 'Read'));
+            }
+        });
+    },
+
+    // Mark all unread received messages as read
+    markVisibleMessagesAsRead: function() {
+        // Only mark as read if user is viewing the chat and has an active chat open
+        if (!__Messenger.currentChatUserUid) return;
+
+        var $chatWindow = $(".lw-messenger-chat-window");
+        var unreadChatIds = [];
+
+        // Find all received messages that haven't been marked as read yet
+        $chatWindow.find('.lw-message-received[data-message-id]').each(function() {
+            var $bubble = $(this);
+
+            // Check if this message has already been marked as read
+            if ($bubble.attr('data-read') !== 'true') {
+                var chatId = $bubble.attr('data-message-id');
+                if (chatId) {
+                    unreadChatIds.push(chatId);
+                    // Mark as read in DOM to prevent duplicate marking
+                    $bubble.attr('data-read', 'true');
+                }
+            }
+        });
+
+        // Mark as read if there are unread messages
+        if (unreadChatIds.length > 0) {
+            __Messenger.markMessagesAsRead(unreadChatIds);
+        }
     }
 };
 
@@ -446,13 +646,14 @@ function userChatResponse(responseData) {
         
         currentSelectedUserId = responseData.data.userData.user_id;
         currentSelectedUserUid = responseData.data.userData.user_uid;
+        __Messenger.currentChatUserUid = currentSelectedUserUid;
         optionalUserId = responseData.data.userData.optionalLoggedInUserId;
         _.defer(function () {
             optionalLoggedInUserId = responseData.data.userData.optionalLoggedInUserId;
         });
         __Messenger.sendMessageUrl = __Utils.apiURL(__Messenger.sendMessageRawUrl, { userId: currentSelectedUserId });
         _.defer(function () {
-            $(".lw-messenger-chat-window").scrollTop(1000000);
+            $(".lw-messenger-chat-window").scrollTop($(".lw-messenger-chat-window")[0].scrollHeight);
             var messageRequestStatus = responseData.data.userData.messageRequestStatus;
             handleMessageActionContainer(messageRequestStatus, true);
             __Messenger.hideShowChatSidebar();
@@ -464,6 +665,19 @@ function userChatResponse(responseData) {
                 __Messenger.hideShowDropdownButtons(responseData.data.userData.enableAudioVideoLinks);
             }, 100);
             __Messenger.showMessageRequestNotification();
+
+            // Initialize typing indicator
+            __Messenger.initTypingIndicator();
+
+            // Mark visible messages as read when chat is opened
+            setTimeout(function() {
+                __Messenger.markVisibleMessagesAsRead();
+            }, 500);
+
+            // Mark messages as read on scroll
+            $(".lw-messenger-chat-window").on('scroll', _.debounce(function() {
+                __Messenger.markVisibleMessagesAsRead();
+            }, 300));
         });
     }
 }

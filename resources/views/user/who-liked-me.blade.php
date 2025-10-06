@@ -9,32 +9,41 @@
 @section('page-url', url()->current())
 
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-	<h5 class="h5 mb-0 text-gray-200">
-		<span class="text-primary"><i class="fa fa-thumbs-up" aria-hidden="true"></i></span>
-		<?= __tr('Who Likes Me') ?></h5>
+<div class="d-flex align-items-center justify-content-between mb-4">
+	<h1 class="lw-heading-2 mb-0">
+		<span class="lw-text-primary">
+			<i class="fa fa-thumbs-up mr-2" aria-hidden="true"></i>
+		</span>
+		<?= __tr('Who Likes Me') ?>
+	</h1>
 </div>
 
-<!-- liked people container -->
-<div class="container-fluid">
+<!-- who liked me container -->
+<div class="container-fluid px-0">
 	@if(getFeatureSettings('show_like'))
 	@if(!__isEmpty($usersData))
-	<div class="row row-cols-sm-1 row-cols-md-3 row-cols-lg-6 row-cols-xl-8" id="lwLoadMoreContentContainer">
+	<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6" id="lwLoadMoreContentContainer">
 		@include('user.partial-templates.my-liked-users')
 	</div>
 	@else
-	<!-- info message -->
-	<div class="alert alert-info">
-		<?= __tr('There are no users who liked me.') ?>
+	<!-- No results message -->
+	<div class="lw-no-results">
+		<div class="lw-no-results-icon">
+			<i class="fas fa-thumbs-up"></i>
+		</div>
+		<p class="lw-no-results-text">
+			<?= __tr('There are no users who liked me.') ?>
+		</p>
 	</div>
-	<!-- / info message -->
+	<!-- / No results message -->
 	@endif
 	@else
-	<!-- info message -->
-	<div class="alert alert-info">
+	<!-- Premium feature alert -->
+	<div class="lw-alert lw-alert-info">
+		<i class="fas fa-crown mr-2"></i>
 		<?= __tr('This is a premium feature, to view who likes me you need to buy premium plan first.') ?>
 	</div>
-	<!-- / info message -->
+	<!-- / Premium feature alert -->
 	@endif
 </div>
-<!-- / liked people container -->
+<!-- / who liked me container -->

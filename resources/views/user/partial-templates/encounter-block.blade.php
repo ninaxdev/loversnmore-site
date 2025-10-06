@@ -1,77 +1,99 @@
 <!-- user encounter main container -->
 @if(getFeatureSettings('user_encounter'))
 @if(!__isEmpty($randomUserData))
-<!-- random user block -->
-<div class="lw-random-user-block">
+<!-- Modern Encounter Card -->
+<div class="lw-encounter-card">
+	<!-- Premium Badge -->
 	@if($randomUserData['isPremiumUser'])
-	<span class="lw-premium-badge" title="<?= __tr('Premium User') ?>"></span>
+	<div class="lw-encounter-premium-badge">
+		<i class="fas fa-crown"></i>
+	</div>
 	@endif
-	<!-- user name -->
-	<div class="lw-user-text">
-		<a class="btn btn-link lw-user-text-link lw-ajax-link-action lw-action-with-url" href="<?= route('user.profile_view', ['username' => $randomUserData['username']]) ?>">
+	
+	<!-- Online Status -->
+	@if($randomUserData['userOnlineStatus'])
+	<div class="lw-encounter-status">
+		@if($randomUserData['userOnlineStatus'] == 1)
+		<span class="lw-status-dot lw-status-online" title="{{ __tr('Online') }}"></span>
+		@elseif($randomUserData['userOnlineStatus'] == 2)
+		<span class="lw-status-dot lw-status-idle" title="{{ __tr('Idle') }}"></span>
+		@elseif($randomUserData['userOnlineStatus'] == 3)
+		<span class="lw-status-dot lw-status-offline" title="{{ __tr('Offline') }}"></span>
+		@endif
+	</div>
+	@endif
+
+	<!-- Profile Images -->
+	<div class="lw-encounter-image-container">
+		<!-- Cover Image -->
+		<div class="lw-encounter-cover-wrapper">
+			<img data-src="<?= $randomUserData['userCoverUrl'] ?>" class="lw-lazy-img lw-encounter-cover" alt="Cover">
+		</div>
+		
+		<!-- Profile Image -->
+		<div class="lw-encounter-profile-wrapper">
+			<img data-src="<?= $randomUserData['userImageUrl'] ?>" class="lw-lazy-img lw-encounter-profile" alt="<?= $randomUserData['userFullName'] ?>">
+		</div>
+	</div>
+
+	<!-- User Info -->
+	<div class="lw-encounter-info">
+		<a class="lw-encounter-name lw-ajax-link-action lw-action-with-url" href="<?= route('user.profile_view', ['username' => $randomUserData['username']]) ?>">
 			<?= $randomUserData['userFullName'] ?>@if(isset($randomUserData['userAge'])),@endif
 		</a>
-		<span class="lw-user-text-meta">
+		<div class="lw-encounter-meta">
 			@if($randomUserData['userAge'])
-			<?= $randomUserData['userAge'] ?>
-			@endif
-			@if($randomUserData['countryName'])
-			<?= $randomUserData['countryName'] ?>
+			<span><?= $randomUserData['userAge'] ?></span>
 			@endif
 			@if($randomUserData['gender'])
-			<?= $randomUserData['gender'] ?>
+			<span class="lw-encounter-separator">•</span>
+			<span><?= $randomUserData['gender'] ?></span>
 			@endif
-		</span>
-		<!-- show user online, idle or offline status -->
-		@if($randomUserData['userOnlineStatus'])
-		@if($randomUserData['userOnlineStatus'] == 1)
-		<span class="lw-dot lw-dot-success float-right" title="{{ __tr('Online') }}"></span>
-		@elseif($randomUserData['userOnlineStatus'] == 2)
-		<span class="lw-dot lw-dot-warning float-right" title="{{ __tr('Idle') }}"></span>
-		@elseif($randomUserData['userOnlineStatus'] == 3)
-		<span class="lw-dot lw-dot-danger float-right" title="{{ __tr('Offline') }}"></span>
-		@endif
-		@endif
-		<!-- /show user online, idle or offline status -->
+			@if($randomUserData['countryName'])
+			<span class="lw-encounter-separator">•</span>
+			<i class="fas fa-map-marker-alt lw-encounter-icon"></i>
+			<span><?= $randomUserData['countryName'] ?></span>
+			@endif
+		</div>
 	</div>
-	<!-- /user name -->
-	<div class="lw-profile-image-card-container lw-encounter-page">
-		<!-- user image -->
-		<img data-src="<?= $randomUserData['userImageUrl'] ?>" class="lw-lazy-img lw-profile-thumbnail">
-		<!-- /user image -->
-		<!-- user image -->
-		<img data-src="<?= $randomUserData['userCoverUrl'] ?>" class="lw-lazy-img lw-cover-picture">
-		<!-- /user image -->
-	</div>
-	<!-- action buttons -->
-	<div class="lw-user-action-btn">
-		<!-- like btn -->
-		<a href data-action="<?= route('user.write.encounter.like_dislike', ['toUserUid' => $randomUserData['_uid'], 'like' => 1]) ?>" data-callback="onLikeDisLikeCallback" data-method="post" class="lw-ajax-link-action lw-like-dislike-btn mr-3 " title="Like" id="lwLikeBtn"><i class="fa fa-heart text-primary"></i></a>
-		<!-- /like btn -->
 
-		<!-- skip btn -->
-		<a href data-action="<?= route('user.write.encounter.skip_user', ['toUserUid' => $randomUserData['_uid']]) ?>" data-method="post" class="lw-ajax-link-action lw-like-dislike-btn lw-skip-btn mr-3" data-callback="onEncounterUserCallback" id="lwSkipBtn"><i class="fas fa-chevron-right text-muted"></i></a>
-		<!-- /skip btn -->
+	<!-- Action Buttons -->
+	<div class="lw-encounter-actions">
+		<!-- Dislike Button -->
+		<button type="button" data-action="<?= route('user.write.encounter.like_dislike', ['toUserUid' => $randomUserData['_uid'], 'like' => 0]) ?>" data-callback="onLikeDisLikeCallback" data-method="post" class="lw-encounter-btn lw-encounter-btn-dislike lw-ajax-link-action" title="<?= __tr('Dislike') ?>" id="lwDislikeBtn">
+			<i class="fa fa-times"></i>
+		</button>
 
-		<!-- Dislike btn -->
-		<a href data-action="<?= route('user.write.encounter.like_dislike', ['toUserUid' => $randomUserData['_uid'], 'like' => 0]) ?>" data-callback="onLikeDisLikeCallback" data-method="post" class="lw-ajax-link-action lw-like-dislike-btn" title="Dislike" id="lwDislikeBtn"><i class="fa fa-heart-broken text-danger"></i></a>
-		<!-- /Dislike btn -->
+		<!-- Skip Button -->
+		<button type="button" data-action="<?= route('user.write.encounter.skip_user', ['toUserUid' => $randomUserData['_uid']]) ?>" data-method="post" class="lw-encounter-btn lw-encounter-btn-skip lw-ajax-link-action" data-callback="onEncounterUserCallback" title="<?= __tr('Skip') ?>" id="lwSkipBtn">
+			<i class="fas fa-chevron-right"></i>
+		</button>
+
+		<!-- Like Button -->
+		<button type="button" data-action="<?= route('user.write.encounter.like_dislike', ['toUserUid' => $randomUserData['_uid'], 'like' => 1]) ?>" data-callback="onLikeDisLikeCallback" data-method="post" class="lw-encounter-btn lw-encounter-btn-like lw-ajax-link-action" title="<?= __tr('Like') ?>" id="lwLikeBtn">
+			<i class="fa fa-heart"></i>
+		</button>
 	</div>
-	<!-- /action buttons -->
 </div>
-<!-- /random user block -->
+<!-- /Modern Encounter Card -->
 @else
-<!-- info message -->
-<div class="alert alert-info">
-	<?= __tr('Your daily limit for encounters may exceed or there are no users to show.') ?>
+<!-- No users message -->
+<div class="lw-no-results">
+	<div class="lw-no-results-icon">
+		<i class="fas fa-user-friends"></i>
+	</div>
+	<p class="lw-no-results-text">
+		<?= __tr('Your daily limit for encounters may exceed or there are no users to show.') ?>
+	</p>
 </div>
-<!-- / info message -->
+<!-- / No users message -->
 @endif
 @else
-<!-- info message -->
-<div class="alert alert-info">
+<!-- Premium feature alert -->
+<div class="lw-alert lw-alert-info">
+	<i class="fas fa-crown mr-2"></i>
 	<?= __tr('This is a premium feature, to view encounter you need to buy premium plan first.') ?>
 </div>
-<!-- / info message -->
+<!-- / Premium feature alert -->
 @endif
 <!-- /user encounter main container -->

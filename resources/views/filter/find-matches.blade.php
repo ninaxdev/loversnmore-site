@@ -1,41 +1,57 @@
 @if(!__isEmpty($filterData))
 @foreach($filterData as $filter)
 <div class="col mb-4">
-	<div class="card text-center lw-user-thumbnail-block <?= (isset($filter['isPremiumUser']) and $filter['isPremiumUser'] == true) ? 'lw-has-premium-badge' : '' ?>">
+	<div class="lw-user-card <?= (isset($filter['isPremiumUser']) and $filter['isPremiumUser'] == true) ? 'lw-has-premium-badge' : '' ?>">
 		<!-- show user online, idle or offline status -->
 		@if($filter['userOnlineStatus'])
-		<div class="pt-2">
+		<div class="lw-user-card-status">
 			@if($filter['userOnlineStatus'] == 1)
-			<span class="lw-dot lw-dot-success" title="Online"></span>
+			<span class="lw-status-dot lw-status-online" title="<?= __tr('Online') ?>"></span>
 			@elseif($filter['userOnlineStatus'] == 2)
-			<span class="lw-dot lw-dot-warning" title="Idle"></span>
+			<span class="lw-status-dot lw-status-idle" title="<?= __tr('Idle') ?>"></span>
 			@elseif($filter['userOnlineStatus'] == 3)
-			<span class="lw-dot lw-dot-danger" title="Offline"></span>
+			<span class="lw-status-dot lw-status-offline" title="<?= __tr('Offline') ?>"></span>
 			@endif
 		</div>
 		@endif
 		<!-- /show user online, idle or offline status -->
+		
+		<!-- User Image -->
 		<a class="lw-ajax-link-action lw-action-with-url" href="<?= route('user.profile_view', ['username' => $filter['username']]) ?>">
-			<img data-src="<?= imageOrNoImageAvailable($filter['profileImage']) ?>" class="lw-user-thumbnail lw-lazy-img" />
+			<div class="lw-user-card-image-wrapper">
+				<img data-src="<?= imageOrNoImageAvailable($filter['profileImage']) ?>" class="lw-user-card-image lw-lazy-img" alt="<?= $filter['fullName'] ?>" />
+			</div>
 		</a>
-		<div class="card-title">
-			<h5>
-				<a class="text-secondary" href="<?= route('user.profile_view', ['username' => $filter['username']]) ?>">
-					<?= $filter['fullName'] ?>
-				</a>
-				<?= $filter['detailString'] ?> <br>
-				@if($filter['countryName'])
-				<?= $filter['countryName'] ?>
-				@endif
-			</h5>
+		
+		<!-- User Info -->
+		<div class="lw-user-card-info">
+			<a class="lw-user-card-name" href="<?= route('user.profile_view', ['username' => $filter['username']]) ?>">
+				<?= $filter['fullName'] ?>
+			</a>
+			<div class="lw-user-card-details">
+				<?= $filter['detailString'] ?>
+			</div>
+			@if($filter['countryName'])
+			<div class="lw-user-card-location">
+				<i class="fas fa-map-marker-alt"></i>
+				<span><?= $filter['countryName'] ?></span>
+			</div>
+			@endif
 		</div>
 	</div>
 </div>
 @endforeach
 @else
-<!-- info message -->
-<div class="col-sm-12 alert alert-info">
-	<?= __tr('There are no matches found.') ?>
+<!-- No results message -->
+<div class="col-12">
+	<div class="lw-no-results">
+		<div class="lw-no-results-icon">
+			<i class="fas fa-search"></i>
+		</div>
+		<p class="lw-no-results-text">
+			<?= __tr('There are no matches found.') ?>
+		</p>
+	</div>
 </div>
-<!-- / info message -->
+<!-- / No results message -->
 @endif

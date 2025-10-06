@@ -113,6 +113,8 @@
         isAdmin = '<?= isAdmin() ?>';
 
     if (userLoggedIn && enablePusher) {
+
+        console.log('enabled')
         var userUid = '<?= getUserUID() ?>',
             pusherAppKey = '<?= getStoreSettings('pusher_app_key') ?>',
             __pusherAppOptions = {
@@ -214,15 +216,23 @@
         });
 
         subscribeNotification('event.user.chat.messages', pusherAppKey, userUid, channelId2, function(responseData) {
-            // console.log(responseData);
+            console.log('responseData');
+            console.log(responseData);
+
             var messengerDialogVisibility = $("#messengerDialog").is(':visible');
                 //users total unread message count
                 var totalUnreadMsgCount=responseData.totalUnreadMsgCount;
             //users unread message count
             var newUnreadMessagecount=responseData.usersUnreadMessageCount;
+
+            // Update total unread message count in real-time
+            __DataRequest.updateModels({
+                'totalUnreadMsgCount': totalUnreadMsgCount > 0 ? totalUnreadMsgCount : 0
+            });
+
             // Message chat
             if (responseData.requestFor == 'MESSAGE_CHAT') {
-              
+
                 if(!isAdmin){
                   //show new msg badge
                   if ((!messengerDialogVisibility || responseData.userId != currentSelectedUserId)) {
@@ -230,7 +240,7 @@
                 }
 
                     if (currentSelectedUserUid == responseData.toUserUid) {
-                        __Messenger.appendReceivedMessage(responseData.type, responseData.message, responseData.createdOn);
+                        __Messenger.appendReceivedMessage(responseData.type, responseData.message, responseData.createdOn, responseData.chat_id, false);
                         if (messengerDialogVisibility) {
                          //to update count after readi if modal is opened
 
@@ -268,7 +278,7 @@
                      }
                     
                     if (currentSelectedUserUid == responseData.toUserUid && optionalLoggedInUserId == responseData.receiverUserId) {
-                        __Messenger.appendReceivedMessage(responseData.type, responseData.message, responseData.createdOn);
+                        __Messenger.appendReceivedMessage(responseData.type, responseData.message, responseData.createdOn, responseData.chat_id, false);
                         if (messengerDialogVisibility) {
                          //to update count after readi if modal is opened
 
@@ -344,7 +354,7 @@
                     if (responseData.userId == currentSelectedUserId) {
                         handleMessageActionContainer(responseData.messageRequestStatus, false);
                         if (!_.isEmpty(responseData.message)) {
-                            __Messenger.appendReceivedMessage(responseData.type, responseData.message, responseData.createdOn);
+                            __Messenger.appendReceivedMessage(responseData.type, responseData.message, responseData.createdOn, responseData.chat_id, false);
                         }
                     } else {
                         // Show notification of incoming messages
@@ -378,7 +388,7 @@
                     if (responseData.userId == currentSelectedUserId && optionalLoggedInUserId == responseData.receiverUserId) {
                         handleMessageActionContainer(responseData.messageRequestStatus, false);
                         if (!_.isEmpty(responseData.message)) {
-                            __Messenger.appendReceivedMessage(responseData.type, responseData.message, responseData.createdOn);
+                            __Messenger.appendReceivedMessage(responseData.type, responseData.message, responseData.createdOn, responseData.chat_id, false);
                         }
                     } else {
                         // Show notification of incoming messages
@@ -407,6 +417,31 @@
                         }
                     });
                 }
+            }
+        });
+
+        // Listen for typing indicator events
+        subscribeNotification('event.user.typing', pusherAppKey, userUid, channelId2, function(responseData) {
+            
+
+            if (responseData.from_user_uid === currentSelectedUserUid) {
+                if (responseData.is_typing === 'true') {
+                    __Messenger.showTypingIndicator();
+                } else {
+                    console.log('here')
+                    __Messenger.hideTypingIndicator();
+                }
+            }
+        });
+
+        // Listen for read receipts
+        subscribeNotification('event.message.read', pusherAppKey, userUid, channelId2, function(responseData) {
+            console.log('message read called');
+            if (responseData.chat_ids) {
+                console.log('mark these as read')
+                console.log(responseData)
+
+                __Messenger.updateReadReceiptUI(responseData.chat_ids);
             }
         });
 

@@ -94,6 +94,7 @@ class MessengerRepository extends BaseRepository implements MessengerRepositoryI
             ->whereNotIn('chats.type', [9, 10, 11])
             ->join('users AS message_from_user', 'chats.from_users__id', '=', 'message_from_user._id')
             ->join('users AS message_to_user', 'chats.to_users__id', '=', 'message_to_user._id')
+            ->orderBy('chats.created_at', 'asc')
             ->select(
                 \__nestedKeyValues([
                     'chats' => [
@@ -107,6 +108,7 @@ class MessengerRepository extends BaseRepository implements MessengerRepositoryI
                         'to_users__id',
                         'items__id',
                         'users__id',
+                        'integrity_id'
                     ],
                     'message_from_user' => [
                         '_id AS message_from_user_id',
@@ -139,6 +141,7 @@ class MessengerRepository extends BaseRepository implements MessengerRepositoryI
             ->whereNotIn('chats.type', [9, 10, 11])
             ->join('users AS message_from_user', 'chats.from_users__id', '=', 'message_from_user._id')
             ->join('users AS message_to_user', 'chats.to_users__id', '=', 'message_to_user._id')
+            ->orderBy('chats.created_at', 'asc')
             ->select(
                 \__nestedKeyValues([
                     'chats' => [

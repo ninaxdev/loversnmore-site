@@ -317,4 +317,30 @@ class MessengerController extends BaseController
     {
         return $this->messengerEngine->prepareMessengerLog();
     }
+
+    /**
+     * Update typing status
+     *
+     * @param CommonUnsecuredPostRequest $request
+     * @return json response
+     *-----------------------------------------------------------------------*/
+    public function updateTypingStatus(CommonUnsecuredPostRequest $request)
+    {
+        $processReaction = $this->messengerEngine->processTypingStatus($request->all());
+
+        return __processResponse($processReaction);
+    }
+
+    /**
+     * Mark messages as read
+     *
+     * @param CommonUnsecuredPostRequest $request
+     * @return json response
+     *-----------------------------------------------------------------------*/
+    public function markMessagesRead(CommonUnsecuredPostRequest $request)
+    {
+        $processReaction = $this->messengerEngine->processMarkMessagesRead($request->all());
+
+        return __processResponse($processReaction);
+    }
 }

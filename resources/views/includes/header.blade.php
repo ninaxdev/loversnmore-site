@@ -58,6 +58,7 @@
 		'dist/css/login-register*.css',
 		'dist/css/new-login-design.css',
 		'dist/css/main-design-system.css',
+		'dist/css/messenger-styles.css',
 		'dist/css/top-bar.css',
 		'dist/css/component-patterns.css'
 	], true) ?>
