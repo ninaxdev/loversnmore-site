@@ -54,7 +54,7 @@
 		"dist/css/vendorlibs-photoswipe.css",
 		"dist/css/vendorlibs-smartwizard.css",
 		'dist/css/custom*.css',
-		'dist/css/messenger*.css',
+		// 'dist/css/messenger*.css',
 		'dist/css/login-register*.css',
 		'dist/css/new-login-design.css',
 		'dist/css/main-design-system.css',
