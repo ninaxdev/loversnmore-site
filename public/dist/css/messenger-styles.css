@@ -143,10 +143,17 @@
     transition: bottom 0.3s ease;
     max-height: 60vh;
     overflow-y: auto;
+    display: none;
 }
 
 .lw-messenger-bottom-sheet.active {
     bottom: 0;
+    display: block;
+}
+
+.lw-messenger-bottom-sheet.lw-open {
+    bottom: 120px;
+    display: block;
 }
 
 .lw-messenger-bottom-sheet .lw-heading {
@@ -160,6 +167,57 @@
 
 .lw-messenger-bottom-sheet .lw-content {
     padding: var(--lw-space-lg);
+}
+
+/* Sticker Container Grid */
+#lwStickerImagesContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+    padding: 16px;
+    min-height: 90px;
+}
+
+.lw-buy-sticker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: var(--lw-radius-md);
+    border: 2px solid var(--lw-border);
+    background: var(--lw-white);
+    transition: var(--lw-transition);
+    cursor: pointer;
+}
+
+.lw-buy-sticker-container:hover {
+    border-color: var(--lw-gradient-start);
+    box-shadow: 0 4px 12px var(--lw-shadow-light);
+    transform: translateY(-2px);
+}
+
+.lw-sticker-image {
+    width: 110px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.lw-buy-sticker-container .text-center {
+    font-family: var(--lw-font-family);
+    font-size: var(--lw-font-size-sm);
+    color: var(--lw-secondary);
+    margin-top: 8px;
+}
+
+/* GIF Container Grid */
+#lwGifImagesContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    padding: 16px;
+    min-height: 90px;
 }
 
 /* Button Variants */
