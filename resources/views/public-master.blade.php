@@ -61,6 +61,12 @@
     @include('includes.footer')
     <!-- /include footer -->
 
+    <!-- Mobile Bottom Navigation -->
+    @if(isLoggedIn())
+    @include('includes.mobile-bottom-nav')
+    @endif
+    <!-- /Mobile Bottom Navigation -->
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top" style="background: var(--lw-gradient-main); color: white; border-radius: var(--lw-radius-full); transition: var(--lw-transition);">
         <i class="fas fa-angle-up"></i>

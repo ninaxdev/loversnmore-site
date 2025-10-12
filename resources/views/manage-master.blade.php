@@ -37,6 +37,12 @@ $isLcOk = true;
     </div>
     <!-- End of Page Wrapper -->
 
+    <!-- Admin Mobile Bottom Navigation -->
+    @if(isLoggedIn())
+    @include('includes.admin-mobile-bottom-nav')
+    @endif
+    <!-- /Admin Mobile Bottom Navigation -->
+
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
