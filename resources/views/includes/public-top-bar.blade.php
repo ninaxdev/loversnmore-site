@@ -31,7 +31,7 @@
             ?>
 
             <!-- Enhanced Search Dropdown Form -->
-            <div class="dropdown-menu lw-search-dropdown shadow animated--grow-in" aria-labelledby="searchDropdown" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(197, 62, 141, 0.2); border-radius: var(--lw-radius-lg); min-width: 420px; box-shadow: 0 20px 50px rgba(51, 25, 107, 0.15); padding: var(--lw-space-lg);">
+            <div class="dropdown-menu lw-search-dropdown shadow animated--grow-in" aria-labelledby="searchDropdown" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(197, 62, 141, 0.2); border-radius: var(--lw-radius-lg); min-width: 320px; max-width: 95vw; width: 420px; box-shadow: 0 20px 50px rgba(51, 25, 107, 0.15); padding: var(--lw-space-lg);">
                 
                 <!-- Search Header -->
                 <div class="dropdown-header mb-3" style="background: var(--lw-gradient-main); color: white; border-radius: var(--lw-radius-md); padding: var(--lw-space-md); margin: -8px -8px 16px -8px;">
@@ -238,51 +238,66 @@
             
             <!-- Enhanced User Dropdown Menu -->
             <div class="dropdown-menu dropdown-menu-right lw-profile-dropdown shadow animated--grow-in" aria-labelledby="userDropdown">
-                <div class="lw-dropdown-header">
-                    <div class="lw-user-info">
-                        <img class="lw-header-avatar" src="<?= imageOrNoImageAvailable(getUserAuthInfo('profile.profile_picture_url')) ?>" alt="Profile">
-                        <div>
-                            <div class="lw-user-name"><?= getUserAuthInfo('profile.full_name') ?></div>
-                            <div class="lw-user-username">@<?= getUserAuthInfo('profile.username') ?></div>
+                <!-- Card Header with Profile Info -->
+                <div class="lw-profile-card-header">
+                    <div class="lw-profile-avatar-large">
+                        <img src="<?= imageOrNoImageAvailable(getUserAuthInfo('profile.profile_picture_url')) ?>" alt="Profile">
+                        @if(isPremiumUser())
+                        <div class="lw-premium-badge">
+                            <i class="fas fa-crown"></i>
                         </div>
+                        @endif
                     </div>
+                    <div class="lw-user-name-large"><?= getUserAuthInfo('profile.full_name') ?></div>
+                    <div class="lw-user-username-large">@<?= getUserAuthInfo('profile.username') ?></div>
                 </div>
                 
-                <div class="dropdown-divider"></div>
-                
-                <a class="lw-profile-item lw-ajax-link-action lw-action-with-url" data-event-callback="lwPrepareUploadPlugIn" title="<?= __tr('My Profile') ?>" href="<?= route('user.profile_view', ['username' => getUserAuthInfo('profile.username')]) ?>">
-                    <i class="fas fa-user"></i>
-                    <span><?= __tr('My Profile') ?></span>
-                </a>
-                
-                <a class="lw-profile-item lw-ajax-link-action lw-action-with-url" title="<?= __tr('My Settings') ?>" href="<?= route('user.read.setting', ['pageType' => 'notification']) ?>">
-                    <i class="fas fa-cogs"></i>
-                    <span><?= __tr('Settings') ?></span>
-                </a>
-                
-                <a class="lw-profile-item lw-ajax-link-action lw-action-with-url" title="<?= __tr('Change Password') ?>" href="<?= route('user.change_password') ?>">
-                    <i class="fas fa-key"></i>
-                    <span><?= __tr('Change Password') ?></span>
-                </a>
-                
-                <a class="lw-profile-item lw-ajax-link-action lw-action-with-url" title="<?= __tr('Change Email') ?>" href="<?= route('user.change_email') ?>">
-                    <i class="fas fa-envelope"></i>
-                    <span><?= __tr('Change Email') ?></span>
-                </a>
-                
-                @if(isAdmin())
-                <div class="dropdown-divider"></div>
-                <a class="lw-profile-item" title="<?= __tr('Admin Panel') ?>" target="_blank" href="<?= route('manage.dashboard') ?>">
-                    <i class="fas fa-shield-alt"></i>
-                    <span><?= __tr('Admin Panel') ?></span>
-                </a>
-                @endif
-                
-                <div class="dropdown-divider"></div>
-                <a class="lw-profile-item lw-logout-item" title="<?= __tr('Logout') ?>" href="#" data-toggle="modal" data-target="#logoutModal">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span><?= __tr('Logout') ?></span>
-                </a>
+                <!-- Card Body with Button-style Menu Items -->
+                <div class="lw-profile-card-body">
+                    <a class="lw-profile-card-btn lw-ajax-link-action lw-action-with-url" data-event-callback="lwPrepareUploadPlugIn" title="<?= __tr('My Profile') ?>" href="<?= route('user.profile_view', ['username' => getUserAuthInfo('profile.username')]) ?>">
+                        <i class="fas fa-user"></i>
+                        <span><?= __tr('My Profile') ?></span>
+                    </a>
+                    
+                    <!-- Collapsible Settings Menu -->
+                    <div class="lw-settings-group">
+                        <a class="lw-profile-card-btn lw-settings-toggle" href="javascript:void(0)" onclick="toggleSettingsMenu(event)">
+                            <i class="fas fa-cogs"></i>
+                            <span><?= __tr('Settings') ?></span>
+                            <i class="fas fa-chevron-down lw-settings-arrow"></i>
+                        </a>
+                        
+                        <!-- Settings Submenu (Collapsible) -->
+                        <div class="lw-settings-submenu" style="display: none;">
+                            <a class="lw-profile-card-btn lw-profile-card-btn-sm lw-ajax-link-action lw-action-with-url" title="<?= __tr('Notification Settings') ?>" href="<?= route('user.read.setting', ['pageType' => 'notification']) ?>">
+                                <i class="fas fa-bell"></i>
+                                <span><?= __tr('Notification') ?></span>
+                            </a>
+                            
+                            <a class="lw-profile-card-btn lw-profile-card-btn-sm lw-ajax-link-action lw-action-with-url" title="<?= __tr('Change Email') ?>" href="<?= route('user.change_email') ?>">
+                                <i class="fas fa-envelope"></i>
+                                <span><?= __tr('Change Email') ?></span>
+                            </a>
+                            
+                            <a class="lw-profile-card-btn lw-profile-card-btn-sm lw-ajax-link-action lw-action-with-url" title="<?= __tr('Change Password') ?>" href="<?= route('user.change_password') ?>">
+                                <i class="fas fa-key"></i>
+                                <span><?= __tr('Change Password') ?></span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    @if(isAdmin())
+                    <a class="lw-profile-card-btn lw-ajax-link-action" title="<?= __tr('Admin Panel') ?>" target="_blank" href="<?= route('manage.dashboard') ?>">
+                        <i class="fas fa-shield-alt"></i>
+                        <span><?= __tr('Admin Panel') ?></span>
+                    </a>
+                    @endif
+                    
+                    <a class="lw-profile-card-btn lw-profile-card-btn-logout" title="<?= __tr('Logout') ?>" href="#" data-toggle="modal" data-target="#logoutModal">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span><?= __tr('Logout') ?></span>
+                    </a>
+                </div>
             </div>
         </li>
     </ul>
@@ -500,32 +515,84 @@
         $dropdown.toggleClass('show');
         $menu.toggleClass('show');
         
-        // Add smooth animation
+        // Add smooth animation and mobile positioning
         if ($menu.hasClass('show')) {
             $menu.css({
                 'animation': 'slideDown 0.3s ease-out',
                 'transform-origin': 'top center'
             });
+            
+            // Position for mobile
+            if ($(window).width() <= 768) {
+                $menu.css({
+                    'position': 'fixed',
+                    'left': '50%',
+                    'transform': 'translateX(-50%)',
+                    'max-width': '95vw'
+                });
+            }
         }
     });
 
     // Enhanced dropdown positioning for mobile
     $(document).ready(function() {
-        $('.dropdown').on('show.bs.dropdown', function() {
-            var $dropdown = $(this).find('.dropdown-menu');
+        function positionDropdown($dropdown) {
             var windowWidth = $(window).width();
             
             if (windowWidth <= 768) {
-                var navbarWidth = $('.topbar').width();
-                var dropdownWidth = $dropdown.outerWidth();
-                var centerPosition = (navbarWidth - dropdownWidth) / 2;
-                
+                // Position dropdown centered on mobile
                 $dropdown.css({
-                    'left': centerPosition + 'px',
-                    'right': 'auto'
+                    'position': 'fixed',
+                    'left': '50%',
+                    'right': 'auto',
+                    'transform': 'translateX(-50%)',
+                    'max-width': '95vw',
+                    'margin': '0'
+                });
+                
+                // Adjust top position to ensure it's visible
+                var dropdownTop = $dropdown.offset().top;
+                var dropdownHeight = $dropdown.outerHeight();
+                var windowHeight = $(window).height();
+                
+                if (dropdownTop + dropdownHeight > windowHeight) {
+                    $dropdown.css('top', 'auto');
+                    $dropdown.css('bottom', '10px');
+                }
+            } else {
+                // Reset to default positioning on desktop
+                $dropdown.css({
+                    'position': '',
+                    'left': '',
+                    'right': '',
+                    'transform': '',
+                    'max-width': '',
+                    'margin': '',
+                    'top': '',
+                    'bottom': ''
                 });
             }
+        }
+        
+        $('.dropdown').on('show.bs.dropdown', function() {
+            var $dropdown = $(this).find('.dropdown-menu');
+            positionDropdown($dropdown);
         });
+        
+        // Reposition on window resize
+        $(window).on('resize', _.debounce(function() {
+            $('.dropdown-menu.show').each(function() {
+                positionDropdown($(this));
+            });
+        }, 100));
+        
+        // Prevent horizontal scroll on mobile
+        if ($(window).width() <= 768) {
+            $('body, #wrapper, #content-wrapper').css({
+                'overflow-x': 'hidden',
+                'max-width': '100vw'
+            });
+        }
     });
 
     // Enhanced search form validation
@@ -556,6 +623,25 @@
             $(this).removeClass('loading');
         }, 2000);
     });
+
+    // Toggle Settings Menu Function
+    window.toggleSettingsMenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        var $submenu = $('.lw-settings-submenu');
+        var $arrow = $('.lw-settings-arrow');
+        
+        if ($submenu.is(':visible')) {
+            // Collapse
+            $submenu.slideUp(250);
+            $arrow.removeClass('lw-arrow-rotated');
+        } else {
+            // Expand
+            $submenu.slideDown(250);
+            $arrow.addClass('lw-arrow-rotated');
+        }
+    };
 
 </script>
 @lwPushEnd
