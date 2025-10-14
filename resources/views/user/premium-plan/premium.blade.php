@@ -111,7 +111,7 @@
  					</div>
  					@foreach($premiumPlanData['premiumFeature'] as $featureKey => $feature)
  					@if(isset($feature['enable']) and $feature['enable'] and $feature['select_user'] != 1)
- 					<div class="col-sm-12 col-md-6 mb-4">
+ 					<div class="col-sm-12 col-md-6 mb-4 {{$feature['title'] == 'Video Call Via Messenger' || $feature['title'] == 'Audio Call Via Messenger'  ? 'd-none': ''}}">
 						<div class="lw-premium-feature-item card h-100 item">
 						<div class="lw-premium-feature-item-icon">
  							<?= $feature['icon'] ?>

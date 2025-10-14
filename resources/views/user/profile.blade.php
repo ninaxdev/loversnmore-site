@@ -949,7 +949,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	<!-- User Specifications -->
 	@if(!__isEmpty($userSpecificationData))
 	@foreach($userSpecificationData as $specificationKey => $specifications)
-	<x-lw.card class="mb-3">
+	<x-lw.card class="mb-3 {{ $specifications['title'] === 'Lifestyle' ? 'd-none' : '' }}">
 		<!-- User Specification Header -->
 		<div class="card-header bg-gradient-lw">
 			<!-- Check if its own profile -->
