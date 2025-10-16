@@ -52,7 +52,16 @@ class ApiFilterController extends BaseController
      *-----------------------------------------------------------------------*/
     public function getFindMatches(CommonUnsecuredPostRequest $request)
     {
-        $processReaction = $this->filterEngine->processFilterData($request->all());
+        // Check if filters have been applied (any request parameter except page)
+        $hasFilters = collect($request->except(['page']))->filter()->isNotEmpty();
+
+        // Only process filter data if filters have been applied
+        if ($hasFilters) {
+            $processReaction = $this->filterEngine->processFilterData($request->all());
+        } else {
+            // Return empty data if no filters applied
+            $processReaction = $this->filterEngine->getEmptyFilterData();
+        }
 
         return $this->processResponse($processReaction, [], [], true);
     }

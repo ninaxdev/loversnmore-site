@@ -15,14 +15,14 @@
 		</div>
 		@endif
 		<!-- /show user online, idle or offline status -->
-		
+
 		<!-- User Image -->
 		<a class="lw-ajax-link-action lw-action-with-url" href="<?= route('user.profile_view', ['username' => $filter['username']]) ?>">
 			<div class="lw-user-card-image-wrapper">
 				<img data-src="<?= imageOrNoImageAvailable($filter['profileImage']) ?>" class="lw-user-card-image lw-lazy-img" alt="<?= $filter['fullName'] ?>" />
 			</div>
 		</a>
-		
+
 		<!-- User Info -->
 		<div class="lw-user-card-info">
 			<a class="lw-user-card-name" href="<?= route('user.profile_view', ['username' => $filter['username']]) ?>">
@@ -41,7 +41,7 @@
 	</div>
 </div>
 @endforeach
-@else
+@elseif(request()->has('name') || request()->has('username') || request()->has('looking_for') || request()->has('min_age') || request()->has('max_age') || request()->has('distance') || request()->has('is_advance_filter'))
 <!-- No results message -->
 <div class="col-12">
 	<div class="lw-no-results">
@@ -54,4 +54,17 @@
 	</div>
 </div>
 <!-- / No results message -->
+@else
+<!-- Apply filters message -->
+<div class="col-12">
+	<div class="lw-no-results">
+		<div class="lw-no-results-icon">
+			<i class="fas fa-filter"></i>
+		</div>
+		<p class="lw-no-results-text">
+			<?= __tr('Please apply filters above to find matches.') ?>
+		</p>
+	</div>
+</div>
+<!-- / Apply filters message -->
 @endif

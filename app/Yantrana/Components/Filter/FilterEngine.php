@@ -398,6 +398,24 @@ class FilterEngine extends BaseEngine implements FilterEngineInterface
     }
 
     /**
+     * Get empty filter data for initial page load
+     *
+     * @return array
+     *---------------------------------------------------------------- */
+    public function getEmptyFilterData()
+    {
+        return $this->engineReaction(1, [
+            'filterData' => [],
+            'filterCount' => 0,
+            'userSettings' => configItem('user_settings'),
+            'userSpecifications' => $this->getUserSpecificationConfig(),
+            'nextPageUrl' => '',
+            'hasMorePages' => false,
+            'totalCount' => 0,
+        ]);
+    }
+
+    /**
      * Process Filter User Data.
      *
      * @param  array  $inputData
