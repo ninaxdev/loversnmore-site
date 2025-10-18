@@ -41,9 +41,7 @@
     <link rel="icon" href="<?= getStoreSettings('favicon_image_url') ?>" type="image/x-icon">
     <style>
         .masthead {
-            background: linear-gradient(to bottom, rgba(22, 22, 22, 0.3) 0%, rgba(22, 22, 22, 0.7) 75%, #161616 100%), url(<?= __yesset('imgs/home/random/*.jpg', false, [
- 'random'=> true,
-                ]) ?>);
+            background: var(--lw-gradient-main);
             background-position: center center;
             background-repeat: no-repeat;
             background-attachment: scroll;

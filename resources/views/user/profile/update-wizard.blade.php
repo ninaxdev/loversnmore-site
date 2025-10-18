@@ -13,9 +13,7 @@
 <!-- /include header -->
 <style>
 	.lw-login-register-page .lw-page-bg {
-		background-image: url(<?= __yesset("imgs/home/random/*.jpg", false, [
-									'random' => true
-								]) ?>);
+		background: var(--lw-gradient-main);
 	}
 </style>
 

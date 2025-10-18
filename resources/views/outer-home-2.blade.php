@@ -40,10 +40,7 @@
 
     <style>
     .masthead {
-        background: linear-gradient(135deg, rgba(197, 62, 141, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%), 
-                    url(<?= __yesset('imgs/home/random2/*.jpg', false, [
- 'random'=> true,
-            ]) ?>);
+        background: var(--lw-gradient-main);
         background-position: center center;
         background-repeat: no-repeat;
         background-size: cover;

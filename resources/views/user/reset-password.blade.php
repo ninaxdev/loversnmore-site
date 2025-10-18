@@ -13,11 +13,6 @@
 <!-- /include header -->
 
 <body class="lw-login-register-page lw-new-login-design">
-    <!-- Background Image for larger screens -->
-    <div class="lw-page-bg lw-lazy-img d-none d-lg-block" data-src="<?= __yesset("imgs/home/random/*.jpg", false, [
-                                                        'random' => true
-                                                    ]) ?>"></div>
-    
     <!-- Background gradients -->
     <div class="lw-gradient-bg-bottom"></div>
     <div class="lw-gradient-bg-top"></div>
@@ -26,9 +21,7 @@
         <div class="row no-gutters min-vh-100">
             <!-- Left side image (larger screens) -->
             <div class="col-lg-7 d-none d-lg-block lw-login-left-bg">
-                <div class="lw-page-bg lw-lazy-img" data-src="<?= __yesset("imgs/home/random/*.jpg", false, [
-                                                        'random' => true
-                                                    ]) ?>"></div>
+                <div class="lw-page-bg" style="background: var(--lw-gradient-main);"></div>
                 <div class="lw-login-bg-overlay">
                     <img class="lw-logo-img-on-bg" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>">
                 </div>
