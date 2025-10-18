@@ -7,6 +7,7 @@
         <!-- include sidebar -->
         @if(isLoggedIn())
         @include('includes.public-sidebar')
+        @include('includes.mobile-sidebar')
         @endif
         <!-- /include sidebar -->
 

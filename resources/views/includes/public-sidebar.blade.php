@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav sidebar sidebar-dark accordion d-none d-lg-block" id="accordionSidebar">
     <!-- Sidebar - Brand -->
     <li>
         <a class="sidebar-brand d-flex align-items-center" href="<?= url('/home') ?>" style=" border-bottom: 1px solid rgba(255,255,255,0.1);">

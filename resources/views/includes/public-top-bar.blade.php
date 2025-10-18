@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top" style="background: var(--lw-white); box-shadow: 0 4px 20px rgba(51, 25, 107, 0.08); border-radius: 0 0 var(--lw-radius-lg) var(--lw-radius-lg); font-family: var(--lw-font-family); backdrop-filter: blur(10px); border-bottom: 1px solid var(--lw-gray-200);">
     
     <!-- Mobile Sidebar Toggle -->
-    <button type="button" id="sidebarToggleTop" class="btn btn-link d-block d-md-none rounded-circle mr-3 lw-mobile-toggle" style="color: var(--lw-primary); border: 2px solid var(--lw-gradient-start); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; transition: var(--lw-transition); background: rgba(197, 62, 141, 0.05); backdrop-filter: blur(5px);">
+    <button type="button" id="sidebarToggleTop" class="btn btn-link d-block d-lg-none rounded-circle mr-3 lw-mobile-toggle" style="color: var(--lw-primary); border: 2px solid var(--lw-gradient-start); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; transition: var(--lw-transition); background: rgba(197, 62, 141, 0.05); backdrop-filter: blur(5px);">
         <i class="fa fa-bars" style="color: var(--lw-primary); font-size: 16px;"></i>
     </button>
     
@@ -12,7 +12,7 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle lw-search-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: var(--lw-primary); font-family: var(--lw-font-family); font-weight: 500; transition: var(--lw-transition); border-radius: var(--lw-radius-sm); padding: 12px 16px; background: rgba(197, 62, 141, 0.05); backdrop-filter: blur(5px);">
                 <i class="fas fa-search fa-sm mr-2" style="color: var(--lw-gradient-start); font-size: 16px;"></i>
-                <span class="d-md-inline-block d-none"><?= __tr('Find Matches') ?></span>
+                <span class="d-lg-inline-block d-none"><?= __tr('Find Matches') ?></span>
             </a>
 
             <?php
@@ -126,7 +126,7 @@
     <ul class="navbar-nav ml-auto" x-data="{ totalUnreadMsgCount: <?= $allUnreadMsgCount  ?> }">
         
         <!-- Enhanced Messenger Link -->
-        <li class="nav-item d-none d-sm-none d-md-block">
+        <li class="nav-item d-none d-lg-block">
             <a class="nav-link lw-nav-icon" onclick="getChatMessenger('<?= route('user.read.all_conversation') ?>', true)" id="lwAllMessageChatButton" data-chat-loaded="false" data-toggle="modal" data-target="#messengerDialog" title="<?= __tr('Messages') ?>">
                <div class="lw-icon-wrapper">
                    <i class="far fa-comments"></i>
@@ -136,7 +136,7 @@
         </li>
         
         <!-- Enhanced Notification Link -->
-        <li class="nav-item dropdown no-arrow mx-1 d-none d-sm-none d-md-block">
+        <li class="nav-item dropdown no-arrow mx-1 d-none d-lg-block">
             <a class="nav-link dropdown-toggle lw-ajax-link-action lw-notification-dropdown-toggle lw-nav-icon" href="<?= route('user.notification.write.read_all_notification') ?>" data-callback="onReadAllNotificationCallback" id="alertsDropdown" role="button" aria-haspopup="true" aria-expanded="false" data-method="post" title="<?= __tr('Notifications') ?>">
                 <div class="lw-icon-wrapper">
                     <i class="fas fa-bell fa-fw"></i>
@@ -169,7 +169,7 @@
         </li>
 
         <!-- Enhanced Credit Wallet -->
-        <li class="nav-item d-none d-sm-none d-md-block">
+        <li class="nav-item d-none d-lg-block">
             <a class="nav-link lw-ajax-link-action lw-action-with-url lw-credit-link" href="<?= route('user.credit_wallet.read.view') ?>" data-title="{{ __tr('Credit Wallet') }}" title="<?= __tr('Credits') ?>">
                 <div class="lw-credit-display">
                     <i class="fas fa-coins mr-2"></i>
@@ -179,7 +179,7 @@
         </li>
 
         <!-- Enhanced Profile Booster -->
-        <li class="nav-item d-none d-sm-none d-md-block">
+        <li class="nav-item d-none d-lg-block">
             <a class="nav-link lw-ajax-link-action lw-booster-link" method="get" data-callback="updateBoosterPrice" href="<?= route('user.read.booster_data') ?>" onclick="showBoosterAlert()" title="<?= __tr('Profile Booster') ?>">
                 <div class="lw-booster-display">
                     <i class="fas fa-bolt mr-2"></i>
@@ -190,7 +190,7 @@
         
         <!-- Enhanced Admin Panel Link -->
         @if(isAdmin())
-        <li class="nav-item d-none d-sm-none d-md-block">
+        <li class="nav-item d-none d-lg-block">
             <a class="nav-link lw-admin-link" title="<?= __tr('Admin Panel') ?>" href="<?= route('manage.dashboard') ?>">
                 <i class="fas fa-cogs mr-2"></i>
                 <span class="d-none d-lg-inline"><?= __tr('Admin') ?></span>
