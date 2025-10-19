@@ -1,4 +1,4 @@
-<?php $pageType = request()->pageType ?>
+<?php $pageType = $pageType ?? request()->pageType ?? 'account' ?>
 <!-- card start -->
 <div class="card">
 	<!-- card body -->
@@ -11,7 +11,7 @@
 </div>
 <!-- card start -->
 
-@if(!isAdmin())
+@if(!isAdmin() && !in_array($pageType, ['account', 'privacy', 'preferences']))
 <!-- card start -->
 <div class="card mt-3">
 	<!-- card body -->

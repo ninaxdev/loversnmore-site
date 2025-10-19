@@ -34,6 +34,46 @@ class UserSettingController extends BaseController
     }
 
     /**
+     * Show settings index view.
+     *
+     * @return view
+     *---------------------------------------------------------------- */
+    public function getSettingsIndexView()
+    {
+        return $this->loadPublicView('user.settings.index');
+    }
+
+    /**
+     * Show account settings view.
+     *
+     * @return view
+     *---------------------------------------------------------------- */
+    public function getAccountSettingsView()
+    {
+        return $this->loadPublicView('user.settings.settings', ['pageType' => 'account']);
+    }
+
+    /**
+     * Show privacy settings view.
+     *
+     * @return view
+     *---------------------------------------------------------------- */
+    public function getPrivacySettingsView()
+    {
+        return $this->loadPublicView('user.settings.settings', ['pageType' => 'privacy']);
+    }
+
+    /**
+     * Show preferences settings view.
+     *
+     * @return view
+     *---------------------------------------------------------------- */
+    public function getPreferencesSettingsView()
+    {
+        return $this->loadPublicView('user.settings.settings', ['pageType' => 'preferences']);
+    }
+
+    /**
      * Show user setting view.
      *
      * @return json object

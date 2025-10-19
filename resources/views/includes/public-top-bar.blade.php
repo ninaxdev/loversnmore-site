@@ -259,32 +259,12 @@
                         <span><?= __tr('My Profile') ?></span>
                     </a>
                     
-                    <!-- Collapsible Settings Menu -->
-                    <div class="lw-settings-group">
-                        <a class="lw-profile-card-btn lw-settings-toggle" href="javascript:void(0)" onclick="toggleSettingsMenu(event)">
-                            <i class="fas fa-cogs"></i>
-                            <span><?= __tr('Settings') ?></span>
-                            <i class="fas fa-chevron-down lw-settings-arrow"></i>
-                        </a>
-                        
-                        <!-- Settings Submenu (Collapsible) -->
-                        <div class="lw-settings-submenu" style="display: none;">
-                            <a class="lw-profile-card-btn lw-profile-card-btn-sm lw-ajax-link-action lw-action-with-url" title="<?= __tr('Notification Settings') ?>" href="<?= route('user.read.setting', ['pageType' => 'notification']) ?>">
-                                <i class="fas fa-bell"></i>
-                                <span><?= __tr('Notification') ?></span>
-                            </a>
-                            
-                            <a class="lw-profile-card-btn lw-profile-card-btn-sm lw-ajax-link-action lw-action-with-url" title="<?= __tr('Change Email') ?>" href="<?= route('user.change_email') ?>">
-                                <i class="fas fa-envelope"></i>
-                                <span><?= __tr('Change Email') ?></span>
-                            </a>
-                            
-                            <a class="lw-profile-card-btn lw-profile-card-btn-sm lw-ajax-link-action lw-action-with-url" title="<?= __tr('Change Password') ?>" href="<?= route('user.change_password') ?>">
-                                <i class="fas fa-key"></i>
-                                <span><?= __tr('Change Password') ?></span>
-                            </a>
-                        </div>
-                    </div>
+                    <!-- Settings Link -->
+                    <a class="lw-profile-card-btn" href="<?= route('user.settings.index') ?>">
+                        <i class="fas fa-cogs"></i>
+                        <span><?= __tr('Settings') ?></span>
+                        <i class="fas fa-angle-right ml-auto"></i>
+                    </a>
                     
                     @if(isAdmin())
                     <a class="lw-profile-card-btn lw-ajax-link-action" title="<?= __tr('Admin Panel') ?>" target="_blank" href="<?= route('manage.dashboard') ?>">
@@ -624,24 +604,7 @@
         }, 2000);
     });
 
-    // Toggle Settings Menu Function
-    window.toggleSettingsMenu = function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        
-        var $submenu = $('.lw-settings-submenu');
-        var $arrow = $('.lw-settings-arrow');
-        
-        if ($submenu.is(':visible')) {
-            // Collapse
-            $submenu.slideUp(250);
-            $arrow.removeClass('lw-arrow-rotated');
-        } else {
-            // Expand
-            $submenu.slideDown(250);
-            $arrow.addClass('lw-arrow-rotated');
-        }
-    };
+    // Settings functionality removed - now uses dedicated settings page
 
 </script>
 @lwPushEnd

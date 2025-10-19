@@ -390,6 +390,30 @@ Route::group([
                 'namespace' => 'UserSetting\Controllers',
                 'prefix' => 'settings',
             ], function () {
+                // Settings index page
+                Route::get('/', [
+                    'as' => 'user.settings.index',
+                    'uses' => 'UserSettingController@getSettingsIndexView',
+                ]);
+                
+                // Account settings page
+                Route::get('/account', [
+                    'as' => 'user.settings.account',
+                    'uses' => 'UserSettingController@getAccountSettingsView',
+                ]);
+                
+                // Privacy settings page
+                Route::get('/privacy', [
+                    'as' => 'user.settings.privacy',
+                    'uses' => 'UserSettingController@getPrivacySettingsView',
+                ]);
+                
+                // Preferences settings page
+                Route::get('/preferences', [
+                    'as' => 'user.settings.preferences',
+                    'uses' => 'UserSettingController@getPreferencesSettingsView',
+                ]);
+                
                 // View settings
                 Route::get('/{pageType}', [
                     'as' => 'user.read.setting',
