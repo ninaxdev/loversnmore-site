@@ -226,6 +226,12 @@ Route::group([
                 'as' => 'user.read.find_matches',
                 'uses' => 'FilterController@getFindMatches',
             ]);
+
+            // Show Discovery Feed View
+            Route::get('/discover', [
+                'as' => 'user.read.discovery',
+                'uses' => 'FilterController@getDiscoveryFeed',
+            ]);
         });
 
         /*

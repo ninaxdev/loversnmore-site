@@ -6,115 +6,20 @@
         <i class="fa fa-bars" style="color: var(--lw-primary); font-size: 16px;"></i>
     </button>
     
-    <!-- Left Navigation Items -->
+    <!-- Discovery Feed Link -->
     <ul class="navbar-nav ml-0">
-        <!-- Enhanced Search Dropdown -->
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle lw-search-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: var(--lw-primary); font-family: var(--lw-font-family); font-weight: 500; transition: var(--lw-transition); border-radius: var(--lw-radius-sm); padding: 12px 16px; background: rgba(197, 62, 141, 0.05); backdrop-filter: blur(5px);">
-                <i class="fas fa-search fa-sm mr-2" style="color: var(--lw-gradient-start); font-size: 16px;"></i>
-                <span class="d-lg-inline-block d-none"><?= __tr('Find Matches') ?></span>
+        <li class="nav-item">
+            <a class="nav-link lw-ajax-link-action lw-action-with-url" href="<?= route('user.read.discovery') ?>" style="color: var(--lw-primary); font-family: var(--lw-font-family); font-weight: 500; transition: var(--lw-transition); border-radius: var(--lw-radius-sm); padding: 12px 16px; background: rgba(197, 62, 141, 0.05); backdrop-filter: blur(5px);">
+                <i class="fas fa-heart fa-sm mr-2" style="color: var(--lw-gradient-start); font-size: 16px;"></i>
+                <span class="d-lg-inline-block d-none"><?= __tr('Discover') ?></span>
             </a>
-
-            <?php
-            $allUnreadMsgCount=getUsersAllConversationCount();
-            $lookingFor = getUserSettings('looking_for');
-            $minAge = getUserSettings('min_age');
-            $maxAge = getUserSettings('max_age');
-            $request = request();
-
-            if ($request->session()->has('userSearchData')) {
-                $userSearchData = session('userSearchData');
-                $lookingFor = $userSearchData['looking_for'];
-                $minAge = $userSearchData['min_age'];
-                $maxAge = $userSearchData['max_age'];
-            }
-            ?>
-
-            <!-- Enhanced Search Dropdown Form -->
-            <div class="dropdown-menu lw-search-dropdown shadow animated--grow-in" aria-labelledby="searchDropdown" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(197, 62, 141, 0.2); border-radius: var(--lw-radius-lg); min-width: 320px; max-width: 95vw; width: 420px; box-shadow: 0 20px 50px rgba(51, 25, 107, 0.15); padding: var(--lw-space-lg);">
-                
-                <!-- Search Header -->
-                <div class="dropdown-header mb-3" style="background: var(--lw-gradient-main); color: white; border-radius: var(--lw-radius-md); padding: var(--lw-space-md); margin: -8px -8px 16px -8px;">
-                    <h6 class="mb-0" style="font-family: var(--lw-font-family); font-weight: 600; font-size: var(--lw-font-size-base);">
-                        <i class="fas fa-heart mr-2"></i><?= __tr('Find Your Perfect Match') ?>
-                    </h6>
-                </div>
-
-                <form class="lw-ajax-form lw-action-with-url" method="get" data-title="{{ __tr('Find Matches') }}" data-show-processing="true" action="<?= route('user.read.find_matches') ?>">
-                    
-                    <!-- Name Field -->
-                    <div class="lw-form-group mb-3">
-                        <label for="name" class="lw-form-label"><?= __tr('Name') ?></label>
-                        <input type="text" class="form-control lw-form-input" name="name" value="" placeholder="<?= __tr('Enter name...') ?>">
-                    </div>
-
-                    <!-- Username Field -->
-                    <div class="lw-form-group mb-3">
-                        <label for="username" class="lw-form-label"><?= __tr('Username') ?></label>
-                        <input type="text" class="form-control lw-form-input" name="username" value="" placeholder="<?= __tr('Enter username...') ?>">
-                    </div>
-
-                    <!-- Looking For Field -->
-                    <div class="lw-form-group mb-3">
-                        <label for="looking_for" class="lw-form-label"><?= __tr('Looking For') ?></label>
-                        <select name="looking_for" class="form-control lw-form-select" id="looking_for">
-                            <option value="all"><?= __tr('All') ?></option>
-                            @foreach(configItem('user_settings.gender') as $genderKey => $gender)
-                            <option value="<?= $genderKey ?>" <?= ($request->looking_for == $genderKey or $genderKey == $lookingFor) ? 'selected' : '' ?>><?= $gender ?></option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Age Range Fields -->
-                    <div class="lw-form-group mb-3">
-                        <label class="lw-form-label"><?= __tr('Age Range') ?></label>
-                        <div class="row">
-                            <div class="col-6">
-                                <select name="min_age" class="form-control lw-form-select" id="min_age">
-                                    @foreach(range(18,70) as $age)
-                                    <option value="<?= $age ?>" <?= ($request->min_age == $age or $age == $minAge) ? 'selected' : '' ?>><?= $age ?></option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-6">
-                                <select name="max_age" class="form-control lw-form-select" id="max_age">
-                                    @foreach(range(18,70) as $age)
-                                    <option value="<?= $age ?>" <?= ($request->max_age == $age or $age == $maxAge) ? 'selected' : '' ?>><?= $age ?></option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Distance Field -->
-                    <div class="lw-form-group mb-3">
-                        <label for="distance" class="lw-form-label"><?= __tr('Distance From My Location (__distanceUnit__)', ['__distanceUnit__' => (getStoreSettings('distance_measurement') == '6371') ? __tr('KM') : __tr('Miles')]) ?></label>
-                        <input type="number" min="1" class="form-control lw-form-input" name="distance" value="<?= ($request->distance != null) ? $request->distance : getUserSettings('distance') ?>" placeholder="<?= __tr('Anywhere') ?>">
-                    </div>
-
-                    <!-- Verified Users Checkbox -->
-                    <div class="lw-form-group mb-4">
-                        <div class="lw-custom-checkbox">
-                            <input type="hidden" name="user_type" value="0">
-                            <input type="checkbox" class="lw-checkbox-input" id="userType" name="user_type" value="1" <?= ($request->user_type == '1') ? 'checked' : '' ?>>
-                            <label class="lw-checkbox-label" for="userType">
-                                <span class="lw-checkbox-custom"></span>
-                                <span class="lw-checkbox-text"><?= __tr('Only Verified Users') ?></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Enhanced Search Button -->
-                    <div class="lw-form-group">
-                        <button type="submit" class="btn lw-search-btn w-100">
-                            <i class="fas fa-search mr-2"></i><?= __tr('Find Matches') ?>
-                        </button>
-                    </div>
-                </form>
-            </div>
         </li>
     </ul>
-    
+
+    <?php
+    $allUnreadMsgCount=getUsersAllConversationCount();
+    ?>
+
     <!-- Enhanced Premium Button -->
     @if(!isPremiumUser())
     <a href="<?= route('user.premium_plan.read.view') ?>" class="btn btn-sm lw-ajax-link-action lw-action-with-url lw-premium-btn" title="<?= __tr('Be Premium User') ?>">

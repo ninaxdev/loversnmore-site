@@ -12,6 +12,7 @@
         'dist/fa/css/all.min.css',
         'dist/css/home*.css',
         'dist/css/custom.css',
+        'dist/css/discovery.css',
         ], true) ?>
 
     <style>

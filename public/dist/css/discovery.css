@@ -1,0 +1,86 @@
+/* Gradient overlay - complex gradient needs custom CSS */
+.lw-card-gradient {
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 40%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+/* Animation classes for swipe */
+.lw-swipe-left {
+    transform: translateX(-150%) rotate(-30deg);
+    opacity: 0;
+}
+
+.lw-swipe-right {
+    transform: translateX(150%) rotate(30deg);
+    opacity: 0;
+}
+
+.lw-swipe-up {
+    transform: translateY(-150%);
+    opacity: 0;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    #lwDiscoveryFeed {
+        max-width: 100%;
+        padding: 0.5rem;
+        min-height: calc(100vh - 180px);
+    }
+
+    .lw-swipe-cards-wrapper {
+        height: calc(100vh - 260px);
+        min-height: 450px;
+    }
+
+    #lwDiscoveryFeed h2 {
+        font-size: 22px;
+    }
+
+    #lwDiscoveryFeed .absolute.bottom-0.left-0.right-0 {
+        padding: 18px;
+    }
+
+    #lwDiscoveryFeed p.text-sm {
+        font-size: 13px;
+    }
+
+    .lw-swipe-indicator {
+        font-size: 52px;
+        left: 24px;
+    }
+
+    .lw-swipe-indicator.lw-swipe-nope {
+        right: 24px;
+    }
+
+    .lw-swipe-indicator span {
+        font-size: 16px;
+    }
+
+    .lw-discovery-btn {
+        width: 52px;
+        height: 52px;
+        font-size: 20px;
+    }
+
+    .lw-like-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+
+    #lwDiscoveryFeed .absolute.top-4.right-4 {
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
+        top: 12px;
+        right: 12px;
+    }
+
+    #lwDiscoveryFeed .absolute.top-4.left-4 {
+        top: 12px;
+        left: 12px;
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+}

@@ -68,4 +68,19 @@ class FilterController extends BaseController
             return $this->loadPublicView('filter.filter', $processReaction['data']);
         }
     }
+
+    /**
+     * Get Discovery Feed view with random users
+     *
+     * @param obj CommonUnsecuredPostRequest $request
+     *
+     * return view
+     *-----------------------------------------------------------------------*/
+    public function getDiscoveryFeed(CommonUnsecuredPostRequest $request)
+    {
+        // Get random user data for discovery feed
+        $processReaction = $this->filterEngine->prepareRandomUserData([], 20);
+
+        return $this->loadPublicView('user.discovery', $processReaction['data']);
+    }
 }

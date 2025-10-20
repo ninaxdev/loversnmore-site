@@ -592,6 +592,7 @@ class FilterEngine extends BaseEngine implements FilterEngineInterface
                 // Prepare data for filter
                 $filterData[] = [
                     'id' => $filter['user_id'],
+                    'user_uid' => $filter['user_uid'],
                     'username' => $filter['username'],
                     'fullName' => $filter['first_name'].' '.$filter['last_name'],
                     'profileImage' => $profilePictureUrl,
