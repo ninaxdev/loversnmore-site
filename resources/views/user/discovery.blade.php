@@ -36,7 +36,7 @@
 			timerProgressBar: true,
 			icon: type,
 			background: bgColor,
-			color:"black !important;"
+			color: "black !important;",
 			customClass: {
 				popup: 'colored-toast'
 			}

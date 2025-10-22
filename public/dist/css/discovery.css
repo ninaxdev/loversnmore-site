@@ -3,20 +3,38 @@
     background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 40%, rgba(0, 0, 0, 0.85) 100%);
 }
 
-/* Animation classes for swipe */
+/* Animation classes for swipe - using transform3d for hardware acceleration */
 .lw-swipe-left {
-    transform: translateX(-150%) rotate(-30deg);
+    transform: translate3d(-150%, 0, 0) rotate(-30deg);
     opacity: 0;
 }
 
 .lw-swipe-right {
-    transform: translateX(150%) rotate(30deg);
+    transform: translate3d(150%, 0, 0) rotate(30deg);
     opacity: 0;
 }
 
 .lw-swipe-up {
-    transform: translateY(-150%);
+    transform: translate3d(0, -150%, 0);
     opacity: 0;
+}
+
+/* Improve swipe performance and prevent scrolling */
+.lw-swipe-card {
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    will-change: transform;
+}
+
+.lw-swipe-cards-wrapper {
+    touch-action: none;
+    overflow: hidden;
+}
+
+#lwDiscoveryFeed {
+    touch-action: pan-y;
+    overflow-x: hidden;
 }
 
 /* Mobile responsiveness */
@@ -25,11 +43,15 @@
         max-width: 100%;
         padding: 0.5rem;
         min-height: calc(100vh - 180px);
+        touch-action: pan-y;
+        overflow: hidden;
     }
 
     .lw-swipe-cards-wrapper {
         height: calc(100vh - 260px);
         min-height: 450px;
+        touch-action: none;
+        overflow: hidden;
     }
 
     #lwDiscoveryFeed h2 {

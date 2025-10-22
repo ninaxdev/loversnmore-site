@@ -154,9 +154,9 @@
             card.addEventListener('mouseup', handleDragEnd);
             card.addEventListener('mouseleave', handleDragEnd);
 
-            // Touch events
-            card.addEventListener('touchstart', handleDragStart);
-            card.addEventListener('touchmove', handleDragMove);
+            // Touch events with passive: false to allow preventDefault
+            card.addEventListener('touchstart', handleDragStart, { passive: false });
+            card.addEventListener('touchmove', handleDragMove, { passive: false });
             card.addEventListener('touchend', handleDragEnd);
         });
     }
@@ -177,6 +177,11 @@
     function handleDragStart(e) {
         if (e.target.closest('button')) return;
 
+        // Prevent default touch behavior to stop scrolling
+        if (e.type === 'touchstart') {
+            e.preventDefault();
+        }
+
         isDragging = true;
         currentCard = e.currentTarget;
 
@@ -190,12 +195,19 @@
     function handleDragMove(e) {
         if (!isDragging) return;
 
+        // Prevent scrolling during drag
+        if (e.type === 'touchmove') {
+            e.preventDefault();
+        }
+
         const touch = e.type === 'touchmove' ? e.touches[0] : e;
         currentX = touch.clientX - startX;
         currentY = touch.clientY - startY;
 
         const rotate = currentX * 0.1;
-        currentCard.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotate}deg)`;
+
+        // Use transform3d for hardware acceleration
+        currentCard.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) rotate(${rotate}deg)`;
 
         // Show indicators
         const likeIndicator = currentCard.querySelector('.lw-swipe-like');
@@ -223,11 +235,17 @@
             const direction = currentX > 0 ? 'right' : 'left';
             swipeCard(direction, true);
         } else {
-            // Reset card position
-            currentCard.style.transition = 'transform 0.3s ease';
+            // Reset card position with smooth easing
+            currentCard.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
             currentCard.style.transform = '';
-            currentCard.querySelector('.lw-swipe-like').style.opacity = 0;
-            currentCard.querySelector('.lw-swipe-nope').style.opacity = 0;
+
+            // Fade out indicators smoothly
+            const likeIndicator = currentCard.querySelector('.lw-swipe-like');
+            const nopeIndicator = currentCard.querySelector('.lw-swipe-nope');
+            likeIndicator.style.transition = 'opacity 0.2s ease';
+            nopeIndicator.style.transition = 'opacity 0.2s ease';
+            likeIndicator.style.opacity = 0;
+            nopeIndicator.style.opacity = 0;
         }
 
         currentX = 0;
@@ -241,8 +259,8 @@
         const userId = card.dataset.userUid || card.dataset.userId;
         const username = card.dataset.username;
 
-        // Add swipe animation class
-        card.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+        // Add swipe animation with smooth easing
+        card.style.transition = 'transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.4s ease';
 
         if (direction === 'right') {
             card.classList.add('lw-swipe-right');
@@ -264,7 +282,7 @@
             } else {
                 showCard(currentCardIndex);
             }
-        }, 500);
+        }, 400);
     }
 
     function handleLike(userId, username) {

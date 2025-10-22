@@ -9,11 +9,11 @@
             <span class="text-xs font-medium"><?= __tr('Home') ?></span>
         </a>
 
-        <!-- Find Matches -->
-        <a href="<?= route('user.read.find_matches') ?>"
-           class="flex flex-col items-center justify-center flex-1 text-white/90 hover:text-white transition-all duration-300 <?= makeLinkActive('user.read.find_matches') ? 'text-white' : '' ?>">
-            <i class="fas fa-search text-lg mb-1 <?= makeLinkActive('user.read.find_matches') ? 'text-white' : '' ?>"></i>
-            <span class="text-xs font-medium"><?= __tr('Search') ?></span>
+        <!-- Discover (Swipe) -->
+        <a href="<?= route('user.read.discovery') ?>"
+           class="flex flex-col items-center justify-center flex-1 text-white/90 hover:text-white transition-all duration-300 <?= makeLinkActive('user.read.discovery') ? 'text-white' : '' ?>">
+            <i class="fas fa-heart text-lg mb-1 <?= makeLinkActive('user.read.discovery') ? 'text-white' : '' ?>"></i>
+            <span class="text-xs font-medium"><?= __tr('Discover') ?></span>
         </a>
 
         <!-- Messenger -->
