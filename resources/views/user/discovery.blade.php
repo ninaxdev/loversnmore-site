@@ -24,6 +24,13 @@
 @include('user.partial-templates.discovery-feed')
 
 @lwPush('appScripts')
+<style>
+	/* SweetAlert toast custom styling */
+	.swal2-html-container{
+		color: black !important;
+	}
+	
+</style>
 <script>
 	// Success message helper
 	function showSuccessMessage(message, type = 'success') {
@@ -36,7 +43,7 @@
 			timerProgressBar: true,
 			icon: type,
 			background: bgColor,
-			color: "black !important;",
+			iconColor: '#ffffff',
 			customClass: {
 				popup: 'colored-toast'
 			}
