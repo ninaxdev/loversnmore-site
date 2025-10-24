@@ -1,217 +1,93 @@
- <!-- Page Heading -->
- <div class="col-12">
-    <span class="lw-premium-badge " title="<?= __tr('You are a Premium User') ?>"></span>
-    <h1 class="text-warning text-center mt-2 mb-5">{{  __tr('Premium Membership') }}</h1>
+<!-- Premium Plan Page - Modern UI -->
+<div class="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md mx-auto">
+        
+        <!-- Logo and Premium Badge -->
+        <div class="text-center mb-8">
+            <div class="flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-pink-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                </svg>
+                <h2 class="text-2xl font-bold text-white">loversnmore</h2>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">Premium</h1>
+            
+            @if($premiumPlanData['isPremiumUser'])
+            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4 mt-4">
+                <p class="text-white text-sm mb-2"><?= __tr('Current Plan') ?>: <span class="font-semibold"><?= $premiumPlanData['userSubscriptionData']['planTitle'] ?></span></p>
+                <p class="text-white text-sm"><?= __tr('Expires') ?>: <span class="font-semibold"><?= $premiumPlanData['userSubscriptionData']['expiry_at'] ?></span></p>
+            </div>
+            @endif
+        </div>
+
+        <!-- Premium Features -->
+        <div class="space-y-4 mb-8">
+            <!-- Priority in search results -->
+            <div class="flex items-start bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <svg class="w-6 h-6 text-white mr-4 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                </svg>
+                <div>
+                    <h3 class="text-white font-semibold"><?= __tr('Priority in search results') ?></h3>
+                </div>
+            </div>
+
+            <!-- Browse incognito -->
+            <div class="flex items-start bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <svg class="w-6 h-6 text-white mr-4 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                </svg>
+                <div>
+                    <h3 class="text-white font-semibold"><?= __tr('Browse incognito') ?></h3>
+                </div>
+            </div>
+
+            <!-- See who likes you -->
+            <div class="flex items-start bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <svg class="w-6 h-6 text-white mr-4 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                </svg>
+                <div>
+                    <h3 class="text-white font-semibold"><?= __tr('See who likes you') ?></h3>
+                </div>
+            </div>
+
+            <!-- Premium badge -->
+            <div class="flex items-start bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <svg class="w-6 h-6 text-white mr-4 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+                <div>
+                    <h3 class="text-white font-semibold"><?= __tr('Premium badge') ?></h3>
+                </div>
+            </div>
+
+            <!-- Choose duration for plans -->
+            <div class="flex items-start bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <svg class="w-6 h-6 text-white mr-4 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div>
+                    <h3 class="text-white font-semibold"><?= __tr('Choose duration for plans') ?></h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Be Premium Now Button -->
+        <button type="button" id="lwBuyPremiumPlanBtn" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-lg py-4 px-6 rounded-full shadow-lg transition-all duration-200 transform hover:scale-[1.02]">
+            <?= __tr('Be Premium Now') ?>
+        </button>
+
+    </div>
 </div>
 
- <!-- card -->
- <div class="card">
- 	<!-- card body -->
- 	<div class="card-body">
- 		@if($premiumPlanData['isPremiumUser'])
- 		<div class="card-header text-center">
- 			<?= __tr('Plan Details') ?>
- 		</div>
- 		<ul class="list-group list-group-flush">
- 			<li class="list-group-item">
- 				<?= __tr('Plan') ?>
- 				<span class="float-right"><?= $premiumPlanData['userSubscriptionData']['planTitle'] ?></span>
- 			</li>
-{{--  			<li class="list-group-item">
- 				<?= __tr('Created On') ?>
- 				<span class="float-right"><?= $premiumPlanData['userSubscriptionData']['created_at'] ?></span>
- 			</li> --}}
- 			<li class="list-group-item">
- 				<?= __tr('Expiry') ?>
- 				<span class="float-right"><?= $premiumPlanData['userSubscriptionData']['expiry_at'] ?></span>
- 			</li>
-{{--  			<li class="list-group-item">
- 				<?= __tr('Price') ?>
- 				<span class="float-right"><?= $premiumPlanData['userSubscriptionData']['planPrice'] . ' ' . __tr('Credits') ?></span>
- 			</li> --}}
- 		</ul>
-        <hr>
-        @endif
- 		<div class="row">
- 			<!-- premium plans block -->
- 			<div class="col-md-4 lw-premium-plan-right-border mb-4">
-                <span class="pl-3">@if($premiumPlanData['isPremiumUser'])</span>
-                {{  __tr('Extend your premium plan') }}
-                @else
- 				<?= __tr('Choose Duration Plan for Premium') ?>
-                 @endif
- 				@if(!__isEmpty($premiumPlanData['premiumPlans']))
- 				<!-- show premium plan radio options -->
- 				<div class="btn-group-toggle mt-3 p-3" data-toggle="buttons">
- 					@foreach($premiumPlanData['premiumPlans'] as $planKey => $plan)
- 					@if($plan['enable'] and isset($plan['title']))
- 					<span class="btn lw-premium-plan-radio-option mt-2">
- 						<span class="float-left"><?= $plan['title'] ?></span>
- 						<input type="radio" name="select_plan" value="<?= $planKey ?>" class="lw-selected-plan" id="lwSelectedPlan_<?= $planKey ?>" data-plan-title="<?= $plan['title'] ?>" data-plan-price="<?= $plan['price'] ?>" />
- 						<div class="float-right">
- 							<?= __trn('__creditPrice__ Credit', '__creditPrice__ Credits', $plan['price'], [
-									'__creditPrice__' => $plan['price']
-								]) ?>
- 						</div>
- 					</span>
- 					@endif
- 					@endforeach
- 				</div>
- 				<!-- / show premium plan radio options -->
-
- 				<!-- buy plan button -->
- 				<div class="p-3">
-				 <button type="button" id="lwBuyPremiumPlanBtn" class="btn btn-lg btn-block btn-primary"><?= __tr('Be Premium Now') ?></button>
-				</div>
- 				<!-- /buy plan button -->
- 				@else
- 				<!-- info message -->
- 				<div class="alert alert-info">
- 					<?= __tr('There are no premium plans.') ?>
- 				</div>
- 				<!-- / info message -->
- 				@endif
- 			</div>
- 			<!-- /premium plans block -->
-
- 			<!-- premium features block -->
- 			<div class="col-md-8">
- 				<span class="pl-3"><?= __tr('Premium Features') ?></span>
- 				@if(!__isEmpty($premiumPlanData['premiumFeature']))
- 				<!-- show premium plan features -->
- 				<div class="row mt-4 p-3">
- 					<!-- Discounts -->
- 					<div class="col-sm-12 col-md-6 mb-4 ">
-					<div class="lw-premium-feature-item card h-100">
-					<div class="lw-premium-feature-item-icon">
- 							<i class="fas fa-percent text-success fa-3x"></i>
- 						</div>
- 						<h6><?= __tr('Discounts on Gifts, Stickers & Profile Booster') ?></h6>
-					</div>
- 						
- 					</div>
- 					<!-- /Discounts -->
- 					<!-- Discounts -->
- 					<div class="col-sm-12 col-md-6 mb-4 ">
-						<div class="lw-premium-feature-item card h-100 item">
-						<div class="lw-premium-feature-item-icon">
- 							<i class="fas fa-award text-primary fa-4x"></i>
- 						</div>
- 						<h6><?= __tr('Premium Badge') ?></h6>
-						</div>
- 					</div>
- 					<!-- /Discounts -->
- 					<div class="col-sm-12 col-md-6 mb-4">
-						<div class="lw-premium-feature-item card h-100 item">
-						<div class="lw-premium-feature-item-icon">
- 							<i class="fas fa-star fa-3x text-warning"></i>
- 						</div>
- 						<h6><?= __tr('Priority In Search Result & Random Users') ?></h6>
-						</div>
- 					</div>
- 					@foreach($premiumPlanData['premiumFeature'] as $featureKey => $feature)
- 					@if(isset($feature['enable']) and $feature['enable'] and $feature['select_user'] != 1)
- 					<div class="col-sm-12 col-md-6 mb-4 {{$feature['title'] == 'Video Call Via Messenger' || $feature['title'] == 'Audio Call Via Messenger'  ? 'd-none': ''}}">
-						<div class="lw-premium-feature-item card h-100 item">
-						<div class="lw-premium-feature-item-icon">
- 							<?= $feature['icon'] ?>
- 						</div>
- 						<h6><?= $feature['title'] ?></h6>
-						</div>
- 					</div>
- 					@endif
- 					@endforeach
- 				</div>
- 				<!-- / show premium plan features -->
- 				@else
- 				<!-- info message -->
- 				<div class="alert alert-info">
- 					<?= __tr('There are no premium features.') ?>
- 				</div>
- 				<!-- / info message -->
- 				@endif
- 			</div>
- 			<!-- /premium features block -->
- 		</div>
- 		
- 	</div>
- 	<!-- /card body -->
- </div>
- <!-- /card -->
-
- <!-- User Permanent delete Container -->
- <div id="lwMsgContent" style="display: none;"></div>
- <script type="text/_template" id="lwBuyPremiumPlanContainer">
- 	<h3 class = "text-white"><?= __tr('Are You Sure!') ?></h3>
-    <strong class = "text-white"><?= __tr('You want to buy __selectedPlanTitle__ plan.', [
-				'__selectedPlanTitle__' => '<%- __tData.selectedPlanTitle %>'
-			]) ?></strong>
+@lwPush('appScripts')
+<script>
+    $(document).ready(function() {
+        //buy premium plan button - redirect to plan selection screen
+        $("#lwBuyPremiumPlanBtn").on('click', function() {
+            window.location.href = '<?= route('user.premium_plan.read.select_plan') ?>';
+        });
+    });
 </script>
- <!-- User Permanent delete Container -->
-
- @lwPush('appScripts')
- <script>
- 	$(document).ready(function() {
- 		//getPremium plan data
- 		var premiumPlan = JSON.parse('<?= json_encode($premiumPlanData['premiumPlans']) ?>'),
- 			isPlanSelected = false,
- 			selectedPlanPrice = selectedPlan = selectedPlanTitle = null;
-
- 		//premium plan array on change bind value and disable input price filed start
- 		_.forEach(premiumPlan, function(value, key) {
- 			var isPlanSelected = $("#lwSelectedPlan_" + key).is(':checked');
- 			//check if plan not selected then disable true buy button
- 			if (!isPlanSelected) {
- 				$("#lwBuyPremiumPlanBtn").attr("disabled", true);
- 			}
-
- 			//on change select plan radio option
- 			$("#lwSelectedPlan_" + key).on('change', function() {
- 				selectedPlan = $(this).val();
- 				selectedPlanTitle = $(this).attr('data-plan-title');
- 				selectedPlanPrice = Number($(this).attr('data-plan-price'));
- 				isPlanSelected = $("#lwSelectedPlan_" + key).is(':checked');
-
- 				//check if plan selected then disable false buy button
- 				if (isPlanSelected) {
- 					$("#lwBuyPremiumPlanBtn").attr("disabled", false);
- 				}
- 			});
- 		});
-
- 		//buy premium plan on click
- 		$("#lwBuyPremiumPlanBtn").on('click', function() {
- 			//get Selected Plan
- 			var totalUserCredits = '<?= totalUserCredits() ?>';
- 			lwMsgContentDiv = $("#lwMsgContent"),
- 				compiled = _.template($('#lwBuyPremiumPlanContainer').html());
- 			//append value on div
- 			lwMsgContentDiv.html(compiled({
- 				'selectedPlanTitle': selectedPlanTitle
- 			}));
-
- 			if (selectedPlanPrice > totalUserCredits) {
- 				//show confirmation text
- 				var errorText = '<?= __tr('Your credit balance is too low, please purchase credits') ?>';
- 				showConfirmation('<span class="text-white">' + errorText + '</span>', function() {
- 					//redirect to buy credits package view
- 					window.location.href = '<?= route('user.credit_wallet.read.view') ?>';
- 				});
- 			} else {
- 				//check is plan selected
- 				if (!_.isEmpty(selectedPlan)) {
- 					//show confirmation 
- 					showConfirmation($("#lwMsgContent"), function() {
- 						var requestUrl = '<?= route('user.premium_plan.write.buy_premium_plan') ?>',
- 							formData = {
- 								'select_plan': selectedPlan
- 							};
- 						//post ajax request
- 						__DataRequest.post(requestUrl, formData, function(response) {});
- 					});
- 				}
- 			}
- 		});
- 	});
- </script>
- @lwPushEnd
+@lwPushEnd

@@ -653,7 +653,7 @@ return [
                         'title' => __tr('No Ads'),
                         'enable' => true,
                         'select_user' => 2,
-                        'icon' => '<span class="fa-stack fa-2x"><i class="fas fa-tv fa-stack-1x"></i><i class="fas fa-ban fa-stack-2x" style="color:Tomato"></i></span>',
+                        'icon' => '<span class="fa-stack fa-1x"><i class="fas fa-tv fa-stack-1x"></i></span>',
                         'options' => [
                             [
                                 'title' => __tr('All Users'),
@@ -669,7 +669,7 @@ return [
                         'title' => __tr('Browse in Incognito mode'),
                         'enable' => true,
                         'select_user' => 2,
-                        'icon' => '<i class="fas fa-user-secret fa-3x"></i>',
+                        'icon' => '<i class="fas fa-user-secret fa-1x"></i>',
                         'options' => [
                             [
                                 'title' => __tr('All Users'),
@@ -685,7 +685,7 @@ return [
                         'title' => __tr('Show Who Likes Me'),
                         'enable' => true,
                         'select_user' => 2,
-                        'icon' => '<i class="fas fa-heartbeat fa-3x text-primary"></i>',
+                        'icon' => '<i class="fas fa-heartbeat fa-1x text-primary"></i>',
                         'options' => [
                             [
                                 'title' => __tr('All Users'),
@@ -733,7 +733,7 @@ return [
                         'title' => __tr('User Encounter'),
                         'enable' => true,
                         'select_user' => 2,
-                        'icon' => '<i class="fas fa-surprise fa-3x"></i>',
+                        'icon' => '<i class="fas fa-surprise fa-1x"></i>',
                         'encounter_all_user_count' => 10,
                         'options' => [
                             [

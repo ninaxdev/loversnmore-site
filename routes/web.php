@@ -660,6 +660,12 @@ Route::group([
                     'uses' => 'PremiumPlanController@getPremiumPlanView',
                 ]);
 
+                // User Premium Plan Selection View
+                Route::get('/select-plan', [
+                    'as' => 'user.premium_plan.read.select_plan',
+                    'uses' => 'PremiumPlanController@getPremiumPlanSelectionView',
+                ]);
+
                 // buy premium plans
                 Route::post('/buy-plans', [
                     'as' => 'user.premium_plan.write.buy_premium_plan',

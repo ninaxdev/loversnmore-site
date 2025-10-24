@@ -68,6 +68,18 @@ class PremiumPlanController extends BaseController
     }
 
     /**
+     * User Premium Plan Selection View.
+     *
+     * @return json object
+     *---------------------------------------------------------------- */
+    public function getPremiumPlanSelectionView()
+    {
+        $processReaction = $this->premiumPlanEngine->preparePremiumPlanUserData();
+
+        return $this->loadPublicView('user.premium-plan.premium-plan-select', $processReaction['data']);
+    }
+
+    /**
      * User Premium Plan Success View.
      *
      * @return json object
