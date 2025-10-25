@@ -181,7 +181,10 @@
 @lwPush('appScripts')
 <script>
     $(document).ready(function() {
-        let isYearly = true; // Default to yearly
+        let isYearly = false; // Default to monthly
+
+        // Initialize prices on page load
+        updateAllPrices();
 
         // Toggle between monthly and yearly
         $('.pricing-toggle').on('click', function() {
