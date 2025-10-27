@@ -1,6 +1,6 @@
 <!-- Mobile Bottom Navigation - Only visible on mobile when enable_new_navigation is true -->
 @if(env('ENABLE_NEW_NAVIGATION') === 'true' || env('ENABLE_NEW_NAVIGATION') === true)
-<nav class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-pink-600 to-purple-600 shadow-lg md:hidden" style="z-index: 99999 !important;">
+<nav class="fixed bottom-0 left-0 right-0 bg-brandPurple shadow-lg md:hidden" style="z-index: 99999 !important;">
     <div class="flex justify-around items-center h-16 px-2">
         <!-- Home -->
         <a href="<?= route('home_page') ?>"

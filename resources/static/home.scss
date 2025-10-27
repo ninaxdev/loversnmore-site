@@ -176,8 +176,18 @@ body {
     text-transform: none;
     padding: 10px 40px 0 40px;
     backdrop-filter: blur(2px) grayscale(0.4);
-    background-color: #c61d61;
+    background-color: transparent;
+    border: 2px solid #ec9cae;
+    color: #222222;
     letter-spacing: 0.25rem;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        background-color: #5B3E96;
+        border-color: #5B3E96;
+        color: #ffffff;
+    }
+
     @media (max-width: 768px) {
         font-size: 2em;
         padding: 10px 40px 10px 40px;

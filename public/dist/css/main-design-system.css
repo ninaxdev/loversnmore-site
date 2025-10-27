@@ -14,8 +14,8 @@
     --lw-primary-dark: #1e1b4b;
     
     /* Gradient Colors */
-    --lw-gradient-start: #c53e8d;
-    --lw-gradient-end: #8b5cf6;
+    --lw-gradient-start: #5B3E96;
+    --lw-gradient-end: #5B3E96;
     --lw-gradient-light: linear-gradient(135deg, rgba(197, 62, 141, 0.1), rgba(139, 92, 246, 0.1));
     --lw-gradient-main: linear-gradient(135deg, var(--lw-gradient-start), var(--lw-gradient-end));
     
@@ -799,7 +799,7 @@
 }
 
 #accordionSidebar {
-    background: linear-gradient(268deg, #e91e63 0%, #8b5cf6 100%) !important;
+    background: #5B3E96 !important;
     box-shadow: 4px 0 15px rgba(0,0,0,0.2);
     border-bottom-left-radius: 40px;
 }
@@ -840,13 +840,13 @@
 }
 
 .filepond--root .filepond--item-panel {
-          background: linear-gradient(268deg, #e91e63 0%, #8b5cf6 100%) !important; /* Replace with your desired color code or name */
+          background: #5B3E96 !important; /* Replace with your desired color code or name */
     }
 .filepond--root .filepond--image-preview {
     background-color: #3498db; /* A shade of blue */
 }
 .filepond--panel-root {
-    background: linear-gradient(268deg, #e91e63 0%, #8b5cf6 100%) !important;
+    background: #5B3E96 !important;
 }
 .filepond--drop-label {
     color: black;

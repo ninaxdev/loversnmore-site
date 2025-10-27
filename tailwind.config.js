@@ -13,10 +13,11 @@ export default {
         'lw-secondary': '#645290',
         'lw-primary-light': '#7c3aed',
         'lw-primary-dark': '#1e1b4b',
-        'lw-gradient-start': '#c53e8d',
-        'lw-gradient-end': '#8b5cf6',
+        'lw-gradient-start': '#5B3E96',
+        'lw-gradient-end': '#5B3E96',
         'lw-white': '#ffffff',
         'lw-light-gray': '#f8f9fc',
+         'brandPurple': '#5B3E96',
         social: {
           facebook: '#4267B2',
           'facebook-hover': '#365899',
@@ -61,7 +62,9 @@ export default {
         'full': '9999px',
       },
       backgroundImage: {
-        'gradient-lw': 'linear-gradient(135deg, #c53e8d, #8b5cf6)',
+        'gradient-lw': 'linear-gradient(135deg, #5B3E96, #5B3E96)',
+        // 'gradient-lw': '#5B3E96',
+
         'gradient-lw-light': 'linear-gradient(135deg, rgba(197, 62, 141, 0.1), rgba(139, 92, 246, 0.1))',
       },
       boxShadow: {

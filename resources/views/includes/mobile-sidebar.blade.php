@@ -92,7 +92,7 @@
                 $showLike = $featurePlans['show_like']['select_user'];
                 ?>
                 @if($showLike == 2)
-                <span class="lw-premium-feature-badge lw-premium-feature-width" title="{{ __tr('This is Premium feature') }}" style="background: linear-gradient(135deg, #e91e63, #8b5cf6); border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fas fa-crown" style="font-size: 8px; color: white;"></i></span>
+                <span class="lw-premium-feature-badge lw-premium-feature-width" title="{{ __tr('This is Premium feature') }}" style="background: #5B3E96 border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fas fa-crown" style="font-size: 8px; color: white;"></i></span>
                 @endif
             </a>
         </div>
@@ -153,7 +153,7 @@
             <?= __tr('Featured Users') ?>
         </h5>
         <div class="card-body lw-featured-users" style="padding: 16px;">
-            <button type="button" class="btn btn-icon mb-3" id="lw-mobile-featured-users" title="{{ __tr('Get yourself in Featured Users') }}" onclick="closeMobileSidebar()" style="background: linear-gradient(135deg, #e91e63, #8b5cf6); color: white; border: none; border-radius: 8px; padding: 12px 16px; font-family: var(--lw-font-family); font-weight: 600; width: 100%; transition: all 0.3s ease; transform: translateY(0);"> 
+            <button type="button" class="btn btn-icon mb-3" id="lw-mobile-featured-users" title="{{ __tr('Get yourself in Featured Users') }}" onclick="closeMobileSidebar()" style="background: #5B3E96 color: white; border: none; border-radius: 8px; padding: 12px 16px; font-family: var(--lw-font-family); font-weight: 600; width: 100%; transition: all 0.3s ease; transform: translateY(0);"> 
                 <i class="fa fa-user-plus mr-2"></i><span><?= __tr('Be Featured') ?></span>
             </button>
             @if(!__isEmpty(getFeatureUserList()))

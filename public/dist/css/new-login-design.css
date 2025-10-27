@@ -318,10 +318,10 @@
 .lw-gradient-btn {
     width: 100%;
     height: 65px;
-    background: linear-gradient(135deg, var(--lw-login-gradient-start), var(--lw-login-gradient-end));
-    border: none;
+    background: transparent;
+    border: 2px solid #ec9cae;
     border-radius: 80px;
-    color: var(--lw-login-white);
+    color: #222222;
     font-family: 'Lexend', sans-serif;
     font-weight: 600;
     font-size: 18px;
@@ -332,13 +332,18 @@
 }
 
 .lw-gradient-btn:hover {
+    background: #5B3E96;
+    border-color: #5B3E96;
+    color: #ffffff;
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(197, 62, 141, 0.3);
-    color: var(--lw-login-white);
+    box-shadow: 0 10px 25px rgba(91, 62, 150, 0.3);
 }
 
 .lw-gradient-btn:active {
     transform: translateY(0);
+    background: #5B3E96;
+    border-color: #5B3E96;
+    color: #ffffff;
 }
 
 /* OTP Link */
@@ -478,8 +483,9 @@
 .lw-signup-btn {
     display: inline-block;
     padding: 12px 30px;
-    background: linear-gradient(135deg, var(--lw-login-gradient-start), var(--lw-login-gradient-end));
-    color: var(--lw-login-white);
+    background: transparent;
+    border: 2px solid #ec9cae;
+    color: #222222;
     font-family: 'Lexend', sans-serif;
     font-weight: 600;
     font-size: 16px;
@@ -489,9 +495,11 @@
 }
 
 .lw-signup-btn:hover {
+    background: #5B3E96;
+    border-color: #5B3E96;
+    color: #ffffff;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(197, 62, 141, 0.3);
-    color: var(--lw-login-white);
+    box-shadow: 0 8px 20px rgba(91, 62, 150, 0.3);
     text-decoration: none;
 }
 
