@@ -2,7 +2,7 @@
 <div id="mobileSidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity duration-300 lg:hidden" onclick="closeMobileSidebar()"></div>
 
 <!-- Mobile Sidebar -->
-<div id="mobileSidebar" class="fixed top-0 left-0 h-full w-80 max-w-[85vw] z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto shadow-2xl" style="background: linear-gradient(135deg, #c53e8d, #8b5cf6);">
+<div id="mobileSidebar" class="fixed top-0 left-0 h-full w-80 max-w-[85vw] z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto shadow-2xl" style="background: #5B3E96;">
     
     <!-- Sidebar - Brand -->
     <a class="flex items-center justify-center" href="<?= url('/home') ?>" style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
