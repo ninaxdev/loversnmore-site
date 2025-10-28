@@ -1,36 +1,17 @@
 <div class="lw-messenger">
     <!-- Page Heading -->
-    <div class="mb-6">
+    <!-- <div class="mb-6">
         <h1 class="text-3xl font-semibold lw-font" style="color: var(--lw-primary);">
             <i class="fas fa-comments mr-2" style="color: var(--lw-gradient-start);" aria-hidden="true"></i>
             <?= __tr('Messages') ?>
         </h1>
         <p class="lw-body-text mt-2"><?= __tr('Connect with your matches') ?></p>
-    </div>
+    </div> -->
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <!-- Sidebar - Contact List -->
-        <div class="lg:col-span-4">
+        <div class="lg:col-span-4" id="lwChatSidebar">
             <div class="lw-card-glass">
-                <!-- User Profile Header -->
-                <div class="p-6 border-b" style="border-color: var(--lw-border);">
-                    <div class="flex items-center gap-4">
-                        <div class="relative">
-                            <img data-src="<?= imageOrNoImageAvailable($currentUserData['logged_in_user_profile_picture']) ?>"  
-                                 class="w-16 h-16 rounded-full object-cover lw-online lw-photoswipe-gallery-img lw-lazy-img" 
-                                 alt="<?= $currentUserData['logged_in_user_full_name'] ?>">
-                            <div class="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-white" 
-                                 style="background: var(--lw-success);"></div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h3 class="lw-heading-4 truncate"><?= $currentUserData['logged_in_user_full_name'] ?></h3>
-                            <p class="lw-small-text truncate" style="color: var(--lw-gray-600);">
-                                <?= Str::limit($currentUserData['logged_in_user_about_me'], 30) ?>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Search Box -->
                 <div class="p-4 border-b" style="border-color: var(--lw-border);">
                     <div class="relative">
@@ -49,11 +30,11 @@
                     <!-- Check if messenger users exists -->
                     @if(!__isEmpty($messengerUsers))
                     @foreach($messengerUsers as $messengerUser)
-                    <a href="#" 
-                       class="flex items-center gap-4 p-4 border-b transition-all hover:bg-opacity-50 lw-ajax-link-action lw-user-chat-list" 
-                       style="border-color: var(--lw-border);"
-                       data-action="<?= route('user.read.user_conversation', ['userId' => $messengerUser['user_id']]) ?>" 
-                       id="<?= $messengerUser['user_id'] ?>" 
+                    <a href="#"
+                       class="flex items-center gap-4 p-4 m-3 border-2 rounded-lg transition-all hover:bg-opacity-50 lw-ajax-link-action lw-user-chat-list"
+                       style="border-color: #ec9cae;"
+                       data-action="<?= route('user.read.user_conversation', ['userId' => $messengerUser['user_id']]) ?>"
+                       id="<?= $messengerUser['user_id'] ?>"
                        data-callback="userChatResponse">
                         
                         <div class="relative flex-shrink-0">
@@ -77,7 +58,7 @@
                         <div class="flex-1 min-w-0">
                             <h4 class="lw-heading-5 truncate"><?= $messengerUser['user_full_name'] ?></h4>
                             <p class="lw-small-text truncate" style="color: var(--lw-gray-600);">
-                                <?= __tr('Tap to chat') ?>
+                                <?= $messengerUser['last_message'] ?? __tr('No messages yet') ?>
                             </p>
                         </div>
 
@@ -103,7 +84,7 @@
         </div>
 
         <!-- Main Chat Area -->
-        <div class="lg:col-span-8">
+        <div class="lg:col-span-8 hidden lg:block" id="lwMainChatArea">
             <div class="lw-card-glass" style="min-height: 600px;">
                 <div class="lw-messenger-content" id="lwUserConversationContainer">
                     <!-- Placeholder when no conversation is selected -->
@@ -132,12 +113,12 @@
         __Messenger.markMessagesAsReadUrl = "<?= route("user.write.mark_messages_read") ?>";
 
         console.log(__Messenger.broadcastTypingStatusUrl)
-        // Select a list of user chat 
+        // Select a list of user chat
         var $userListGroup = $('.lw-user-chat-list');
         // Fire click event on first element
-        $($userListGroup[0]).trigger("click");
+        // $($userListGroup[0]).trigger("click");
         // Add Active class to first element
-        $($userListGroup[0]).addClass('active');
+        // $($userListGroup[0]).addClass('active');
         // Click event fire when click on user list
         $userListGroup.click(function(e) {
             if ($(this).hasClass('active')) {
@@ -145,6 +126,11 @@
             }
             $('.lw-messenger-contact-list a.active').removeClass('active');
             $(this).addClass('active');
+
+            // Show chat area and hide sidebar on mobile
+            $('#lwMainChatArea').removeClass('hidden').addClass('block');
+            $('#lwChatSidebar').addClass('hidden lg:block');
+
             __Messenger.toggleSidebarOnMobileView();
             var incomingMsgEl = $('.lw-incoming-message-count-' + $(this).attr('id'));
             if (!_.isEmpty(incomingMsgEl.text())) {

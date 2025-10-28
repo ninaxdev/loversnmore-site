@@ -18,6 +18,7 @@ use App\Yantrana\Components\UserSetting\Repositories\UserSettingRepository;
 use App\Yantrana\Support\CommonTrait;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use PushBroadcast;
 use YesSecurity;
 
@@ -152,6 +153,22 @@ class MessengerEngine extends BaseEngine implements MessengerEngineInterface
                     }
                 }
 
+                // Get last message for this conversation
+                $lastMessage = __tr('No messages yet');
+                $lastConversation = $messageCollection->where('from_users__id', $user->user_id)
+                    ->sortByDesc('created_at')
+                    ->first();
+
+                if (!__isEmpty($lastConversation)) {
+                    if ($lastConversation->type == 2) {
+                        $lastMessage = __tr('Sent a file');
+                    } elseif ($lastConversation->type == 9) {
+                        $lastMessage = __tr('Message request');
+                    } else {
+                        $lastMessage = Str::limit($lastConversation->message, 50);
+                    }
+                }
+
                 $messengerUsers[] = [
                     'user_id' => $user->user_id,
                     'user_uid' => $user->user_uid,
@@ -166,6 +183,7 @@ class MessengerEngine extends BaseEngine implements MessengerEngineInterface
                     'fake_user_id' => $userId,
                     'unreadMsgCount'=>$unreadMsgCount,//unread msg count
                     'totalUnreadMsgCount'=>$totalNewUnreadMsgCount,
+                    'last_message' => $lastMessage, // Last message preview
                 ];
           }
         }
