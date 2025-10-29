@@ -30,13 +30,14 @@
         </a>
 
         <!-- Notifications -->
-        <a href="<?= route('user.notification.read.view') ?>"
+        <a href="#"
+           @click.prevent="$dispatch('open-alerts-modal')"
            x-data="{totalNotificationCount:'<?= (getNotificationList()['notificationCount'] > 0) ? getNotificationList()['notificationCount'] : '' ?>'}"
-           class="flex flex-col items-center justify-center flex-1 text-white/90 hover:text-white transition-all duration-300 relative <?= makeLinkActive('user.notification.read.view') ? 'text-white' : '' ?>">
+           class="flex flex-col items-center justify-center flex-1 text-white/90 hover:text-white transition-all duration-300 relative">
             <span x-show="totalNotificationCount"
                   x-text="totalNotificationCount"
                   class="absolute -top-1 right-1/4 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center font-bold"></span>
-            <i class="fa fa-bell text-lg mb-1 <?= makeLinkActive('user.notification.read.view') ? 'text-white' : '' ?>"></i>
+            <i class="fa fa-bell text-lg mb-1"></i>
             <span class="text-xs font-medium"><?= __tr('Alerts') ?></span>
         </a>
 

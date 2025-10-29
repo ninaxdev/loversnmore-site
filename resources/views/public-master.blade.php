@@ -65,6 +65,7 @@
     <!-- Mobile Bottom Navigation -->
     @if(isLoggedIn())
     @include('includes.mobile-bottom-nav')
+    @include('includes.mobile-alerts-modal')
     @endif
     <!-- /Mobile Bottom Navigation -->
 
