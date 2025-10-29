@@ -69,6 +69,12 @@ Route::group([
             'namespace' => 'User\Controllers',
             'prefix' => 'user',
         ], function () {
+            // auth choice page
+            Route::get('/auth', [
+                'as' => 'user.auth_choice',
+                'uses' => 'UserController@authChoice',
+            ]);
+
             // login
             Route::get('/login', [
                 'as' => 'user.login',

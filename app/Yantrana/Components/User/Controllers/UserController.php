@@ -42,6 +42,16 @@ class UserController extends BaseController
     }
 
     /**
+     * Show auth choice page.
+     *
+     * @return view
+     *---------------------------------------------------------------- */
+    public function authChoice()
+    {
+        return $this->loadView('user.auth-choice');
+    }
+
+    /**
      * Show login view.
      *---------------------------------------------------------------- */
     public function login()

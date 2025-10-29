@@ -1655,7 +1655,7 @@
                     <!-- login -->
                     <li class="nav-item">
                         <a class="nav-link lw-login-btn btn px-4"
-                            href="<?= route('user.login') ?>"><?= __tr('Login') ?></a>
+                            href="<?= route('user.auth_choice') ?>"><?= __tr('Login') ?></a>
                     </li>
                     <!-- /login -->
                 </ul>
@@ -1896,7 +1896,7 @@
                         <h4 class="text-primary h2"><?= __tr('Our Services') ?></h4>
                         <h3 class="lw-sub-title-katibeh text-dark">
                             <?= __tr('Enjoy Our Special Features') ?></h3>
-                        <a href="<?= route('user.login') ?>" class="lw-feature-btn btn"><?= __tr('Learn more') ?></a>
+                        <a href="<?= route('user.auth_choice') ?>" class="lw-feature-btn btn"><?= __tr('Learn more') ?></a>
                     </div>
                     <!-- /headings -->
 
@@ -2319,7 +2319,7 @@
                             <li><a href="#features"><?= __tr('Features') ?></a></li>
                             <li><a href="#faq"><?= __tr('FAQ') ?></a></li>
                             <li><a href="<?= route('user.read.contact') ?>"><?= __tr('Contact us') ?></a></li>
-                            <li><a href="<?= route('user.login') ?>"><?= __tr('Login') ?></a></li>
+                            <li><a href="<?= route('user.auth_choice') ?>"><?= __tr('Login') ?></a></li>
                             <li><a href="<?= route('user.sign_up') ?>"><?= __tr('Register') ?></a></li>
                         </div>
                     </div>
