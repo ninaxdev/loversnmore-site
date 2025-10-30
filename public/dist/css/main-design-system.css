@@ -799,25 +799,33 @@
 }
 
 #accordionSidebar {
-    /* background: #5B3E96 !important; */
+    background: #5B3E96 !important;
     box-shadow: 4px 0 15px rgba(0,0,0,0.2);
     border-bottom-left-radius: 40px;
 }
 
 #accordionSidebar .nav-link:hover {
-    /* background: rgba(255,255,255,0.1) !important; */
-    /* color: white !important; */
+    background: rgba(255,255,255,0.1) !important;
+    color: white !important;
     transform: translateX(4px);
 }
 
 #accordionSidebar .nav-link:hover i {
-    /* color: #e91e63 !important; */
+    color: #e91e63 !important;
 }
 
+#accordionSidebar .nav-link.active {
+    background: rgba(255,255,255,0.15) !important;
+    color: white !important;
+}
+
+#accordionSidebar .nav-link.active i {
+    color: #e91e63 !important;
+}
 
 /* Default icon colors */
 #accordionSidebar .nav-link i {
-    /* color: white !important; */
+    color: white !important;
     transition: color 0.3s ease;
 }
 
