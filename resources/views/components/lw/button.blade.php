@@ -10,18 +10,21 @@
 ])
 
 @php
-    $baseClasses = 'inline-flex items-center justify-center font-lw font-semibold text-center outline-none relative overflow-hidden transition-all duration-300 ease-in-out';
-    
+    // Loversnmore Design System - Button Component
+    $baseClasses = 'inline-flex items-center justify-center font-poppins font-medium text-center outline-none relative overflow-hidden transition-all duration-300 ease-in-out';
+
     $variantClasses = [
-        'primary' => 'bg-gradient-lw text-white rounded-full hover:-translate-y-0.5 hover:shadow-lw-gradient active:translate-y-0',
-        'secondary' => 'bg-transparent text-lw-primary border-2 border-lw-primary rounded-full hover:bg-lw-primary hover:text-white hover:-translate-y-0.5 hover:shadow-lg',
+        // Primary: Gradient #4F1DA1 → #E78AB0, white text, 12px radius
+        'primary' => 'bg-gradient-lw text-white rounded-md hover:bg-gradient-hover hover:shadow-lw active:translate-y-0.5',
+        // Secondary: White border 2px solid #4F1DA1, purple text
+        'secondary' => 'bg-white text-lw-primary border-2 border-lw-primary rounded-md hover:bg-lw-lavender hover:shadow-lw',
         'link' => 'bg-transparent border-0 text-lw-secondary hover:text-lw-primary hover:underline'
     ];
-    
+
     $sizeClasses = [
-        'default' => 'px-8 py-4 text-base',
-        'lg' => 'px-12 py-5 text-lg h-16 rounded-full',
-        'sm' => 'px-6 py-3 text-sm'
+        'default' => 'px-8 py-3 text-base', // Button SM - Poppins Medium 16pt
+        'lg' => 'px-12 py-4 text-lg',
+        'sm' => 'px-6 py-2 text-sm'
     ];
     
     $classes = $baseClasses . ' ' . ($variantClasses[$variant] ?? $variantClasses['primary']) . ' ' . ($sizeClasses[$size] ?? $sizeClasses['default']);

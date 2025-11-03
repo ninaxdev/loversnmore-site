@@ -14,8 +14,8 @@
 
 <body class="lw-auth-choice-page">
     <div class="min-h-screen flex">
-        <!-- Left side - Desktop only (Purple gradient background) -->
-        <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden" style="background: linear-gradient(135deg, #F4A7B9, #A88BEB, #5B3E96);">
+        <!-- Left side - Desktop only (Loversnmore gradient background) -->
+        <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden" style="background: linear-gradient(135deg, #4F1DA1, #E78AB0);">
             <div class="absolute inset-0 flex items-center justify-center">
                 <div class="text-center px-8">
                     <img class="mx-auto mb-8" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>" style="max-width: 300px; filter: brightness(0) invert(1);">
@@ -82,35 +82,35 @@
     font-family: var(--lw-font-family);
 }
 
-/* Primary Button (Log in) - Purple filled */
+/* Primary Button (Log in) - Loversnmore Gradient */
 .lw-auth-btn-primary {
-    background: #5B3E96;
+    background: linear-gradient(135deg, #4F1DA1, #E78AB0);
     color: white;
-    border: 2px solid #5B3E96;
+    border: none;
+    box-shadow: 0 4px 12px rgba(79, 29, 161, 0.2);
 }
 
 .lw-auth-btn-primary:hover {
-    background: #4a2f7a;
-    border-color: #4a2f7a;
+    background: linear-gradient(135deg, #5B2BB5, #F4A5C4);
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(91, 62, 150, 0.3);
+    box-shadow: 0 8px 20px rgba(79, 29, 161, 0.3);
     text-decoration: none;
 }
 
-/* Secondary Button (Register & Forgot Password) - Rose pink border */
+/* Secondary Button (Register & Forgot Password) - White with Purple Border */
 .lw-auth-btn-secondary {
-    background: transparent;
-    color: #222222;
-    border: 2px solid #ec9cae;
+    background: white;
+    color: #4F1DA1;
+    border: 2px solid #4F1DA1;
 }
 
 .lw-auth-btn-secondary:hover {
-    background: #5B3E96;
-    border-color: #ec9cae;
-    color: white;
+    background: #F4E9FF;
+    border-color: #4F1DA1;
+    color: #4F1DA1;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(236, 156, 174, 0.3);
+    box-shadow: 0 4px 12px rgba(79, 29, 161, 0.15);
     text-decoration: none;
 }
 

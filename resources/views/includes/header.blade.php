@@ -9,11 +9,13 @@
 	<meta name="author" content="">
 	<title>@yield('head-title') : <?= getStoreSettings('name') ?></title>
 	<!-- Custom fonts for this template-->
+	<!-- Poppins font for Loversnmore brand -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+	<!-- Legacy fonts (to be phased out) -->
 	<link href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,600,700&display=swap" rel="stylesheet">
-	{{-- <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet"> --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@400;700&display=swap" rel="stylesheet">
 	<link rel="shortcut icon" href="<?= getStoreSettings('favicon_image_url') ?>" type="image/x-icon">
 	<link rel="icon" href="<?= getStoreSettings('favicon_image_url') ?>" type="image/x-icon">
 	@if(getStoreSettings('allow_recaptcha'))
@@ -66,13 +68,13 @@
         body:not(.lw-ajax-form-ready) form.lw-ajax-form:before {
             content: "{{ __tr('please wait ...') }}";
         }
-        /* PWA Meta Theme Color */
+        /* PWA Meta Theme Color - Loversnmore Primary Purple */
         meta[name="theme-color"] {
-            content: "#33196b";
+            content: "#4F1DA1";
         }
     </style>
     <!-- PWA and Mobile Optimization -->
-    <meta name="theme-color" content="#33196b">
+    <meta name="theme-color" content="#4F1DA1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="<?= getStoreSettings('name') ?>">
