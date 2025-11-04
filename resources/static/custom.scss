@@ -59,24 +59,8 @@
 }
 
 :root {
-    /* Loversnmore Design System Colors */
-    --lw-primary-color: #4F1DA1; /* Primary Purple */
-    --lw-secondary-color: #E78AB0; /* Accent Pink */
-    --lw-page-bg-color: #FFFFFF; /* White background for light theme */
-    --lw-gradient-main: linear-gradient(135deg, #4F1DA1, #E78AB0);
-    --lw-gradient-vertical: linear-gradient(180deg, #4F1DA1, #E78AB0);
-    --lw-gradient-start: #4F1DA1;
-    --lw-gradient-end: #E78AB0;
-    --lw-font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --lw-white: #FFFFFF;
-    --lw-radius-sm: 8px;
-    --lw-radius-md: 12px;
-    --lw-radius-lg: 16px;
-    --lw-radius-xl: 20px;
-    --lw-radius-full: 9999px;
-    --lw-transition: all 0.3s ease-in-out;
-    --lw-danger: #EF4444;
-    --lw-gray-200: #E5E7EB;
+    --lw-primary-color: #c61d61;
+    --lw-page-bg-color: #1b1b23;
 }
 html {
     color-scheme: dark;
@@ -195,53 +179,34 @@ a:hover {
 }
 
 .btn-primary {
-    /* Loversnmore Primary Button - Gradient Background */
-    color: #ffffff;
-    background: linear-gradient(135deg, #4F1DA1, #E78AB0);
-    border: none;
-    border-radius: 12px;
-    padding: 12px 24px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    font-size: 16px;
+    color: #222222;
+    background-color: transparent;
+    border: 2px solid #ec9cae;
+    border-color: #ec9cae;
     transition: all 0.3s ease-in-out;
-    box-shadow: 0 4px 12px rgba(79, 29, 161, 0.15);
 
     &:hover,
     &:focus,
     &:active {
         color: #ffffff !important;
-        background: linear-gradient(135deg, #5B2BB5, #F4A5C4);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(79, 29, 161, 0.25);
-    }
-
-    &:disabled {
-        background: #9B8AAE;
-        cursor: not-allowed;
-        opacity: 0.6;
+        background-color: #5B3E96;
+        border-color: #5B3E96;
     }
 }
 
 .btn-success {
-    /* Loversnmore Success Button - Uses gradient like primary */
-    color: #ffffff;
-    background: linear-gradient(135deg, #4F1DA1, #E78AB0);
-    border: none;
-    border-radius: 12px;
-    padding: 12px 24px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    font-size: 16px;
+    color: #222222;
+    background-color: transparent;
+    border: 2px solid #ec9cae;
+    border-color: #ec9cae;
     transition: all 0.3s ease-in-out;
 
     &:hover,
     &:focus,
     &:active {
         color: #ffffff !important;
-        background: linear-gradient(135deg, #5B2BB5, #F4A5C4);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(79, 29, 161, 0.25);
+        background-color: #5B3E96;
+        border-color: #5B3E96;
     }
 }
 
@@ -294,38 +259,19 @@ a:hover {
 }
 
 .btn-secondary {
-    /* Loversnmore Secondary Button - White with Purple Border */
-    color: #4F1DA1;
-    background-color: #ffffff;
-    border: 2px solid #4F1DA1;
-    border-radius: 12px;
-    padding: 12px 24px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    font-size: 16px;
+    color: #222222;
+    background-color: transparent;
+    border: 2px solid #ec9cae;
+    border-color: #ec9cae;
     transition: all 0.3s ease-in-out;
 
     &:hover,
     &:focus,
     &:active {
-        color: #4F1DA1 !important;
-        background-color: #F4E9FF;
-        border-color: #4F1DA1;
-        box-shadow: 0 4px 12px rgba(79, 29, 161, 0.15);
+        color: #ffffff !important;
+        background-color: #5B3E96;
+        border-color: #5B3E96;
     }
-}
-
-/* Button Size Variants */
-.btn-sm {
-    padding: 8px 16px !important;
-    font-size: 14px !important;
-    border-radius: 8px !important;
-}
-
-.btn-lg {
-    padding: 16px 32px !important;
-    font-size: 18px !important;
-    border-radius: 16px !important;
 }
 
 .page-item.active .page-link {
@@ -339,7 +285,7 @@ a:hover {
 }
 
 a:not([href]).btn-primary {
-    color: #ffffff;
+    color: #222222;
 
     &:hover {
         color: #ffffff !important;
@@ -696,51 +642,15 @@ form.user .form-control-user {
 }
 
 .form-control {
-    /* Loversnmore Form Control Styling */
-    border: 1px solid #9B8AAE;  /* Gray inactive */
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: #2F1E4E;
-    background-color: #ffffff;
-    transition: all 0.3s ease-in-out;
+    border: 1px solid #3d3b48;
+    // color: #9596a0;
 
     &:disabled,
     &[readonly] {
-        background-color: #F4E9FF !important;  /* Lavender for disabled */
-        color: #9B8AAE;
-        cursor: not-allowed;
+        background-color: #272727 !important;
     }
     &::placeholder {
-        color: #C6B9D8;  /* Placeholder color */
-    }
-    &:focus,
-    &:active {
-        border-color: #4F1DA1;  /* Primary purple */
-        box-shadow: 0 0 0 3px rgba(79, 29, 161, 0.1);
-        outline: none;
-    }
-}
-
-/* Custom Select/Dropdown Styling */
-.custom-select {
-    border: 1px solid #9B8AAE;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: #2F1E4E;
-    background-color: #ffffff;
-    transition: all 0.3s ease-in-out;
-
-    &:focus,
-    &:active {
-        border-color: #4F1DA1;
-        box-shadow: 0 0 0 3px rgba(79, 29, 161, 0.1);
-        outline: none;
+        color: #565555;
     }
 }
 

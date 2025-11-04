@@ -27,11 +27,11 @@
 
     <?= __yesset(['dist/css/bootstrap-assets-app*.css', 'dist/css/public-assets-app*.css', 'dist/fa/css/all.min.css', 'dist/css/app-theme*.css', 'dist/css/main-design-system.css'], true) ?>
 
-    <!-- Google fonts - Poppins for Loversnmore Design System -->
+    <!-- Google fonts - Lexend for Design System -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <!-- /Google fonts -->
 
@@ -123,14 +123,14 @@
         background-color: rgba(255, 255, 255, 0.15) !important;
     }
     
-    /* Login Button - Loversnmore Gradient Design */
+    /* Login Button - Enhanced specificity for text visibility */
     #mainNav .lw-login-btn,
     #mainNav .lw-login-btn:link,
     #mainNav .lw-login-btn:visited {
-        background: linear-gradient(135deg, #4F1DA1, #E78AB0) !important; /* Loversnmore Gradient */
-        color: #ffffff !important;
-        border: none !important;
-        border-radius: var(--lw-radius-md) !important;
+        background: white !important;
+        color: #222222 !important;
+        border: 2px solid #ec9cae !important;
+        border-radius: var(--lw-radius-full) !important;
         font-family: var(--lw-font-family) !important;
         font-weight: 600 !important;
         font-size: var(--lw-font-size-base) !important;
@@ -138,15 +138,15 @@
         transition: var(--lw-transition);
         margin-left: 8px;
         text-decoration: none !important;
-        box-shadow: 0 4px 12px rgba(79, 29, 161, 0.2);
     }
 
     #mainNav .lw-login-btn:hover,
     #mainNav .lw-login-btn:focus {
-        background: linear-gradient(135deg, #5B2BB5, #F4A5C4) !important; /* Lighter gradient */
+        background: #5B3E96 !important;
         color: #ffffff !important;
+        border-color: #5B3E96 !important;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(79, 29, 161, 0.3);
+        box-shadow: 0 8px 20px rgba(91, 62, 150, 0.3);
         text-decoration: none !important;
     }
     
@@ -240,12 +240,12 @@
     
     /* Masthead text styling is now handled above */
     
-    /* Get Started Button - Loversnmore Gradient */
+    /* Get Started Button */
     .lw-special-btn {
-        background: linear-gradient(135deg, #4F1DA1, #E78AB0) !important; /* Loversnmore Gradient */
-        color: #ffffff !important;
-        border: none !important;
-        border-radius: var(--lw-radius-md) !important;
+        background: transparent !important;
+        color: #222222 !important;
+        border: 2px solid #ec9cae !important;
+        border-radius: var(--lw-radius-full) !important;
         font-family: var(--lw-font-family) !important;
         font-weight: 600;
         font-size: var(--lw-font-size-lg) !important;
@@ -253,14 +253,15 @@
         text-transform: none !important;
         letter-spacing: 0.5px;
         transition: var(--lw-transition);
-        box-shadow: 0 8px 25px rgba(79, 29, 161, 0.2);
+        box-shadow: 0 8px 25px rgba(236, 156, 174, 0.3);
     }
 
     .lw-special-btn:hover {
-        background: linear-gradient(135deg, #5B2BB5, #F4A5C4) !important; /* Lighter gradient */
+        background: #5B3E96 !important;
         color: #ffffff !important;
+        border-color: #5B3E96 !important;
         transform: translateY(-3px);
-        box-shadow: 0 12px 35px rgba(79, 29, 161, 0.3);
+        box-shadow: 0 12px 35px rgba(91, 62, 150, 0.3);
         text-decoration: none;
     }
     
@@ -334,35 +335,35 @@
         box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2) !important;
     }
     
-    /* Search Button - Loversnmore Gradient */
+    /* Search Button */
     .lw-search-btn {
-        background: linear-gradient(135deg, #4F1DA1, #E78AB0) !important; /* Loversnmore Gradient */
-        color: #ffffff !important;
-        border: none !important;
-        border-radius: var(--lw-radius-md) !important;
+        background: transparent !important;
+        color: #222222 !important;
+        border: 2px solid #ec9cae !important;
+        border-radius: var(--lw-radius-full) !important;
         font-family: var(--lw-font-family) !important;
         font-weight: 600;
         font-size: var(--lw-font-size-base);
         padding: 12px 24px !important;
         transition: var(--lw-transition);
         height: auto !important;
-        box-shadow: 0 4px 12px rgba(79, 29, 161, 0.2);
         text-transform: none !important;
     }
 
     .lw-search-btn:hover {
-        background: linear-gradient(135deg, #5B2BB5, #F4A5C4) !important; /* Lighter gradient */
+        background: #5B3E96 !important;
         color: #ffffff !important;
+        border-color: #5B3E96 !important;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(79, 29, 161, 0.3);
+        box-shadow: 0 8px 20px rgba(91, 62, 150, 0.3);
     }
-
-    /* Feature Button - Loversnmore Gradient */
+    
+    /* Feature Button */
     .lw-feature-btn {
-        background: linear-gradient(135deg, #4F1DA1, #E78AB0) !important; /* Loversnmore Gradient */
-        color: #ffffff !important;
-        border: none !important;
-        border-radius: var(--lw-radius-md) !important;
+        background: transparent !important;
+        color: #222222 !important;
+        border: 2px solid #ec9cae !important;
+        border-radius: var(--lw-radius-full) !important;
         font-family: var(--lw-font-family) !important;
         font-weight: 600;
         font-size: var(--lw-font-size-base);
@@ -370,12 +371,12 @@
         transition: var(--lw-transition);
         text-transform: none !important;
         text-decoration: none;
-        box-shadow: 0 4px 12px rgba(79, 29, 161, 0.2);
     }
 
     .lw-feature-btn:hover {
-        background: linear-gradient(135deg, #5B2BB5, #F4A5C4) !important; /* Lighter gradient */
+        background: #5B3E96 !important;
         color: #ffffff !important;
+        border-color: #5B3E96 !important;
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(91, 62, 150, 0.3);
         text-decoration: none;
@@ -589,18 +590,16 @@
     }
     
     .btn-primary {
-        background: linear-gradient(135deg, #4F1DA1, #E78AB0) !important;
+        background: var(--lw-gradient-main) !important;
         border: none !important;
         color: var(--lw-white) !important;
         font-weight: 600;
-        border-radius: 12px !important;
-        box-shadow: 0 4px 12px rgba(79, 29, 161, 0.2);
     }
-
+    
     .btn-primary:hover {
-        background: linear-gradient(135deg, #5B2BB5, #F4A5C4) !important;
+        background: var(--lw-primary-dark) !important;
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(79, 29, 161, 0.3);
+        box-shadow: 0 8px 20px rgba(51, 25, 107, 0.3);
         color: var(--lw-white) !important;
     }
     
@@ -1115,6 +1114,45 @@
         margin-bottom: var(--lw-space-2xl) !important;
     }
     
+    /* Enhanced Get Started Button */
+    .lw-special-btn {
+        background: transparent !important;
+        color: #222222 !important;
+        border: 2px solid #ec9cae !important;
+        border-radius: var(--lw-radius-full) !important;
+        font-weight: 700 !important;
+        font-size: var(--lw-font-size-lg) !important;
+        padding: 18px 40px !important;
+        letter-spacing: 0.5px;
+        text-transform: none !important;
+        box-shadow: 0 15px 35px rgba(236, 156, 174, 0.3), 0 5px 15px rgba(236, 156, 174, 0.2) !important;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .lw-special-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(91, 62, 150, 0.2), transparent);
+        transition: left 0.6s;
+    }
+
+    .lw-special-btn:hover {
+        background: #5B3E96 !important;
+        border-color: #5B3E96 !important;
+        transform: translateY(-5px) !important;
+        box-shadow: 0 25px 50px rgba(91, 62, 150, 0.3), 0 10px 25px rgba(91, 62, 150, 0.2) !important;
+        color: #ffffff !important;
+    }
+
+    .lw-special-btn:hover::before {
+        left: 100%;
+    }
     
     /* Modern Section Designs */
     .lw-section-block {
@@ -1222,6 +1260,47 @@
         transform: translateY(-2px);
     }
     
+    /* Enhanced Search Button */
+    .lw-search-btn {
+        height: 60px !important;
+        background: transparent !important;
+        color: #222222 !important;
+        border: 2px solid #ec9cae !important;
+        font-weight: 700 !important;
+        font-size: var(--lw-font-size-base) !important;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        box-shadow: 0 8px 25px rgba(236, 156, 174, 0.3) !important;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .lw-search-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(91, 62, 150, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .lw-search-btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .lw-search-btn:hover {
+        background: #5B3E96 !important;
+        border-color: #5B3E96 !important;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 15px 35px rgba(91, 62, 150, 0.4) !important;
+        color: #ffffff !important;
+    }
     
     /* Premium Card Design */
     .card {
@@ -1291,6 +1370,43 @@
         background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%) !important;
     }
     
+    .lw-feature-btn {
+        background: transparent !important;
+        color: #222222 !important;
+        border: 2px solid #ec9cae !important;
+        padding: 16px 32px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        box-shadow: 0 10px 25px rgba(236, 156, 174, 0.3);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .lw-feature-btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(91, 62, 150, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .lw-feature-btn:hover {
+        background: #5B3E96 !important;
+        border-color: #5B3E96 !important;
+        color: #ffffff !important;
+    }
+
+    .lw-feature-btn:hover::after {
+        width: 300px;
+        height: 300px;
+    }
     
     /* Enhanced Card Icons */
     .card-icon {
@@ -1476,13 +1592,9 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container-fluid">
             <a class="navbar-brand js-scroll-trigger" href="{{ url('') }}#page-top">
-                <!-- Logo will be added later -->
-                 {{-- 
-                     <img class="lw-logo-img" src="<?= getStoreSettings('logo_image_url') ?>"
+                <img class="lw-logo-img" src="<?= getStoreSettings('logo_image_url') ?>"
                              alt="<?= getStoreSettings('name') ?>" loading="eager">
-                    
-                    --}}
-            </a>
+                    </a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                 data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
                 aria-label="Toggle navigation">

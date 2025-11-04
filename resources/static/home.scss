@@ -1,6 +1,5 @@
-/* Loversnmore Design System - Landing Page */
 body {
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: "Varela Round";
 }
 
 #mainNav {
@@ -11,8 +10,8 @@ body {
     .navbar-toggler {
         font-size: 80%;
         padding: 0.75rem;
-        color: #E78AB0; /* Loversnmore Pink */
-        border: 1px solid #E78AB0;
+        color: #c61d61;
+        border: 1px solid #c61d61;
 
         &:focus {
             outline: none;
@@ -82,17 +81,17 @@ body {
                 border-bottom: 0.25rem solid transparent;
 
                 &:hover {
-                    color: #E78AB0; /* Loversnmore Pink */
+                    color: #c61d61;
                 }
 
                 &:active {
-                    color: #4F1DA1; /* Loversnmore Purple */
+                    color: #467370;
                 }
 
                 &.active {
-                    color: #E78AB0; /* Loversnmore Pink */
+                    color: #c61d61;
                     outline: none;
-                    border-bottom: 0.25rem solid #E78AB0;
+                    border-bottom: 0.25rem solid #c61d61;
                 }
             }
         }
@@ -172,24 +171,20 @@ body {
 }
 
 .btn.lw-special-btn {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Qwigley", cursive;
     font-size: 4em;
-    font-weight: 600;
     text-transform: none;
     padding: 10px 40px 0 40px;
     backdrop-filter: blur(2px) grayscale(0.4);
-    background: linear-gradient(135deg, #4F1DA1, #E78AB0); /* Loversnmore Gradient */
-    border: none;
-    border-radius: 12px;
-    color: #ffffff;
+    background-color: transparent;
+    border: 2px solid #ec9cae;
+    color: #222222;
     letter-spacing: 0.25rem;
     transition: all 0.3s ease-in-out;
-    box-shadow: 0 4px 12px rgba(79, 29, 161, 0.2);
 
     &:hover {
-        background: linear-gradient(135deg, #5B2BB5, #F4A5C4); /* Lighter gradient */
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(79, 29, 161, 0.3);
+        background-color: #5B3E96;
+        border-color: #5B3E96;
         color: #ffffff;
     }
 
@@ -202,7 +197,7 @@ body {
 .btn {
     box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
     padding: 1.25rem 2rem;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Varela Round";
     font-size: 80%;
     text-transform: uppercase;
     letter-spacing: 0.15rem;
@@ -242,7 +237,7 @@ body {
 @media (min-width: 992px) {
     .features-section .featured-text {
         padding: 0 0 0 2rem;
-        border-left: 0.5rem solid #E78AB0; /* Loversnmore Pink */
+        border-left: 0.5rem solid #c61d61;
     }
 }
 
@@ -251,7 +246,7 @@ body {
         padding: 5rem;
 
         hr {
-            border-color: #E78AB0; /* Loversnmore Pink */
+            border-color: #c61d61;
             border-width: 0.25rem;
             width: 30%;
         }
@@ -277,7 +272,7 @@ body {
         box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
         padding: 1.25rem 2rem;
         height: auto;
-        font-family: 'Poppins', sans-serif;
+        font-family: "Varela Round";
         font-size: 80%;
         text-transform: uppercase;
         letter-spacing: 0.15rem;
@@ -310,17 +305,17 @@ body {
 
     .card {
         border: 0;
-        border-bottom: 0.25rem solid #E78AB0; /* Loversnmore Pink */
+        border-bottom: 0.25rem solid #c61d61;
 
         h4 {
             font-size: 0.8rem;
-            font-family: 'Poppins', sans-serif;
+            font-family: "Varela Round";
             text-transform: uppercase;
             letter-spacing: 0.15rem;
         }
 
         hr {
-            border-color: #E78AB0; /* Loversnmore Pink */
+            border-color: #c61d61;
             border-width: 0.25rem;
             width: 3rem;
         }

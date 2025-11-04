@@ -1,28 +1,23 @@
 /* Main Design System CSS - Reusable Components for Dating App */
 
-/* Import Google Fonts - Loversnmore Brand */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
 
 /* =================
-   CSS CUSTOM PROPERTIES (CSS Variables) - Loversnmore Design System
+   CSS CUSTOM PROPERTIES (CSS Variables)
    ================= */
 :root {
-    /* Primary Colors - Loversnmore Brand */
-    --lw-primary: #4F1DA1;  /* Primary Purple */
-    --lw-secondary: #E78AB0;  /* Accent Pink */
-    --lw-primary-light: #5B2BB5;  /* Lighter purple for hover */
-    --lw-primary-dark: #3D1680;  /* Darker purple */
-    --lw-lavender: #F4E9FF;  /* Lavender background */
-    --lw-text-primary: #2F1E4E;  /* Main text */
-    --lw-gray-inactive: #9B8AAE;  /* Inactive/borders */
-    --lw-placeholder: #C6B9D8;  /* Input placeholders */
-
-    /* Gradient Colors - Loversnmore Brand */
-    --lw-gradient-start: #4F1DA1;  /* Purple */
-    --lw-gradient-end: #E78AB0;  /* Pink */
-    --lw-gradient-light: linear-gradient(135deg, rgba(79, 29, 161, 0.1), rgba(231, 138, 176, 0.1));
-    --lw-gradient-main: linear-gradient(135deg, #4F1DA1, #E78AB0);
-    --lw-gradient-vertical: linear-gradient(180deg, #4F1DA1, #E78AB0);
+    /* Primary Colors */
+    --lw-primary: #33196b;
+    --lw-secondary: #645290;
+    --lw-primary-light: #7c3aed;
+    --lw-primary-dark: #1e1b4b;
+    
+    /* Gradient Colors */
+    --lw-gradient-start: #5B3E96;
+    --lw-gradient-end: #5B3E96;
+    --lw-gradient-light: linear-gradient(135deg, rgba(197, 62, 141, 0.1), rgba(139, 92, 246, 0.1));
+    --lw-gradient-main: linear-gradient(135deg, var(--lw-gradient-start), var(--lw-gradient-end));
     
     /* Neutral Colors */
     --lw-white: #ffffff;
@@ -57,8 +52,8 @@
     --lw-shadow-medium: rgba(0, 0, 0, 0.15);
     --lw-shadow-heavy: rgba(0, 0, 0, 0.25);
     
-    /* Typography - Loversnmore Brand */
-    --lw-font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    /* Typography */
+    --lw-font-family: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --lw-font-size-xs: 12px;
     --lw-font-size-sm: 14px;
     --lw-font-size-base: 16px;
@@ -804,28 +799,28 @@
 }
 
 #accordionSidebar {
-    background: linear-gradient(180deg, #4F1DA1, #E78AB0) !important;  /* Loversnmore vertical gradient */
+    background: #5B3E96 !important;
     box-shadow: 4px 0 15px rgba(0,0,0,0.2);
     border-bottom-left-radius: 40px;
 }
 
 #accordionSidebar .nav-link:hover {
-    background: rgba(244,233,255,0.2) !important;  /* Lavender hover */
+    background: rgba(255,255,255,0.1) !important;
     color: white !important;
     transform: translateX(4px);
 }
 
 #accordionSidebar .nav-link:hover i {
-    color: #F4E9FF !important;  /* Lavender icon */
+    color: #e91e63 !important;
 }
 
 #accordionSidebar .nav-link.active {
-    background: rgba(244,233,255,0.25) !important;  /* Lavender active */
+    background: rgba(255,255,255,0.15) !important;
     color: white !important;
 }
 
 #accordionSidebar .nav-link.active i {
-    color: #F4E9FF !important;  /* Lavender icon */
+    color: #e91e63 !important;
 }
 
 /* Default icon colors */
@@ -836,22 +831,22 @@
 
 .lw-featured-users-block .btn:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 8px 20px rgba(79, 29, 161, 0.3) !important;  /* Purple shadow */
+    box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3) !important;
 }
 
 .lw-featured-users a:hover img {
-    border-color: #E78AB0 !important;  /* Pink border */
+    border-color: #e91e63 !important;
     transform: scale(1.05);
 }
 
 .filepond--root .filepond--item-panel {
-    background: linear-gradient(135deg, #4F1DA1, #E78AB0) !important;  /* Loversnmore gradient */
-}
+          background: #5B3E96 !important; /* Replace with your desired color code or name */
+    }
 .filepond--root .filepond--image-preview {
-    background-color: #4F1DA1;  /* Primary purple */
+    background-color: #3498db; /* A shade of blue */
 }
 .filepond--panel-root {
-    background: linear-gradient(135deg, #4F1DA1, #E78AB0) !important;  /* Loversnmore gradient */
+    background: #5B3E96 !important;
 }
 .filepond--drop-label {
     color: black;

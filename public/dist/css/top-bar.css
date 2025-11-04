@@ -76,19 +76,19 @@
 }
 
 .lw-form-input, .lw-form-select {
-    border: 1px solid #9B8AAE !important;
-    border-radius: 8px !important;
+    border: 2px solid rgba(197, 62, 141, 0.3) !important;
+    border-radius: var(--lw-radius-full) !important;
     padding: 12px 18px !important;
     font-family: var(--lw-font-family) !important;
-    color: #2F1E4E !important;
+    color: var(--lw-primary) !important;
     background: var(--lw-white) !important;
     transition: var(--lw-transition) !important;
     font-size: var(--lw-font-size-sm) !important;
 }
 
 .lw-form-input:focus, .lw-form-select:focus {
-    border-color: #4F1DA1 !important;
-    box-shadow: 0 0 0 3px rgba(79, 29, 161, 0.1) !important;
+    border-color: var(--lw-gradient-end) !important;
+    box-shadow: 0 0 0 3px rgba(197, 62, 141, 0.1) !important;
     outline: none !important;
 }
 
@@ -150,7 +150,7 @@
 .lw-search-btn {
     background: var(--lw-gradient-main) !important;
     border: none !important;
-    border-radius: 12px !important;
+    border-radius: var(--lw-radius-full) !important;
     color: white !important;
     padding: 14px 28px !important;
     font-family: var(--lw-font-family) !important;

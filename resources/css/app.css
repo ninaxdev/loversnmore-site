@@ -1,73 +1,11 @@
 @import url('../../public/dist/css/main-design-system.css');
 
-@tailwind base;
+@tailwind base; 
 @tailwind components;
 @tailwind utilities;
+/* Import our custom design system */
 
-/* Loversnmore Design System - CSS Variables */
-@layer base {
-  :root {
-    /* Brand Colors */
-    --lw-primary-color: #4F1DA1; /* Primary Purple */
-    --lw-secondary-color: #E78AB0; /* Accent Pink */
-    --lw-lavender-bg: #F4E9FF; /* Lavender Background */
-    --lw-text-primary: #2F1E4E; /* Main text color */
-    --lw-gray-inactive: #9B8AAE; /* Muted gray */
-    --lw-white: #FFFFFF;
-    --lw-placeholder: #C6B9D8; /* Input placeholder */
-    --lw-shadow-color: #E7DFF2; /* Card shadow */
-    --lw-page-bg-color: #FFFFFF; /* Page background */
-
-    /* Gradients */
-    --lw-gradient-main: linear-gradient(135deg, #4F1DA1, #E78AB0);
-    --lw-gradient-vertical: linear-gradient(180deg, #4F1DA1, #E78AB0);
-    --lw-gradient-start: #4F1DA1;
-    --lw-gradient-end: #E78AB0;
-
-    /* Typography */
-    --lw-font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-
-    /* Spacing */
-    --lw-space-base: 8px;
-    --lw-space-sm: 8px;
-    --lw-space-md: 16px;
-    --lw-space-lg: 24px;
-    --lw-space-xl: 32px;
-    --lw-space-2xl: 48px;
-    --lw-space-3xl: 64px;
-
-    /* Border Radius */
-    --lw-radius-sm: 8px;
-    --lw-radius-md: 12px;
-    --lw-radius-lg: 16px;
-    --lw-radius-xl: 20px;
-    --lw-radius-full: 9999px;
-
-    /* Transitions */
-    --lw-transition: all 0.3s ease-in-out;
-
-    /* Danger color (for logout, delete actions) */
-    --lw-danger: #EF4444;
-  }
-
-  /* Dark theme overrides (if needed) */
-  [data-theme="dark"] {
-    --lw-page-bg-color: #1b1b23;
-    --lw-text-primary: #d8d8d8;
-  }
-
-  /* Sidebar gradient styling */
-  .sidebar-dark {
-    background: var(--lw-gradient-vertical) !important;
-  }
-
-  /* Apply Poppins font globally */
-  body {
-    font-family: var(--lw-font-family);
-  }
-}
-
-/* Additional custom styles */
+/* Additional custom styles can go here */
 
 /* Component layer for reusable Tailwind components */
 @layer components {

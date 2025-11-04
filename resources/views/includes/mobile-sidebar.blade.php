@@ -1,8 +1,8 @@
 <!-- Mobile Sidebar Overlay -->
 <div id="mobileSidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity duration-300 lg:hidden" onclick="closeMobileSidebar()"></div>
 
-<!-- Mobile Sidebar - Loversnmore Gradient -->
-<div id="mobileSidebar" class="fixed top-0 left-0 h-full w-80 max-w-[85vw] z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto shadow-2xl" style="background: linear-gradient(180deg, #4F1DA1, #E78AB0);">
+<!-- Mobile Sidebar -->
+<div id="mobileSidebar" class="fixed top-0 left-0 h-full w-80 max-w-[85vw] z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:hidden overflow-y-auto shadow-2xl" style="background: #5B3E96;">
     
     <!-- Sidebar - Brand -->
     <a class="flex items-center justify-center" href="<?= url('/home') ?>" style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
@@ -92,7 +92,7 @@
                 $showLike = $featurePlans['show_like']['select_user'];
                 ?>
                 @if($showLike == 2)
-                <span class="lw-premium-feature-badge lw-premium-feature-width" title="{{ __tr('This is Premium feature') }}" style="background: #4F1DA1; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fas fa-crown" style="font-size: 8px; color: white;"></i></span>
+                <span class="lw-premium-feature-badge lw-premium-feature-width" title="{{ __tr('This is Premium feature') }}" style="background: #5B3E96 border-radius: 50%; width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; margin-left: 4px;"><i class="fas fa-crown" style="font-size: 8px; color: white;"></i></span>
                 @endif
             </a>
         </div>
@@ -153,7 +153,7 @@
             <?= __tr('Featured Users') ?>
         </h5>
         <div class="card-body lw-featured-users" style="padding: 16px;">
-            <button type="button" class="btn btn-icon mb-3" id="lw-mobile-featured-users" title="{{ __tr('Get yourself in Featured Users') }}" onclick="closeMobileSidebar()" style="background: linear-gradient(135deg, #4F1DA1, #E78AB0); color: white; border: none; border-radius: 8px; padding: 12px 16px; font-family: var(--lw-font-family); font-weight: 600; width: 100%; transition: all 0.3s ease; transform: translateY(0);"> 
+            <button type="button" class="btn btn-icon mb-3" id="lw-mobile-featured-users" title="{{ __tr('Get yourself in Featured Users') }}" onclick="closeMobileSidebar()" style="background: #5B3E96 color: white; border: none; border-radius: 8px; padding: 12px 16px; font-family: var(--lw-font-family); font-weight: 600; width: 100%; transition: all 0.3s ease; transform: translateY(0);"> 
                 <i class="fa fa-user-plus mr-2"></i><span><?= __tr('Be Featured') ?></span>
             </button>
             @if(!__isEmpty(getFeatureUserList()))
@@ -171,36 +171,6 @@
     <!-- Spacer for bottom navigation -->
     <div style="height: 80px;"></div>
 </div>
-
-<style>
-    /* Mobile Sidebar Hover Effects - Loversnmore Design */
-    #mobileSidebar .nav-item a:hover {
-        background: rgba(244, 233, 255, 0.2) !important; /* Lavender hover */
-    }
-
-    #mobileSidebar .nav-item a:active,
-    #mobileSidebar .nav-item.active a {
-        background: rgba(244, 233, 255, 0.25) !important; /* Lavender active */
-    }
-
-    /* Featured Users Button Hover */
-    #lw-mobile-featured-users:hover {
-        background: linear-gradient(135deg, #5B2BB5, #F4A5C4) !important;
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 16px rgba(79, 29, 161, 0.3) !important;
-    }
-
-    /* Featured User Thumbnails Hover */
-    #mobileSidebar .lw-featured-users a:hover img {
-        border-color: #E78AB0 !important; /* Pink border */
-        transform: scale(1.05);
-    }
-
-    /* Close Button Hover */
-    #mobileSidebar button:hover {
-        background: rgba(244, 233, 255, 0.3) !important;
-    }
-</style>
 
 <script>
     // Open mobile sidebar
