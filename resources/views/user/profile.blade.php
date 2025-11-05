@@ -18,6 +18,7 @@
 
 @lwPush('header')
 <link rel="stylesheet" href="{{ __yesset('dist/css/vendorlibs-leaflet.css') }}" />
+<link rel="stylesheet" href="{{ asset('dist/css/mobile-profile.css') }}" />
 <style>
 	#staticMapId {
 		height: 300px;
@@ -269,7 +270,6 @@
 $latitude = (__ifIsset($userProfileData['latitude'], $userProfileData['latitude'], '21.120779'));
 $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitude'], '79.0544606'));
 @endphp
-
 <!-- if user block then don't show profile page content -->
 {{-- @if($isBlockUser)
 <!-- info message -->
@@ -285,7 +285,222 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 </div>
 <!-- / info message -->
 @else
-<div class="lw-contains-profile-fields">
+
+<!-- NEW MOBILE PROFILE VIEW - TAILWIND CSS -->
+<div class="md:hidden bg-white pb-20 font-lw" style="font-family: 'Poppins', sans-serif;">
+	<!-- Profile Header -->
+	<div class="relative p-4 bg-white">
+		<a href="https://google.com" class="absolute left-4 top-4 w-10 h-10 bg-white border-0 rounded-lg flex items-center justify-center text-[#2F1E4E] text-xl z-10">
+			<i class="fas fa-chevron-left"></i>
+		</a>
+		<h1 class="text-center font-bold text-2xl text-[#2F1E4E] m-0 py-2">{{ __tr('Profile') }}</h1>
+	</div>
+
+	<!-- Profile Picture and Name -->
+	<div class="flex flex-col items-center px-4 py-6 bg-white">
+		<div class="relative w-[280px] h-[280px] mb-4">
+			<img src="{{ imageOrNoImageAvailable($userData['profilePicture']) }}"
+				 alt="{{ $userData['fullName'] }}"
+				 class="w-[280px] h-[280px] rounded-full object-cover border-[6px] border-[#F4E9FF] bg-[#F4E9FF] lw-lazy-img"
+				 data-src="{{ imageOrNoImageAvailable($userData['profilePicture']) }}">
+		</div>
+		<h2 class="font-semibold text-[28px] text-[#2F1E4E] mt-2 mb-0">
+			{{ $userData['fullName'] }}@if(!__isEmpty($userData['userAge'])), {{ __tr($userData['userAge']) }}@endif
+		</h2>
+	</div>
+
+	<!-- Tab Navigation -->
+	<div class="flex justify-center items-center gap-0 bg-[#F4E9FF] rounded-xl p-1 mx-4 mb-6">
+		<button class="lw-mobile-tab flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border-0 rounded-lg font-medium text-sm text-[#4F1DA1] cursor-pointer transition-all shadow-sm" data-tab="about">
+			<i class="fas fa-star text-base"></i>
+			<span>{{ __tr('About') }}</span>
+		</button>
+		<button class="lw-mobile-tab flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-transparent border-0 rounded-lg font-medium text-sm text-[#9B8AAE] cursor-pointer transition-all" data-tab="info">
+			<i class="fas fa-user text-base"></i>
+			<span>{{ __tr('Info') }}</span>
+		</button>
+		<button class="lw-mobile-tab flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-transparent border-0 rounded-lg font-medium text-sm text-[#9B8AAE] cursor-pointer transition-all" data-tab="photos">
+			<i class="fas fa-images text-base"></i>
+			<span>{{ __tr('Photos') }}</span>
+		</button>
+	</div>
+
+	<!-- Tab Content -->
+	<div class="px-4 pb-6">
+		<!-- About Tab -->
+		<div class="lw-mobile-tab-content" id="mobile-about-tab">
+			@if(isset($userProfileData['aboutMe']) and $userProfileData['aboutMe'])
+				<p class="font-normal text-base leading-relaxed text-[#2F1E4E] p-0 m-0">{{ $userProfileData['aboutMe'] }}</p>
+			@else
+				<div class="text-center py-12 px-4">
+					<div class="text-5xl text-[#9B8AAE] mb-4">
+						<i class="fas fa-info-circle"></i>
+					</div>
+					<p class="font-normal text-base text-[#9B8AAE]">{{ __tr('No information available') }}</p>
+				</div>
+			@endif
+		</div>
+
+		<!-- Info Tab -->
+		<div class="lw-mobile-tab-content hidden" id="mobile-info-tab">
+			<ul class="list-none p-0 m-0">
+				@if(!__isEmpty($userSpecificationData))
+					@foreach($userSpecificationData as $specificationKey => $specifications)
+						@foreach($specifications['items'] as $item)
+							@if(!empty($item['value']))
+								<li class="flex justify-between items-center py-4 border-b border-[#F4E9FF] last:border-b-0">
+									<span class="font-semibold text-base text-[#2F1E4E]">{{ $item['label'] }}</span>
+									<span class="font-normal text-base text-[#2F1E4E] text-right">{{ $item['value'] }}</span>
+								</li>
+							@endif
+						@endforeach
+					@endforeach
+				@endif
+
+		
+
+				@if(isset($userProfileData['formatted_education']) and $userProfileData['formatted_education'])
+					<li class="flex justify-between items-center py-4 border-b border-[#F4E9FF] last:border-b-0">
+						<span class="font-semibold text-base text-[#2F1E4E]">{{ __tr('Education') }}</span>
+						<span class="font-normal text-base text-[#2F1E4E] text-right">{{ $userProfileData['formatted_education'] }}</span>
+					</li>
+				@endif
+
+				@if(isset($userProfileData['formatted_work_status']) and $userProfileData['formatted_work_status'])
+					<li class="flex justify-between items-center py-4 border-b border-[#F4E9FF] last:border-b-0">
+						<span class="font-semibold text-base text-[#2F1E4E]">{{ __tr('Occupation') }}</span>
+						<span class="font-normal text-base text-[#2F1E4E] text-right">{{ $userProfileData['formatted_work_status'] }}</span>
+					</li>
+				@endif
+			</ul>
+
+			@if(__isEmpty($userSpecificationData) and empty($userProfileData['formatted_body_type']) and empty($userProfileData['formatted_education']) and empty($userProfileData['formatted_work_status']))
+				<div class="text-center py-12 px-4">
+					<div class="text-5xl text-[#9B8AAE] mb-4">
+						<i class="fas fa-user"></i>
+					</div>
+					<p class="font-normal text-base text-[#9B8AAE]">{{ __tr('No profile information available') }}</p>
+				</div>
+			@endif
+		</div>
+
+		<!-- Photos Tab -->
+		<div class="lw-mobile-tab-content hidden" id="mobile-photos-tab">
+			@if(!__isEmpty($photosData))
+				<div class="lw-masonry-grid" style="column-count: 2; column-gap: 0.5rem; margin: 0;">
+					@foreach($photosData as $key => $photo)
+						<div class="lw-masonry-item" style="break-inside: avoid; margin-bottom: 0.5rem;">
+							<img src="{{ imageOrNoImageAvailable($photo['image_url']) }}"
+								 alt="Photo {{ $key + 1 }}"
+								 class="w-full rounded-xl cursor-pointer transition-transform active:scale-95 lw-photoswipe-gallery-img lw-lazy-img"
+								 style="display: block; width: 100%; height: auto; border-radius: 0.75rem;"
+								 data-img-index="{{ $key }}"
+								 data-src="{{ imageOrNoImageAvailable($photo['image_url']) }}">
+						</div>
+					@endforeach
+				</div>
+			@else
+				<div class="text-center py-12 px-4">
+					<div class="text-5xl text-[#9B8AAE] mb-4">
+						<i class="fas fa-images"></i>
+					</div>
+					<p class="font-normal text-base text-[#9B8AAE]">{{ __tr('No photos available') }}</p>
+				</div>
+			@endif
+		</div>
+	</div>
+
+	<!-- Edit Profile Button (only for own profile) -->
+	@if($isOwnProfile)
+		<button data-toggle="modal" data-target="#mobileEditProfileModal" class="block w-[calc(100%-32px)] mx-4 my-6 px-6 py-4 bg-gradient-to-r from-[#4F1DA1] to-[#E78AB0] border-0 rounded-xl font-semibold text-lg text-white text-center cursor-pointer shadow-lg transition-all hover:from-[#5B2BB5] hover:to-[#F4A5C4] hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0">
+			{{ __tr('Edit Profile') }}
+		</button>
+	@endif
+</div>
+<!-- /NEW MOBILE PROFILE VIEW -->
+
+<!-- Mobile Edit Profile Modal -->
+@if($isOwnProfile)
+<div class="modal fade" id="mobileEditProfileModal" tabindex="-1" role="dialog" aria-labelledby="mobileEditProfileModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document" style="margin: 0; max-width: 100%; height: 100vh;">
+		<div class="modal-content" style="height: 100%; border-radius: 0; border: none;">
+			<!-- Modal Header -->
+			<div class="modal-header" style="background: white; border-bottom: 1px solid #E5E7EB; padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: absolute; left: 1rem; background: transparent; border: none; padding: 0; margin: 0; font-size: 24px; color: #6B7280; opacity: 1;">
+					<i class="fas fa-chevron-left"></i>
+				</button>
+				<h5 class="modal-title font-semibold text-xl text-[#2F1E4E]" id="mobileEditProfileModalLabel" style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 20px; color: #2F1E4E; margin: 0 auto;">
+					{{ __tr('Info') }}
+				</h5>
+			</div>
+
+			<!-- Modal Body -->
+			<div class="modal-body" style="padding: 1.5rem; overflow-y: auto; background: white;">
+				<form class="lw-ajax-form lw-form" method="post" action="{{ route('user.write.mobile_profile_update') }}" data-callback="onMobileProfileUpdate" id="lwMobileEditProfileForm">
+
+					<!-- Name Field -->
+					<div class="mb-4" style="margin-bottom: 1rem;">
+						<div style="background: #F9F5FF; border: 1px solid #F4E9FF; border-radius: 16px; padding: 1rem 1.25rem;">
+							<label class="d-block mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 400; font-size: 14px; color: #2F1E4E; margin-bottom: 0.25rem;">
+								{{ __tr('Name') }}
+							</label>
+							<input type="text" name="first_name" class="border-0 bg-transparent w-100 p-0" value="{{ $userData['first_name'] }}" required style="font-family: 'Poppins', sans-serif; font-size: 18px; color: #2F1E4E; outline: none;">
+						</div>
+					</div>
+
+					<!-- Age Field -->
+					<div class="mb-4" style="margin-bottom: 1rem;">
+						<div style="background: #F9F5FF; border: 1px solid #F4E9FF; border-radius: 16px; padding: 1rem 1.25rem;">
+							<label class="d-block mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 400; font-size: 14px; color: #2F1E4E; margin-bottom: 0.25rem;">
+								{{ __tr('Age') }}
+							</label>
+							<input type="number" name="age" class="border-0 bg-transparent w-100 p-0" value="{{ $userData['userAge'] }}" min="18" max="100" style="font-family: 'Poppins', sans-serif; font-size: 18px; color: #2F1E4E; outline: none;">
+						</div>
+					</div>
+
+					<!-- Location Field -->
+					<div class="mb-4" style="margin-bottom: 1rem;">
+						<div style="background: #F9F5FF; border: 1px solid #F4E9FF; border-radius: 16px; padding: 1rem 1.25rem;">
+							<label class="d-block mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 400; font-size: 14px; color: #2F1E4E; margin-bottom: 0.25rem;">
+								{{ __tr('Location') }}
+							</label>
+							<input type="text"
+								   id="mobileLocationSearch"
+								   class="border-0 bg-transparent w-100 p-0"
+								   value="{{ $userProfileData['city'] ?? '' }}{{ $userProfileData['city'] && $userProfileData['country_name'] ? ', ' : '' }}{{ $userProfileData['country_name'] ?? '' }}"
+								   placeholder="{{ __tr('Search for a city...') }}"
+								   autocomplete="off"
+								   style="font-family: 'Poppins', sans-serif; font-size: 18px; color: #2F1E4E; outline: none;">
+							<input type="hidden" name="selected_city" id="selectedCityId" value="{{ $userProfileData['cities__id'] ?? '' }}">
+							<!-- Autocomplete dropdown -->
+							<div id="mobileLocationResults" style="display: none; position: absolute; background: white; border: 1px solid #E5E7EB; border-radius: 8px; margin-top: 0.5rem; max-height: 200px; overflow-y: auto; z-index: 1000; width: calc(100% - 3rem); box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
+						</div>
+					</div>
+
+					<!-- About Me Field -->
+					<div class="mb-4" style="margin-bottom: 1rem;">
+						<div style="background: #F9F5FF; border: 1px solid #F4E9FF; border-radius: 16px; padding: 1rem 1.25rem;">
+							<label class="d-block mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 400; font-size: 14px; color: #2F1E4E; margin-bottom: 0.25rem;">
+								{{ __tr('About Me') }}
+							</label>
+							<textarea name="about_me" class="border-0 bg-transparent w-100 p-0" rows="5" style="font-family: 'Poppins', sans-serif; font-size: 18px; color: #2F1E4E; resize: vertical; min-height: 120px; outline: none;">{{ $userProfileData['aboutMe'] ?? '' }}</textarea>
+						</div>
+					</div>
+
+					<!-- Submit Button -->
+					<button type="submit" class="btn btn-primary w-100" style="width: 100%; padding: 1rem; background: linear-gradient(90deg, #4F1DA1 0%, #E78AB0 100%); border: none; border-radius: 12px; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 16px; color: white; cursor: pointer; margin-top: 1.5rem;">
+						{{ __tr('Save Changes') }}
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+@endif
+<!-- /Mobile Edit Profile Modal -->
+
+<!-- DESKTOP PROFILE VIEW -->
+<div class="lw-contains-profile-fields lw-desktop-profile-view">
 <x-lw.card class="mb-6">
 <!-- Header Section -->
 <div class="relative">
@@ -1022,8 +1237,12 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	@endif
 	<!-- /User Specifications -->
 
+</div>
+<!-- /DESKTOP PROFILE VIEW -->
 
-	<!-- user report Modal-->
+
+
+<!-- user report Modal-->
 	<div class="modal fade" id="lwReportUserDialog" tabindex="-1" role="dialog" aria-labelledby="userReportModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-md" role="document">
 			<div class="modal-content">
@@ -1180,6 +1399,80 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			});
 		}
 	}
+
+	// Mobile Edit Profile Modal Callback
+	function onMobileProfileUpdate(response) {
+		if (response.reaction == 1) {
+			// Close the modal
+			$('#mobileEditProfileModal').modal('hide');
+
+			// Show success message
+			showSuccessMessage(response.data.message || '{{ __tr("Profile updated successfully") }}');
+
+			// Reload the page to show all updates
+			setTimeout(function() {
+				location.reload();
+			}, 800);
+		}
+	}
+
+	// Mobile Location Search Autocomplete
+	$(document).ready(function() {
+		let searchTimeout;
+		const $locationSearch = $('#mobileLocationSearch');
+		const $locationResults = $('#mobileLocationResults');
+		const $selectedCityId = $('#selectedCityId');
+
+		$locationSearch.on('input', function() {
+			clearTimeout(searchTimeout);
+			const searchTerm = $(this).val().trim();
+
+			if (searchTerm.length < 2) {
+				$locationResults.hide().empty();
+				$selectedCityId.val('');
+				return;
+			}
+
+			searchTimeout = setTimeout(function() {
+				// Search for cities using __DataRequest
+				__DataRequest.post('{{ route("user.read.search_static_cities") }}', {
+					search_query: searchTerm
+				}, function(response) {
+					if (response.data && response.data.length > 0) {
+						let html = '';
+						response.data.forEach(function(city) {
+							html += '<div class="location-result-item" data-city-id="' + city._id + '" data-city-name="' + city.name + ', ' + city.country_name + '" style="padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid #F3F4F6; transition: background 0.2s;" onmouseover="this.style.background=\'#F9FAFB\'" onmouseout="this.style.background=\'white\'">' +
+									'<div style="font-family: \'Poppins\', sans-serif; font-size: 14px; color: #2F1E4E;">' + city.name + ', ' + city.country_name + '</div>' +
+									'</div>';
+						});
+						$locationResults.html(html).show();
+					} else {
+						$locationResults.html('<div style="padding: 0.75rem 1rem; font-family: \'Poppins\', sans-serif; font-size: 14px; color: #9CA3AF;">{{ __tr("No cities found") }}</div>').show();
+					}
+				}, function(error) {
+					console.error('Location search error:', error);
+					$locationResults.html('<div style="padding: 0.75rem 1rem; font-family: \'Poppins\', sans-serif; font-size: 14px; color: #EF4444;">{{ __tr("Error searching cities") }}</div>').show();
+				});
+			}, 300);
+		});
+
+		// Handle city selection
+		$(document).on('click', '.location-result-item', function() {
+			const cityId = $(this).data('city-id');
+			const cityName = $(this).data('city-name');
+
+			$locationSearch.val(cityName);
+			$selectedCityId.val(cityId);
+			$locationResults.hide().empty();
+		});
+
+		// Hide results when clicking outside
+		$(document).on('click', function(e) {
+			if (!$(e.target).closest('#mobileLocationSearch, #mobileLocationResults').length) {
+				$locationResults.hide();
+			}
+		});
+	});
 
 	/**************** User Like Dislike Fetch and Callback Block Start ******************/
 	//add disabled anchor tag class on click
@@ -1555,5 +1848,38 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	// add marker
 	L.marker(["{{ $latitude }}", "{{ $longitude }}"],leafLetOptions).addTo(leafletMap);
 	@endif
+
+	// Mobile Profile Tab Navigation
+	document.addEventListener('DOMContentLoaded', function() {
+		const tabs = document.querySelectorAll('.lw-mobile-tab');
+		const tabContents = document.querySelectorAll('.lw-mobile-tab-content');
+
+		tabs.forEach(tab => {
+			tab.addEventListener('click', function() {
+				const targetTab = this.getAttribute('data-tab');
+
+				// Remove active class from all tabs
+				tabs.forEach(t => {
+					t.classList.remove('bg-white', 'text-[#4F1DA1]', 'shadow-sm');
+					t.classList.add('bg-transparent', 'text-[#9B8AAE]');
+				});
+
+				// Add active class to clicked tab
+				this.classList.remove('bg-transparent', 'text-[#9B8AAE]');
+				this.classList.add('bg-white', 'text-[#4F1DA1]', 'shadow-sm');
+
+				// Hide all tab contents
+				tabContents.forEach(content => {
+					content.classList.add('hidden');
+				});
+
+				// Show target tab content
+				const targetContent = document.getElementById(`mobile-${targetTab}-tab`);
+				if (targetContent) {
+					targetContent.classList.remove('hidden');
+				}
+			});
+		});
+	});
 </script>
 @lwPushEnd

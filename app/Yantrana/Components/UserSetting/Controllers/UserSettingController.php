@@ -184,6 +184,19 @@ class UserSettingController extends BaseController
     }
 
     /**
+     * Process mobile profile update
+     *
+     * @param \App\Yantrana\Components\UserSetting\Requests\MobileProfileUpdateRequest $request
+     * @return json object
+     *---------------------------------------------------------------- */
+    public function processMobileProfileUpdate(\App\Yantrana\Components\UserSetting\Requests\MobileProfileUpdateRequest $request)
+    {
+        $processReaction = $this->userSettingEngine->processMobileProfileUpdate($request->all());
+
+        return $this->processResponse($processReaction, [], [], true);
+    }
+
+    /**
      * Show user photos view.
      *
      * @return json object

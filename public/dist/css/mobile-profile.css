@@ -1,0 +1,283 @@
+/* Mobile Profile Page - Loversnmore Design */
+
+/* Import Poppins Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* Mobile Profile Container */
+.lw-mobile-profile-page {
+    font-family: 'Poppins', sans-serif;
+    background-color: #FFFFFF;
+    padding-bottom: 80px; /* Space for bottom nav */
+}
+
+/* Profile Header */
+.lw-mobile-profile-header {
+    position: relative;
+    padding: 16px;
+    background: #FFFFFF;
+}
+
+.lw-mobile-profile-back-btn {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    width: 40px;
+    height: 40px;
+    background: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2F1E4E;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.lw-mobile-profile-title {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #2F1E4E;
+    margin: 0;
+    padding: 8px 0;
+}
+
+/* Profile Picture Container */
+.lw-mobile-profile-picture-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+    background: #FFFFFF;
+}
+
+.lw-mobile-profile-picture-wrapper {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin-bottom: 16px;
+}
+
+.lw-mobile-profile-picture {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid #F4E9FF; /* Lavender background */
+    background: #F4E9FF;
+}
+
+.lw-mobile-profile-name {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 28px;
+    color: #2F1E4E;
+    margin: 8px 0 0 0;
+}
+
+/* Tab Navigation */
+.lw-mobile-profile-tabs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    background: #F4E9FF;
+    border-radius: 12px;
+    padding: 4px;
+    margin: 16px 16px 24px 16px;
+}
+
+.lw-mobile-profile-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #9B8AAE;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lw-mobile-profile-tab.active {
+    background: #FFFFFF;
+    color: #4F1DA1;
+    box-shadow: 0 2px 8px rgba(79, 29, 161, 0.1);
+}
+
+.lw-mobile-profile-tab i {
+    font-size: 16px;
+}
+
+/* Tab Content */
+.lw-mobile-profile-content {
+    padding: 0 16px 24px 16px;
+}
+
+.lw-mobile-profile-tab-pane {
+    display: none;
+}
+
+.lw-mobile-profile-tab-pane.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* About Section */
+.lw-mobile-about-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #2F1E4E;
+    padding: 0;
+    margin: 0;
+}
+
+/* Info Section */
+.lw-mobile-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lw-mobile-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #F4E9FF;
+}
+
+.lw-mobile-info-item:last-child {
+    border-bottom: none;
+}
+
+.lw-mobile-info-label {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #2F1E4E;
+}
+
+.lw-mobile-info-value {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: #2F1E4E;
+    text-align: right;
+}
+
+/* Photos Section */
+.lw-mobile-photos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 0;
+}
+
+.lw-mobile-photo-item {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    border-radius: 12px;
+    overflow: hidden;
+    background: #F4E9FF;
+}
+
+.lw-mobile-photo-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.lw-mobile-photo-img:active {
+    transform: scale(0.95);
+}
+
+/* Edit Profile Button */
+.lw-mobile-edit-profile-btn {
+    width: calc(100% - 32px);
+    margin: 24px 16px;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #4F1DA1, #E78AB0);
+    border: none;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: #FFFFFF;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(79, 29, 161, 0.2);
+    transition: all 0.3s ease;
+}
+
+.lw-mobile-edit-profile-btn:hover,
+.lw-mobile-edit-profile-btn:active {
+    background: linear-gradient(135deg, #5B2BB5, #F4A5C4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(79, 29, 161, 0.3);
+}
+
+/* Empty State */
+.lw-mobile-empty-state {
+    text-align: center;
+    padding: 48px 16px;
+}
+
+.lw-mobile-empty-icon {
+    font-size: 48px;
+    color: #9B8AAE;
+    margin-bottom: 16px;
+}
+
+.lw-mobile-empty-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: #9B8AAE;
+}
+
+/* Hide on Desktop */
+@media (min-width: 768px) {
+    .lw-mobile-profile-page {
+        display: none;
+    }
+}
+
+/* Show only on Mobile */
+@media (max-width: 767px) {
+    .lw-desktop-profile-view {
+        display: none !important;
+    }
+
+    .lw-mobile-profile-page {
+        display: block;
+    }
+}

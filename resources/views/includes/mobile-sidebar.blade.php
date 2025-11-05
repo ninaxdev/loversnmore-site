@@ -29,7 +29,7 @@
             <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
                href="{{ route('home_page') }}"
                onclick="closeMobileSidebar()"
-               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('home_page') ? 'rgba(255,255,255,0.15)' : 'transparent' }}; text-decoration: none;">
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('home_page') ?  : 'transparent' }}; text-decoration: none;">
                 <i class="fas fa-home" style="color: white !important; font-size: 18px; width: 20px;"></i>
                 <span style="font-size: 15px; color: white !important;">{{ __tr('Home') }}</span>
             </a>
@@ -40,7 +40,7 @@
             <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
                href="{{ route('user.read.find_matches') }}"
                onclick="closeMobileSidebar()"
-               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.read.find_matches') ? 'rgba(255,255,255,0.15)' : 'transparent' }}; text-decoration: none;">
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.read.find_matches') ?  : 'transparent' }}; text-decoration: none;">
                 <i class="fas fa-heart" style="color: white !important; font-size: 18px; width: 20px;"></i>
                 <span style="font-size: 15px; color: white !important;">{{ __tr('Discover') }}</span>
             </a>
@@ -68,10 +68,124 @@
                href="{{ route('user.notification.read.view') }}"
                onclick="closeMobileSidebar()"
                x-data="{totalNotificationCount:'{{ (getNotificationList()['notificationCount'] > 0) ? getNotificationList()['notificationCount'] : '' }}'}"
-               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; position: relative; background: {{ makeLinkActive('user.notification.read.view') ? 'rgba(255,255,255,0.15)' : 'transparent' }}; text-decoration: none;">
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; position: relative; background: {{ makeLinkActive('user.notification.read.view') ?  : 'transparent' }}; text-decoration: none;">
                 <i class="fas fa-bell" style="color: white !important; font-size: 18px; width: 20px;"></i>
                 <span style="font-size: 15px; flex: 1; color: white !important;">{{ __tr('Alerts') }}</span>
                 <small class="badge" style="background: #ef4444; border-radius: 12px; font-size: 10px; padding: 2px 6px; color: white;" x-text="totalNotificationCount" x-show="totalNotificationCount"></small>
+            </a>
+        </div>
+
+        <!-- My Profile -->
+        <div class="nav-item {{ makeLinkActive('user.profile_view') }}" style="margin-bottom: 0.25rem;">
+            <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.profile_view', ['username' => getUserAuthInfo('profile.username')]) }}"
+               onclick="closeMobileSidebar()"
+               data-event-callback="lwPrepareUploadPlugIn"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.profile_view') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="fas fa-user" style="color: white !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('My Profile') }}</span>
+            </a>
+        </div>
+
+        <!-- My Photos -->
+        <div class="nav-item {{ makeLinkActive('user.photos_setting') }}" style="margin-bottom: 0.25rem;">
+            <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.photos_setting', ['username' => getUserAuthInfo('profile.username')]) }}"
+               onclick="closeMobileSidebar()"
+               data-event-callback="lwPrepareUploadPlugIn"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.photos_setting') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="far fa-images" style="color: white !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('My Photos') }}</span>
+            </a>
+        </div>
+
+        <!-- Who Likes Me -->
+        <div class="nav-item {{ makeLinkActive('user.who_liked_me_view') }}" style="margin-bottom: 0.25rem;">
+            <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.who_liked_me_view') }}"
+               onclick="closeMobileSidebar()"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.who_liked_me_view') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="fa fa-thumbs-up" style="color: white !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('Who Likes Me') }}</span>
+            </a>
+        </div>
+
+        <!-- Mutual Likes -->
+        <div class="nav-item {{ makeLinkActive('user.mutual_like_view') }}" style="margin-bottom: 0.25rem;">
+            <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.mutual_like_view') }}"
+               onclick="closeMobileSidebar()"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.mutual_like_view') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="fa fa-users" style="color: white !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('Mutual Likes') }}</span>
+            </a>
+        </div>
+
+        <!-- My Likes -->
+        <div class="nav-item {{ makeLinkActive('user.my_liked_view') }}" style="margin-bottom: 0.25rem;">
+            <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.my_liked_view') }}"
+               onclick="closeMobileSidebar()"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.my_liked_view') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="fas fa-heart" style="color: white !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('My Likes') }}</span>
+            </a>
+        </div>
+
+        <!-- My Dislikes -->
+        <div class="nav-item {{ makeLinkActive('user.my_disliked_view') }}" style="margin-bottom: 0.25rem;">
+            <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.my_disliked_view') }}"
+               onclick="closeMobileSidebar()"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.my_disliked_view') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="fas fa-heart-broken" style="color: white !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('My Dislikes') }}</span>
+            </a>
+        </div>
+
+        <!-- Visitors -->
+        <div class="nav-item {{ makeLinkActive('user.profile_visitors_view') }}" style="margin-bottom: 0.25rem;">
+            <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.profile_visitors_view') }}"
+               onclick="closeMobileSidebar()"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.profile_visitors_view') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="fa fa-user" style="color: white !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('Visitors') }}</span>
+            </a>
+        </div>
+
+        <!-- Blocked Users -->
+        <div class="nav-item {{ makeLinkActive('user.read.block_user_list') }}" style="margin-bottom: 0.25rem;">
+            <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.read.block_user_list') }}"
+               onclick="closeMobileSidebar()"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.read.block_user_list') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="fas fa-ban" style="color: white !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('Blocked Users') }}</span>
+            </a>
+        </div>
+
+        <!-- Credit Wallet -->
+        <div class="nav-item {{ makeLinkActive('user.credit_wallet.read.view') }}" style="margin-bottom: 0.25rem;">
+            <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.credit_wallet.read.view') }}"
+               onclick="closeMobileSidebar()"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.credit_wallet.read.view') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="fas fa-coins" style="color: #fbbf24 !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; flex: 1; color: white !important;">{{ __tr('Credit Wallet') }}</span>
+                <span class="badge" style="background: #10b981; border-radius: 12px; font-size: 10px; padding: 2px 6px; color: white;">{{ totalUserCredits() }}</span>
+            </a>
+        </div>
+
+        <!-- Profile Booster -->
+        <div class="nav-item" style="margin-bottom: 0.25rem;">
+            <a href="#"
+               onclick="showBoosterAlert(); closeMobileSidebar();"
+               data-toggle="modal"
+               class="flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; text-decoration: none;">
+                <i class="fas fa-bolt" style="color: white !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('Profile Booster') }}</span>
             </a>
         </div>
 

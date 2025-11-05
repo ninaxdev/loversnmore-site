@@ -480,6 +480,11 @@ Route::group([
                     'as' => 'user.write.profile_setting',
                     'uses' => 'UserSettingController@processUserProfileSetting',
                 ]);
+                // Process Mobile Profile Update
+                Route::post('/process-mobile-profile-update', [
+                    'as' => 'user.write.mobile_profile_update',
+                    'uses' => 'UserSettingController@processMobileProfileUpdate',
+                ]);
                 // Upload multiple hotos
                 Route::post('/upload-photos', [
                     'as' => 'user.upload_photos',

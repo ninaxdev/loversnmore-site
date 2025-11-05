@@ -565,6 +565,108 @@ class UserSettingEngine extends BaseEngine implements UserSettingEngineInterface
     }
 
     /**
+     * Process mobile profile update.
+     *
+     * @param array $inputData
+     * @return json object
+     *---------------------------------------------------------------- */
+    public function processMobileProfileUpdate($inputData)
+    {
+        $userId = getUserID();
+
+        // Start transaction
+        $transactionResponse = $this->userSettingRepository->processTransaction(function () use ($userId, $inputData) {
+            $isUpdated = false;
+
+            // Get user data
+            $user = $this->userSettingRepository->fetchUserDetails($userId);
+            if (__isEmpty($user)) {
+                return $this->userSettingRepository->transactionResponse(2, [], __tr('User not found'));
+            }
+
+            // Update user first name if provided
+            if (isset($inputData['first_name']) && !empty($inputData['first_name'])) {
+                $userData = [
+                    'first_name' => $inputData['first_name'],
+                ];
+
+                if ($this->userSettingRepository->updateUser($user, $userData)) {
+                    activityLog($inputData['first_name'].' updated profile via mobile.');
+                    $isUpdated = true;
+                }
+            }
+
+            // Get or create user profile
+            $userProfile = $this->userSettingRepository->fetchUserProfile($userId);
+            $userProfileData = [];
+
+            // Update about_me if provided
+            if (isset($inputData['about_me'])) {
+                $userProfileData['about_me'] = $inputData['about_me'];
+            }
+
+            // Calculate and update DOB from age if provided
+            if (isset($inputData['age']) && is_numeric($inputData['age'])) {
+                $age = intval($inputData['age']);
+                // Calculate approximate birth year (using current date - age)
+                $birthYear = date('Y') - $age;
+                // Set birthday as January 1st of that year (since we only have age, not full birthday)
+                $userProfileData['dob'] = $birthYear . '-01-01';
+            }
+
+            // Save profile data
+            if (!empty($userProfileData)) {
+                if (__isEmpty($userProfile)) {
+                    $userProfileData['user_id'] = $userId;
+                    if ($this->userSettingRepository->storeUserProfile($userProfileData)) {
+                        activityLog($user->first_name.' created profile via mobile.');
+                        $isUpdated = true;
+                    }
+                } else {
+                    if ($this->userSettingRepository->updateUserProfile($userProfile, $userProfileData)) {
+                        activityLog($user->first_name.' updated profile via mobile.');
+                        $isUpdated = true;
+                    }
+                }
+            }
+
+            // Update location if selected_city is provided
+            if (isset($inputData['selected_city']) && !empty($inputData['selected_city'])) {
+                $cityId = $inputData['selected_city'];
+                $city = $this->userSettingRepository->fetchCity($cityId);
+
+                if (!__isEmpty($city)) {
+                    $locationData = [
+                        'country_name' => $city->country_name ?? '',
+                        'countries__id' => $city->countries__id ?? null,
+                        'city' => $city->name ?? '',
+                        'cities__id' => $city->_id ?? null,
+                    ];
+
+                    if (__isEmpty($userProfile)) {
+                        $locationData['user_id'] = $userId;
+                        if ($this->userSettingRepository->storeUserProfile($locationData)) {
+                            $isUpdated = true;
+                        }
+                    } else {
+                        if ($this->userSettingRepository->updateUserProfile($userProfile, $locationData)) {
+                            $isUpdated = true;
+                        }
+                    }
+                }
+            }
+
+            if ($isUpdated) {
+                return $this->userSettingRepository->transactionResponse(1, [], __tr('Profile updated successfully'));
+            }
+
+            return $this->userSettingRepository->transactionResponse(14, [], __tr('Nothing updated'));
+        });
+
+        return $this->engineReaction($transactionResponse);
+    }
+
+    /**
      * Prepare user photo settings.
      *
      * @return json object

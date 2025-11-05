@@ -59,6 +59,101 @@
         </a>
     </li>
 
+     <li class="nav-item {{ makeLinkActive('user.profile_view') }}" style="margin-bottom: 0.25rem;">
+        <a class="nav-link lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="{{ route('user.profile_view', ['username' => getUserAuthInfo('profile.username')]) }}"
+           data-event-callback="lwPrepareUploadPlugIn"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-user" style="color: white !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; color: white !important;">{{ __tr('My Profile') }}</span>
+        </a>
+    </li>
+
+     <li class="nav-item {{ makeLinkActive('user.photos_setting') }}" style="margin-bottom: 0.25rem;">
+        <a class="nav-link lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="{{ route('user.photos_setting', ['username' => getUserAuthInfo('profile.username')]) }}"
+           data-event-callback="lwPrepareUploadPlugIn"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="far fa-images" style="color: white !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; color: white !important;">{{ __tr('My Photos') }}</span>
+        </a>
+    </li>
+
+     <li class="nav-item {{ makeLinkActive('user.who_liked_me_view') }}" style="margin-bottom: 0.25rem;">
+        <a class="nav-link lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="{{ route('user.who_liked_me_view') }}"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fa fa-thumbs-up" style="color: white !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; color: white !important;">{{ __tr('Who Likes Me') }}</span>
+        </a>
+    </li>
+
+     <li class="nav-item {{ makeLinkActive('user.mutual_like_view') }}" style="margin-bottom: 0.25rem;">
+        <a class="nav-link lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="{{ route('user.mutual_like_view') }}"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fa fa-users" style="color: white !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; color: white !important;">{{ __tr('Mutual Likes') }}</span>
+        </a>
+    </li>
+
+     <li class="nav-item {{ makeLinkActive('user.my_liked_view') }}" style="margin-bottom: 0.25rem;">
+        <a class="nav-link lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="{{ route('user.my_liked_view') }}"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-heart" style="color: white !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; color: white !important;">{{ __tr('My Likes') }}</span>
+        </a>
+    </li>
+
+     <li class="nav-item {{ makeLinkActive('user.my_disliked_view') }}" style="margin-bottom: 0.25rem;">
+        <a class="nav-link lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="{{ route('user.my_disliked_view') }}"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-heart-broken" style="color: white !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; color: white !important;">{{ __tr('My Dislikes') }}</span>
+        </a>
+    </li>
+
+     <li class="nav-item {{ makeLinkActive('user.profile_visitors_view') }}" style="margin-bottom: 0.25rem;">
+        <a class="nav-link lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="{{ route('user.profile_visitors_view') }}"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fa fa-user" style="color: white !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; color: white !important;">{{ __tr('Visitors') }}</span>
+        </a>
+    </li>
+
+     <li class="nav-item {{ makeLinkActive('user.read.block_user_list') }}" style="margin-bottom: 0.25rem;">
+        <a class="nav-link lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="{{ route('user.read.block_user_list') }}"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-ban" style="color: white !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; color: white !important;">{{ __tr('Blocked Users') }}</span>
+        </a>
+    </li>
+
+     <li class="nav-item {{ makeLinkActive('user.credit_wallet.read.view') }}" style="margin-bottom: 0.25rem;">
+        <a class="nav-link lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="{{ route('user.credit_wallet.read.view') }}"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-coins" style="color: #fbbf24 !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; flex: 1; color: white !important;">{{ __tr('Credit Wallet') }}</span>
+            <span class="badge" style="background: #10b981; border-radius: 12px; font-size: 10px; padding: 2px 6px; color: white;">{{ totalUserCredits() }}</span>
+        </a>
+    </li>
+
+     <li class="nav-item" style="margin-bottom: 0.25rem;">
+        <a class="nav-link flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="#"
+           onclick="showBoosterAlert()"
+           data-toggle="modal"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-bolt" style="color: white !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; color: white !important;">{{ __tr('Profile Booster') }}</span>
+        </a>
+    </li>
+
     <!-- Spacer to push bottom items down -->
     <li style="flex: 1;"></li>
 

@@ -334,7 +334,7 @@ div.lw-validation-error {
 }
 @media (min-width: 768px) {
   .sidebar {
-    width: 20rem !important;
+    width: 200px !important;
   }
   .sidebar .nav-item .nav-link {
     padding: 0.4rem 1rem;
