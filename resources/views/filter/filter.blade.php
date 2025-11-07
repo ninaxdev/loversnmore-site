@@ -101,19 +101,19 @@ if ($request->session()->has('userSearchData')) {
                 <label class="block text-base font-normal mb-4" style="color: #1A1A1A; font-family: 'Poppins', sans-serif;">
                     <?= __tr('Gender') ?>
                 </label>
-                <div class="flex gap-3 justify-start">
+                <div class="flex flex-wrap gap-3 justify-start">
                     @foreach(configItem('user_settings.gender') as $genderKey => $gender)
                     <button type="button"
                             @click="looking_for = '<?= $genderKey ?>'"
-                            class="flex items-center justify-center py-1.5 px-4 rounded-full transition-all duration-200 hover:scale-105 hover:shadow-md"
+                            class="flex items-center justify-center py-1.5 px-2 md:px-5 rounded-full transition-all duration-200 hover:scale-105 hover:shadow-md"
                             :style="looking_for === '<?= $genderKey ?>' ? 'background-color: #5B3E96;' : 'background-color: #F5F0FF;'"
                             style="font-family: 'Poppins', sans-serif;">
                         @if($genderKey == '1')
-                        <i class="fas fa-user text-lg mr-1.5" :style="looking_for === '<?= $genderKey ?>' ? 'color: white;' : 'color: #7C3AED;'"></i>
+                        <i class="fas fa-user text-base md:text-xl mr-1 md:mr-2" :style="looking_for === '<?= $genderKey ?>' ? 'color: white;' : 'color: #7C3AED;'"></i>
                         @elseif($genderKey == '2')
-                        <i class="fas fa-venus text-lg mr-1.5" :style="looking_for === '<?= $genderKey ?>' ? 'color: white;' : 'color: #7C3AED;'"></i>
+                        <i class="fas fa-venus text-base md:text-xl mr-1 md:mr-2" :style="looking_for === '<?= $genderKey ?>' ? 'color: white;' : 'color: #7C3AED;'"></i>
                         @endif
-                        <span class="text-base font-normal" :style="looking_for === '<?= $genderKey ?>' ? 'color: white;' : 'color: #1A1A1A;'"><?= $gender ?></span>
+                        <span class="text-sm md:text-lg font-normal" :style="looking_for === '<?= $genderKey ?>' ? 'color: white;' : 'color: #1A1A1A;'"><?= $gender ?></span>
                     </button>
                     @endforeach
                 </div>
