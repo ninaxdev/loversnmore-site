@@ -261,4 +261,18 @@ class UserSettingController extends BaseController
             $this->processResponse($processReaction, [], [], true)
         );
     }
+
+    /**
+     * Process store account settings (profile + password)
+     *
+     * @return json object
+     *---------------------------------------------------------------- */
+    public function processAccountSettings(CommonUnsecuredPostRequest $request)
+    {
+        $processReaction = $this->userSettingEngine->processAccountSettings($request->all());
+
+        return $this->responseAction(
+            $this->processResponse($processReaction, [], [], true)
+        );
+    }
 }

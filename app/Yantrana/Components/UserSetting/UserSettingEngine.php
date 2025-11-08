@@ -14,6 +14,8 @@ use App\Yantrana\Components\UserSetting\Repositories\UserSettingRepository;
 use App\Yantrana\Support\CommonTrait;
 use App\Yantrana\Support\Country\Repositories\CountryRepository;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserSettingEngine extends BaseEngine implements UserSettingEngineInterface
 {
@@ -867,5 +869,123 @@ class UserSettingEngine extends BaseEngine implements UserSettingEngineInterface
         }
 
         return $this->engineReaction(2, null, __tr('Something went wrong on server.'));
+    }
+
+    /**
+     * Process account settings (profile info + password change)
+     *
+     * @param array $inputData
+     * @return array
+     *---------------------------------------------------------------- */
+    public function processAccountSettings($inputData)
+    {
+        $userId = getUserID();
+        $user = $this->userSettingRepository->fetchUserDetails($userId);
+
+        // Check if user exists
+        if (__isEmpty($user)) {
+            return $this->engineReaction(2, null, __tr('User does not exist.'));
+        }
+
+        // Update basic profile information
+        $updateData = [];
+
+        if (isset($inputData['full_name']) && !empty($inputData['full_name'])) {
+            // Split full name into first and last name
+            $nameParts = explode(' ', trim($inputData['full_name']), 2);
+            $firstName = $nameParts[0];
+            $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+
+            // Only add to update if values have changed
+            if ($firstName != $user->first_name) {
+                $updateData['first_name'] = $firstName;
+            }
+            if ($lastName != $user->last_name) {
+                $updateData['last_name'] = $lastName;
+            }
+        }
+
+        if (isset($inputData['email']) && !empty($inputData['email']) && $inputData['email'] != $user->email) {
+            // For email validation, we'll just update it directly
+            // Email validation should be handled by the request validator
+            $updateData['email'] = $inputData['email'];
+        }
+
+        // Update user basic info if there are changes
+        if (!empty($updateData)) {
+            if (!$this->userSettingRepository->updateUser($user, $updateData)) {
+                return $this->engineReaction(2, null, __tr('Profile update failed.'));
+            }
+        }
+
+        // Handle DOB update in user profile
+        $dobUpdated = false;
+        if (isset($inputData['dob']) && !empty($inputData['dob']) && $inputData['dob'] !== 'DD / MM / YYYY') {
+            // Get user profile first
+            $userProfile = $this->userSettingRepository->fetchUserProfile($userId);
+
+            if (!__isEmpty($userProfile)) {
+                // Try to convert date format if needed (DD/MM/YYYY to YYYY-MM-DD)
+                $dob = trim($inputData['dob']);
+
+                // Check if it's in DD/MM/YYYY format
+                if (preg_match('/^(\d{2})\s*\/\s*(\d{2})\s*\/\s*(\d{4})$/', $dob, $matches)) {
+                    $day = $matches[1];
+                    $month = $matches[2];
+                    $year = $matches[3];
+
+                    // Validate the date
+                    if (checkdate($month, $day, $year)) {
+                        $dob = $year . '-' . $month . '-' . $day;
+                    } else {
+                        return $this->engineReaction(2, null, __tr('Invalid date. Please enter a valid date in DD/MM/YYYY format.'));
+                    }
+                } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
+                    // Already in YYYY-MM-DD format, keep as is
+                } else {
+                    return $this->engineReaction(2, null, __tr('Invalid date format. Please use DD/MM/YYYY format.'));
+                }
+
+                // Only update if DOB has changed
+                if ($dob != $userProfile->dob) {
+                    // Update existing profile
+                    $profileUpdateData = ['dob' => $dob];
+                    $updateResult = $this->userSettingRepository->updateUserProfile($userProfile, $profileUpdateData);
+
+                    if ($updateResult) {
+                        $dobUpdated = true;
+                    } else {
+                        // Log the error for debugging
+                        \Log::error('DOB update failed for user ' . $userId . ' with DOB: ' . $dob);
+                        return $this->engineReaction(2, null, __tr('Date of birth update failed. Please try again.'));
+                    }
+                }
+            }
+        }
+
+        // Handle password change if provided
+        if (!empty($inputData['new_password'])) {
+            // Verify password confirmation
+            if (empty($inputData['new_password_confirmation']) || $inputData['new_password'] !== $inputData['new_password_confirmation']) {
+                return $this->engineReaction(2, null, __tr('New passwords do not match.'));
+            }
+
+            // Validate password length
+            if (strlen($inputData['new_password']) < 6) {
+                return $this->engineReaction(2, null, __tr('Password must be at least 6 characters long.'));
+            }
+
+            // Update password directly
+            $user->password = Hash::make($inputData['new_password']);
+            if (!$user->save()) {
+                return $this->engineReaction(2, null, __tr('Password update failed.'));
+            }
+
+            activityLog($user->first_name.' '.$user->last_name.' updated account settings and password.');
+            return $this->engineReaction(1, null, __tr('Account settings and password updated successfully.'));
+        }
+
+        activityLog($user->first_name.' '.$user->last_name.' updated account settings.');
+        return $this->engineReaction(1, null, __tr('Account settings updated successfully.'));
     }
 }

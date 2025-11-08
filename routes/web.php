@@ -441,6 +441,11 @@ Route::group([
                     'as' => 'user.write.basic_setting',
                     'uses' => 'UserSettingController@processUserBasicSetting',
                 ]);
+                // Process account settings (profile + password combined)
+                Route::post('/process-account-settings', [
+                    'as' => 'user.write.account_settings',
+                    'uses' => 'UserSettingController@processAccountSettings',
+                ]);
 
                 // Process basic settings
                 Route::post('/process-update-profile-wizard', [
