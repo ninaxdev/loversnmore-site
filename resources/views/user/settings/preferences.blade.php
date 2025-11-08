@@ -1,67 +1,64 @@
 <!-- App Preferences -->
-<div class="lw-preferences-settings-container">
-    <!-- Preferences Header -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">
-            <i class="fas fa-sliders-h mr-2"></i><?= __tr('App Preferences') ?>
-        </h1>
-    </div>
+<div class="w-full" style="font-family: 'Poppins', sans-serif;">
+    <!-- Section Title -->
+    <h2 class="text-3xl font-bold mb-6" style="color: #1F1638;">Preferences</h2>
 
-    <div class="alert alert-info">
-        <i class="fas fa-info-circle mr-2"></i>
-        <?= __tr('Customize your app experience with these preferences.') ?>
+    <!-- Preferences Info -->
+    <div class="mb-6 p-6 rounded-3xl" style="background-color: #E0F2FE; border: 1px solid #BAE6FD;">
+        <div class="flex items-start gap-3">
+            <i class="fas fa-info-circle mt-1" style="color: #0284C7;"></i>
+            <p class="text-base" style="color: #0C4A6E; font-family: 'Poppins', sans-serif; margin: 0;">
+                <?= __tr('Customize your app experience with these preferences.') ?>
+            </p>
+        </div>
     </div>
 
     <!-- Preferences Options -->
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title"><?= __tr('Display Preferences') ?></h5>
-            
-            <!-- Dark Mode -->
-            <div class="form-group">
-                <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="darkMode" disabled>
-                    <label class="custom-control-label" for="darkMode">
-                        <i class="fas fa-moon mr-2"></i><?= __tr('Dark Mode') ?>
-                    </label>
-                </div>
-                <small class="form-text text-muted"><?= __tr('Switch between light and dark themes') ?></small>
+    <div class="space-y-4">
+        <!-- Dark Mode -->
+        <div class="flex items-center justify-between py-4 px-6 rounded-3xl" style="background-color: #F8F4FF; border: 1px solid #E9D8FD;">
+            <label for="lwDarkMode" class="text-base font-normal cursor-pointer" style="color: #1F1638; font-family: 'Poppins', sans-serif;">
+                <?= __tr('Dark Mode') ?>
+            </label>
+            <div class="relative">
+                <input type="checkbox" id="lwDarkMode" disabled class="sr-only peer">
+                <div class="w-14 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-purple-600 opacity-50" style="cursor: not-allowed;"></div>
             </div>
+        </div>
 
-            <!-- Language Selection -->
-            <?php $translationLanguages = getActiveTranslationLanguages(); ?>
-            @if(!__isEmpty($translationLanguages) and (count($translationLanguages) > 1))
-            <?php $translationLanguages['en_US'] = configItem('default_translation_language');  ?>
-            <div class="form-group">
-                <label for="languageSelect">
-                    <i class="fas fa-language mr-2"></i><?= __tr('Language') ?>
-                </label>
-                <select class="form-control" id="languageSelect" onchange="changeLanguage(this.value)">
-                    <?php foreach ($translationLanguages as $languageId => $language) {
-                        if (isset($language['status']) and $language['status'] == false) continue;
-                    ?>
-                        <option value="<?= $languageId ?>" <?= ($languageId == config('CURRENT_LOCALE')) ? 'selected' : '' ?>>
-                            <?= $language['name'] ?>
-                        </option>
-                    <?php } ?>
-                </select>
-                <small class="form-text text-muted"><?= __tr('Choose your preferred language') ?></small>
-            </div>
-            @endif
+        <!-- Language Selection -->
+        <?php $translationLanguages = getActiveTranslationLanguages(); ?>
+        @if(!__isEmpty($translationLanguages) and (count($translationLanguages) > 1))
+        <?php $translationLanguages['en_US'] = configItem('default_translation_language');  ?>
+        <div>
+            <label for="lwLanguageSelect" class="block text-base font-medium mb-2" style="color: #1F1638; font-family: 'Poppins', sans-serif;">
+                <?= __tr('Language') ?>
+            </label>
+            <select id="lwLanguageSelect" class="w-full py-4 px-6 rounded-3xl transition-all duration-200 focus:outline-none focus:ring-2" onchange="changeLanguage(this.value)" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 16px;">
+                <?php foreach ($translationLanguages as $languageId => $language) {
+                    if (isset($language['status']) and $language['status'] == false) continue;
+                ?>
+                    <option value="<?= $languageId ?>" <?= ($languageId == config('CURRENT_LOCALE')) ? 'selected' : '' ?>>
+                        <?= $language['name'] ?>
+                    </option>
+                <?php } ?>
+            </select>
+            <p class="mt-2 text-sm" style="color: #999; font-family: 'Poppins', sans-serif;"><?= __tr('Choose your preferred language') ?></p>
+        </div>
+        @endif
 
-            <!-- Theme Selection -->
-            <div class="form-group">
-                <label for="themeSelect">
-                    <i class="fas fa-palette mr-2"></i><?= __tr('Color Theme') ?>
-                </label>
-                <select class="form-control" id="themeSelect" disabled>
-                    <option><?= __tr('Default Pink') ?></option>
-                    <option><?= __tr('Blue') ?></option>
-                    <option><?= __tr('Purple') ?></option>
-                    <option><?= __tr('Green') ?></option>
-                </select>
-                <small class="form-text text-muted"><?= __tr('Customize the color theme of the app') ?></small>
-            </div>
+        <!-- Color Theme -->
+        <div>
+            <label for="lwThemeSelect" class="block text-base font-medium mb-2" style="color: #1F1638; font-family: 'Poppins', sans-serif;">
+                <?= __tr('Color Theme') ?>
+            </label>
+            <select id="lwThemeSelect" disabled class="w-full py-4 px-6 rounded-3xl transition-all duration-200 focus:outline-none focus:ring-2 opacity-50" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 16px; cursor: not-allowed;">
+                <option><?= __tr('Default Pink') ?></option>
+                <option><?= __tr('Blue') ?></option>
+                <option><?= __tr('Purple') ?></option>
+                <option><?= __tr('Green') ?></option>
+            </select>
+            <p class="mt-2 text-sm" style="color: #999; font-family: 'Poppins', sans-serif;"><?= __tr('Customize the color theme of the app') ?></p>
         </div>
     </div>
 </div>
