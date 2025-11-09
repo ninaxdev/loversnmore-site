@@ -1,7 +1,12 @@
 <!-- App Preferences -->
 <div class="w-full" style="font-family: 'Poppins', sans-serif;">
-    <!-- Section Title -->
-    <h2 class="text-3xl font-bold mb-6" style="color: #1F1638;">Preferences</h2>
+    <!-- Back Button and Section Title -->
+    <div class="flex items-center gap-3 mb-6">
+        <button onclick="window.history.back()" class="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:bg-gray-100" style="background-color: transparent; border: none; cursor: pointer;">
+            <i class="fas fa-arrow-left" style="color: #1F1638; font-size: 20px;"></i>
+        </button>
+        <h2 class="text-3xl font-bold" style="color: #1F1638; margin: 0;">Preferences</h2>
+    </div>
 
     <!-- Preferences Info -->
     <div class="mb-6 p-6 rounded-3xl" style="background-color: #E0F2FE; border: 1px solid #BAE6FD;">
@@ -46,20 +51,13 @@
             <p class="mt-2 text-sm" style="color: #999; font-family: 'Poppins', sans-serif;"><?= __tr('Choose your preferred language') ?></p>
         </div>
         @endif
+    </div>
 
-        <!-- Color Theme -->
-        <div>
-            <label for="lwThemeSelect" class="block text-base font-medium mb-2" style="color: #1F1638; font-family: 'Poppins', sans-serif;">
-                <?= __tr('Color Theme') ?>
-            </label>
-            <select id="lwThemeSelect" disabled class="w-full py-4 px-6 rounded-3xl transition-all duration-200 focus:outline-none focus:ring-2 opacity-50" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 16px; cursor: not-allowed;">
-                <option><?= __tr('Default Pink') ?></option>
-                <option><?= __tr('Blue') ?></option>
-                <option><?= __tr('Purple') ?></option>
-                <option><?= __tr('Green') ?></option>
-            </select>
-            <p class="mt-2 text-sm" style="color: #999; font-family: 'Poppins', sans-serif;"><?= __tr('Customize the color theme of the app') ?></p>
-        </div>
+    <!-- Back to Home Button -->
+    <div class="mt-8 flex justify-center">
+        <a href="/home" class="lw-ajax-link-action lw-action-with-url px-12 py-3 rounded-full border-2 transition-all duration-200 hover:bg-gray-50" style="border-color: #1F1638; color: #1F1638; font-family: 'Poppins', sans-serif; font-weight: 500; text-decoration: none;">
+            Back → Home
+        </a>
     </div>
 </div>
 

@@ -1,7 +1,12 @@
 <!-- Notification Settings -->
 <div class="w-full" style="font-family: 'Poppins', sans-serif;">
-    <!-- Section Title -->
-    <h2 class="text-3xl font-bold mb-6" style="color: #1F1638;">Notifications</h2>
+    <!-- Back Button and Section Title -->
+    <div class="flex items-center gap-3 mb-6">
+        <button onclick="window.history.back()" class="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:bg-gray-100" style="background-color: transparent; border: none; cursor: pointer;">
+            <i class="fas fa-arrow-left" style="color: #1F1638; font-size: 20px;"></i>
+        </button>
+        <h2 class="text-3xl font-bold" style="color: #1F1638; margin: 0;">Notifications</h2>
+    </div>
 
     <!-- Notification Settings Form -->
     <form class="lw-ajax-form lw-form" method="post" action="<?= route('user.write.setting', ['pageType' => request()->pageType]) ?>" data-callback="onUserSettingsUpdated">

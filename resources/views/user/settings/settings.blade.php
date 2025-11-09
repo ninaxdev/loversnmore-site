@@ -2,11 +2,8 @@
 <!-- Settings Page Container -->
 <div class="w-full min-h-screen py-8 px-4 md:px-8" style="background-color: #FAFAFA; font-family: 'Poppins', sans-serif;">
 	<!-- Settings Header -->
-	<div class="max-w-6xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+	<div class="max-w-6xl mx-auto mb-8">
 		<h1 class="text-4xl md:text-5xl font-bold" style="color: #1F1638;">Settings</h1>
-		<a href="<?= route('user.read.discovery') ?>" class="lw-ajax-link-action lw-action-with-url px-6 py-3 rounded-full border-2 transition-all duration-200 hover:bg-gray-50" style="border-color: #1F1638; color: #1F1638; font-family: 'Poppins', sans-serif; font-weight: 500;">
-			Back to Home
-		</a>
 	</div>
 
 	<!-- Tab Navigation -->
@@ -23,6 +20,9 @@
 			</a>
 			<a href="<?= route('user.settings.preferences') ?>" class="lw-ajax-link-action lw-action-with-url px-6 py-3 rounded-full transition-all duration-200 hover:opacity-80" style="<?= $pageType === 'preferences' ? 'background-color: #FCE7F3; color: #1F1638;' : 'background-color: transparent; color: #1F1638;' ?> font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 16px;">
 				Preferences
+			</a>
+			<a href="<?= route('user.settings.visitors') ?>" class="lw-ajax-link-action lw-action-with-url px-6 py-3 rounded-full transition-all duration-200 hover:opacity-80" style="<?= $pageType === 'visitors' ? 'background-color: #FCE7F3; color: #1F1638;' : 'background-color: transparent; color: #1F1638;' ?> font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 16px;">
+				Visitors
 			</a>
 		</div>
 	</div>

@@ -218,7 +218,7 @@
                     </a>
 
                     <!-- Visitors -->
-                    <a href="<?= route('user.profile_view', ['username' => getUserAuthInfo('profile.username')]) ?>" class="lw-ajax-link-action lw-action-with-url flex flex-col items-center " data-event-callback="lwPrepareUploadPlugIn">
+                    <a href="<?= route('user.settings.visitors') ?>" class="lw-ajax-link-action lw-action-with-url flex flex-col items-center " data-event-callback="lwPrepareUploadPlugIn">
                         <div class="w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-all duration-200 hover:scale-110" style="background-color: #E9D8FD;">
                             <i class="fas fa-eye text-2xl" style="color: #7C3AED;"></i>
                         </div>

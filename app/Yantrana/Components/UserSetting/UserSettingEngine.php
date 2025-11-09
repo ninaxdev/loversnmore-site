@@ -918,13 +918,16 @@ class UserSettingEngine extends BaseEngine implements UserSettingEngineInterface
             }
         }
 
-        // Handle DOB update in user profile
+        // Handle DOB and About Me update in user profile
         $dobUpdated = false;
-        if (isset($inputData['dob']) && !empty($inputData['dob']) && $inputData['dob'] !== 'DD / MM / YYYY') {
-            // Get user profile first
-            $userProfile = $this->userSettingRepository->fetchUserProfile($userId);
+        $aboutMeUpdated = false;
+        $userProfile = $this->userSettingRepository->fetchUserProfile($userId);
 
-            if (!__isEmpty($userProfile)) {
+        if (!__isEmpty($userProfile)) {
+            $profileUpdateData = [];
+
+            // Handle DOB
+            if (isset($inputData['dob']) && !empty($inputData['dob']) && $inputData['dob'] !== 'DD / MM / YYYY') {
                 // Try to convert date format if needed (DD/MM/YYYY to YYYY-MM-DD)
                 $dob = trim($inputData['dob']);
 
@@ -948,17 +951,27 @@ class UserSettingEngine extends BaseEngine implements UserSettingEngineInterface
 
                 // Only update if DOB has changed
                 if ($dob != $userProfile->dob) {
-                    // Update existing profile
-                    $profileUpdateData = ['dob' => $dob];
-                    $updateResult = $this->userSettingRepository->updateUserProfile($userProfile, $profileUpdateData);
+                    $profileUpdateData['dob'] = $dob;
+                    $dobUpdated = true;
+                }
+            }
 
-                    if ($updateResult) {
-                        $dobUpdated = true;
-                    } else {
-                        // Log the error for debugging
-                        \Log::error('DOB update failed for user ' . $userId . ' with DOB: ' . $dob);
-                        return $this->engineReaction(2, null, __tr('Date of birth update failed. Please try again.'));
-                    }
+            // Handle About Me
+            if (isset($inputData['about_me'])) {
+                $aboutMe = trim($inputData['about_me']);
+                if ($aboutMe != $userProfile->about_me) {
+                    $profileUpdateData['about_me'] = $aboutMe;
+                    $aboutMeUpdated = true;
+                }
+            }
+
+            // Update profile if there are changes
+            if (!empty($profileUpdateData)) {
+                $updateResult = $this->userSettingRepository->updateUserProfile($userProfile, $profileUpdateData);
+
+                if (!$updateResult) {
+                    \Log::error('Profile update failed for user ' . $userId);
+                    return $this->engineReaction(2, null, __tr('Profile update failed. Please try again.'));
                 }
             }
         }
@@ -987,5 +1000,49 @@ class UserSettingEngine extends BaseEngine implements UserSettingEngineInterface
 
         activityLog($user->first_name.' '.$user->last_name.' updated account settings.');
         return $this->engineReaction(1, null, __tr('Account settings updated successfully.'));
+    }
+
+    /**
+     * Prepare Visitors Data
+     *
+     * @return array
+     *---------------------------------------------------------------- */
+    public function prepareVisitorsData()
+    {
+        // Get premium users
+        $isPremiumUser = $this->userSettingRepository->fetchAllPremiumUsers();
+        $premiumUserIds = $isPremiumUser->pluck('users__id')->toArray();
+
+        // Get profile visitor data
+        $profileVisitorsData = $this->userSettingRepository->fetchProfileVisitorData($premiumUserIds);
+        $profileVisitors = $profileVisitorsData['data'] ?? [];
+
+        $userData = [];
+
+        // Check if not empty collection
+        if (!__isEmpty($profileVisitors)) {
+            foreach ($profileVisitors as $key => $user) {
+                // Convert array to object for easier access
+                $userObj = (object) $user;
+
+                // Check user browser
+                $allowVisitorProfile = getFeatureSettings('browse_incognito_mode', null, $userObj->userId);
+
+                // Check if should show visitor
+                if ($allowVisitorProfile === false || !in_array($userObj->userId, $premiumUserIds)) {
+                    $userData[] = [
+                        'userId' => $userObj->userId,
+                        'userName' => $userObj->userName ?? '',
+                        'userShortName' => $userObj->userShortName ?? '',
+                        'userAge' => $userObj->userAge ?? '',
+                        'userImageUrl' => $userObj->userImageUrl ?? '',
+                    ];
+                }
+            }
+        }
+
+        return $this->engineReaction(1, [
+            'usersData' => $userData
+        ]);
     }
 }

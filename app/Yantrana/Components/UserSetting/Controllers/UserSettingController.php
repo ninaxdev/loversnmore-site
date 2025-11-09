@@ -74,6 +74,22 @@ class UserSettingController extends BaseController
     }
 
     /**
+     * Show visitors settings view.
+     *
+     * @return view
+     *---------------------------------------------------------------- */
+    public function getVisitorsSettingsView()
+    {
+        // Get visitors data
+        $processReaction = $this->userSettingEngine->prepareVisitorsData();
+
+        return $this->loadPublicView('user.settings.settings', array_merge(
+            $processReaction['data'] ?? [],
+            ['pageType' => 'visitors']
+        ));
+    }
+
+    /**
      * Show user setting view.
      *
      * @return json object

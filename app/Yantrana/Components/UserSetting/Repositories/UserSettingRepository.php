@@ -9,6 +9,7 @@ namespace App\Yantrana\Components\UserSetting\Repositories;
 
 use App\Yantrana\Base\BaseRepository;
 use App\Yantrana\Components\User\Models\ProfileBoost;
+use App\Yantrana\Components\User\Models\ProfileVisitorModel;
 use App\Yantrana\Components\User\Models\User;
 use App\Yantrana\Components\User\Models\UserProfile;
 use App\Yantrana\Components\User\Models\UserSubscription;
@@ -676,5 +677,64 @@ class UserSettingRepository extends BaseRepository implements UserSettingReposit
     public function fetchCity($cityId)
     {
         return CityModel::find($cityId);
+    }
+
+    /**
+     * Fetch All Premium Users
+     *
+     * @return eloquent collection object
+     *---------------------------------------------------------------- */
+    public function fetchAllPremiumUsers()
+    {
+        $currentTime = Carbon::now();
+
+        return UserSubscription::leftJoin(
+            'user_profiles',
+            'user_subscriptions.users__id',
+            '=',
+            'user_profiles.users__id'
+        )
+            ->select(
+                __nestedKeyValues([
+                    'user_subscriptions.*',
+                ])
+            )
+            ->where('user_subscriptions.expiry_at', '>=', $currentTime)
+            ->get();
+    }
+
+    /**
+     * Fetch Profile Visitor Data
+     *
+     * @param  array  $premiumUserIds
+     * @return eloquent collection object
+     *---------------------------------------------------------------- */
+    public function fetchProfileVisitorData($premiumUserIds)
+    {
+        return ProfileVisitorModel::leftJoin('users', 'profile_visitors.by_users__id', '=', 'users._id')
+            ->leftJoin('user_authorities', 'users._id', '=', 'user_authorities.users__id')
+            ->leftJoin('user_profiles', 'users._id', '=', 'user_profiles.users__id')
+            ->leftJoin('countries', 'user_profiles.countries__id', '=', 'countries._id')
+            ->select(
+                __nestedKeyValues([
+                    'profile_visitors.*',
+                    'users' => [
+                        '_id as userId',
+                        '_uid as userUId',
+                        'username',
+                        'status',
+                        DB::raw('CONCAT(users.first_name, " ", users.last_name) AS userFullName'),
+                    ],
+                    'user_profiles' => [
+                        'dob',
+                        DB::raw('TIMESTAMPDIFF(YEAR,user_profiles.dob, CURDATE()) AS userAge'),
+                    ],
+                ])
+            )
+            ->selectRaw("CONCAT(first_name, ' ', last_name) as userName, CONCAT(LEFT(first_name, 1), LEFT(last_name, 1)) AS userShortName")
+            ->where('profile_visitors.to_users__id', getUserID())
+            ->orderBy('profile_visitors.created_at', 'desc')
+            ->paginate(24)
+            ->toArray();
     }
 }

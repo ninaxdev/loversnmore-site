@@ -425,7 +425,13 @@ Route::group([
                     'as' => 'user.settings.preferences',
                     'uses' => 'UserSettingController@getPreferencesSettingsView',
                 ]);
-                
+
+                // Visitors settings page
+                Route::get('/visitors', [
+                    'as' => 'user.settings.visitors',
+                    'uses' => 'UserSettingController@getVisitorsSettingsView',
+                ]);
+
                 // View settings
                 Route::get('/{pageType}', [
                     'as' => 'user.read.setting',
