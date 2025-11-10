@@ -69,14 +69,7 @@ class HomeController extends BaseController
      *---------------------------------------------------------------- */
     public function homePage()
     {
-        // get encounter data
-        $encounterData = $this->userEncounterEngine->getEncounterUserData();
-        // For Random search use following function
-        $basicSearchData = $this->filterEngine->prepareRandomUserData([], 12);
-        // merge encounter data and basic data
-        $processReaction = array_merge($encounterData['data'], $basicSearchData['data']);
-
-        return $this->loadPublicView('home', $processReaction);
+        return $this->loadPublicView('user.home');
     }
 
     /**
