@@ -2,12 +2,12 @@
 <!-- Settings Page Container -->
 <div class="w-full min-h-screen py-8 px-4 md:px-8" style="background-color: #FAFAFA; font-family: 'Poppins', sans-serif;">
 	<!-- Settings Header -->
-	<div class="max-w-6xl mx-auto mb-8">
+	<!-- <div class="max-w-6xl mx-auto mb-8">
 		<h1 class="text-4xl md:text-5xl font-bold" style="color: #1F1638;">Settings</h1>
-	</div>
+	</div> -->
 
 	<!-- Tab Navigation -->
-	<div class="max-w-6xl mx-auto mb-8">
+	<!-- <div class="max-w-6xl mx-auto mb-8">
 		<div class="flex flex-wrap gap-3">
 			<a href="<?= route('user.settings.account') ?>" class="lw-ajax-link-action lw-action-with-url px-6 py-3 rounded-full transition-all duration-200 hover:opacity-80" style="<?= $pageType === 'account' ? 'background-color: #FCE7F3; color: #1F1638;' : 'background-color: transparent; color: #1F1638;' ?> font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 16px;">
 				Account
@@ -25,7 +25,7 @@
 				Visitors
 			</a>
 		</div>
-	</div>
+	</div> -->
 
 	<!-- Settings Content -->
 	<div class="max-w-6xl mx-auto">

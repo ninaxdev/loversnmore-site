@@ -1,48 +1,23 @@
 <!-- Account Settings -->
+<div class="w-full min-h-screen py-8 px-4 md:px-8" style="background-color: #FAFAFA; font-family: 'Poppins', sans-serif;">
+    <div class="max-w-2xl mx-auto">
+        <!-- Back to Settings Link -->
+        <div class="mb-6">
+            <a href="<?= route('user.settings.index') ?>" class="lw-ajax-link-action lw-action-with-url inline-flex items-center text-base transition-all duration-200 hover:opacity-70" style="color: #7C3AED; font-family: 'Poppins', sans-serif; text-decoration: none;">
+                <i class="fas fa-arrow-left mr-2"></i>
+                <?= __tr('Settings') ?>
+            </a>
+        </div>
 
-<div class="w-full" style="font-family: 'Poppins', sans-serif;">
-    <!-- Back Button and Section Title -->
-    <div class="flex items-center gap-3 mb-6">
-        <button onclick="window.history.back()" class="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:bg-gray-100" style="background-color: transparent; border: none; cursor: pointer;">
-            <i class="fas fa-arrow-left" style="color: #1F1638; font-size: 20px;"></i>
-        </button>
-        <h2 class="text-3xl font-bold" style="color: #1F1638; margin: 0;">Account</h2>
-    </div>
+        <!-- Section Title -->
+        <h2 class="text-3xl font-bold mb-6" style="color: #1F1638;">Account Settings</h2>
 
     <!-- Account Form -->
     <form class="lw-ajax-form lw-form" method="post" action="<?= route('user.write.account_settings') ?>">
         <div class="space-y-4">
-            <!-- Full Name -->
-            <div>
-                <input type="text" name="full_name" value="<?= getUserAuthInfo('profile.full_name') ?>" placeholder="Full Name" class="w-full py-4 px-6 rounded-3xl transition-all duration-200 focus:outline-none focus:ring-2" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 16px;" />
-            </div>
-
             <!-- Email Address -->
             <div>
                 <input type="email" name="email" value="<?= getUserAuthInfo('profile.email') ?>" placeholder="Email Address" class="w-full py-4 px-6 rounded-3xl transition-all duration-200 focus:outline-none focus:ring-2" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 16px;" />
-            </div>
-
-            <!-- Date of Birth -->
-            <div>
-                <?php
-                    use App\Yantrana\Components\User\Models\UserProfile;
-
-                    $userId = getUserID();
-                    $userProfile = UserProfile::where('users__id', $userId)->first();
-                    $dob = !empty($userProfile) ? $userProfile->dob : '';
-                    $aboutMe = !empty($userProfile) ? $userProfile->about_me : '';
-
-                    // Convert YYYY-MM-DD to DD/MM/YYYY for display
-                    if (!empty($dob) && preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $dob, $matches)) {
-                        $dob = $matches[3] . '/' . $matches[2] . '/' . $matches[1];
-                    }
-                ?>
-                <input type="text" name="dob" value="<?= $dob ?>" placeholder="DD / MM / YYYY" class="w-full py-4 px-6 rounded-3xl transition-all duration-200 focus:outline-none focus:ring-2" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 16px;" />
-            </div>
-
-            <!-- About Me -->
-            <div>
-                <textarea name="about_me" placeholder="About Me" rows="4" class="w-full py-4 px-6 rounded-3xl transition-all duration-200 focus:outline-none focus:ring-2 resize-none" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 16px;"><?= htmlspecialchars($aboutMe) ?></textarea>
             </div>
 
             <!-- Divider -->
@@ -89,6 +64,7 @@
         </a>
     </div>
     @endif
+    </div>
 </div>
 
 @if(!isAdmin())

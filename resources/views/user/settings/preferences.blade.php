@@ -1,22 +1,16 @@
 <!-- App Preferences -->
-<div class="w-full" style="font-family: 'Poppins', sans-serif;">
-    <!-- Back Button and Section Title -->
-    <div class="flex items-center gap-3 mb-6">
-        <button onclick="window.history.back()" class="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:bg-gray-100" style="background-color: transparent; border: none; cursor: pointer;">
-            <i class="fas fa-arrow-left" style="color: #1F1638; font-size: 20px;"></i>
-        </button>
-        <h2 class="text-3xl font-bold" style="color: #1F1638; margin: 0;">Preferences</h2>
-    </div>
-
-    <!-- Preferences Info -->
-    <div class="mb-6 p-6 rounded-3xl" style="background-color: #E0F2FE; border: 1px solid #BAE6FD;">
-        <div class="flex items-start gap-3">
-            <i class="fas fa-info-circle mt-1" style="color: #0284C7;"></i>
-            <p class="text-base" style="color: #0C4A6E; font-family: 'Poppins', sans-serif; margin: 0;">
-                <?= __tr('Customize your app experience with these preferences.') ?>
-            </p>
+<div class="w-full min-h-screen py-8 px-4 md:px-8" style="background-color: #FAFAFA; font-family: 'Poppins', sans-serif;">
+    <div class="max-w-2xl mx-auto">
+        <!-- Back to Settings Link -->
+        <div class="mb-6">
+            <a href="<?= route('user.settings.index') ?>" class="lw-ajax-link-action lw-action-with-url inline-flex items-center text-base transition-all duration-200 hover:opacity-70" style="color: #7C3AED; font-family: 'Poppins', sans-serif; text-decoration: none;">
+                <i class="fas fa-arrow-left mr-2"></i>
+                <?= __tr('Settings') ?>
+            </a>
         </div>
-    </div>
+
+        <!-- Section Title -->
+        <h2 class="text-3xl font-bold mb-6" style="color: #1F1638;">Preferences</h2>
 
     <!-- Preferences Options -->
     <div class="space-y-4">
@@ -58,6 +52,7 @@
         <a href="/home" class="lw-ajax-link-action lw-action-with-url px-12 py-3 rounded-full border-2 transition-all duration-200 hover:bg-gray-50" style="border-color: #1F1638; color: #1F1638; font-family: 'Poppins', sans-serif; font-weight: 500; text-decoration: none;">
             Back → Home
         </a>
+    </div>
     </div>
 </div>
 
