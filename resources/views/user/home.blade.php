@@ -52,7 +52,7 @@
             </div>
 
             <!-- Second Row -->
-            <div class="grid grid-cols-2 gap-6 mb-6" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="grid grid-cols-3 gap-6 mb-6" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
                 <!-- Preferences -->
                 <a href="<?= route('user.settings.preferences') ?>" class="lw-ajax-link-action lw-action-with-url flex flex-col items-center ">
                     <div class="w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-all duration-200 hover:scale-110" style="background-color: #FCE7F3;">
@@ -67,6 +67,14 @@
                         <i class="fas fa-image text-2xl" style="color: #7C3AED;"></i>
                     </div>
                     <span class="text-sm font-medium text-center" style="color: #1F1638; font-family: 'Poppins', sans-serif;"><?= __tr('My Photos') ?></span>
+                </a>
+
+                <!-- Visitors -->
+                <a href="<?= route('user.settings.visitors') ?>" class="lw-ajax-link-action lw-action-with-url flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-all duration-200 hover:scale-110" style="background-color: #E9D8FD;">
+                        <i class="fas fa-eye text-2xl" style="color: #7C3AED;"></i>
+                    </div>
+                    <span class="text-sm font-medium text-center" style="color: #1F1638; font-family: 'Poppins', sans-serif;"><?= __tr('Visitors') ?></span>
                 </a>
             </div>
 
