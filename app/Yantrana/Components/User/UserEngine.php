@@ -171,6 +171,35 @@ class UserEngine extends BaseEngine
 
         // Process for login attempt
         if (Auth::attempt($loginCredentials, $remember_me)) {
+            // Check if user has 2FA enabled
+            if ($user->two_factor_enabled) {
+                // Generate 6-digit code
+                $twoFactorCode = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+                // Set expiration time (10 minutes from now)
+                $expiresAt = now()->addMinutes(10);
+
+                // Update user with 2FA code and expiration
+                $user->two_factor_code = $twoFactorCode;
+                $user->two_factor_expires_at = $expiresAt;
+                $user->save();
+
+                // Send 2FA code via email
+                $this->sendTwoFactorEmail($user->email, $twoFactorCode, $user->first_name);
+
+                // Logout the user (they need to verify 2FA first)
+                Auth::logout();
+
+                // Store user ID in session for verification
+                Session::put('2fa_user_id', $user->_id);
+                Session::put('2fa_remember', $remember_me);
+
+                return $this->engineReaction(1, [
+                    'requires_2fa' => true,
+                    'redirect_to_2fa' => route('user.verify.2fa'),
+                ], __tr('Verification code sent to your email.'));
+            }
+
             // Clear login attempts of ip address
             $this->userRepository->clearLoginAttempts();
             //loggedIn user name
@@ -234,6 +263,89 @@ class UserEngine extends BaseEngine
         $this->userRepository->updateLoginAttempts();
 
         return $this->engineReaction(2, ['show_message' => true], __tr('Authentication failed, please check your credentials & try again.'));
+    }
+
+    /**
+     * Send Two-Factor Authentication Email
+     *
+     * @param string $email
+     * @param string $twoFactorCode
+     * @param string $firstName
+     * @return bool
+     */
+    protected function sendTwoFactorEmail($email, $twoFactorCode, $firstName)
+    {
+        $emailData = [
+            'twoFactorCode' => $twoFactorCode,
+            'firstName' => $firstName,
+        ];
+
+        return $this->baseMailer->notifyToUser(
+            __tr('Your Two-Factor Authentication Code'),
+            'account.two-factor-code',
+            $emailData,
+            $email
+        );
+    }
+
+    /**
+     * Verify Two-Factor Authentication Code
+     *
+     * @param array $input
+     * @return array
+     *---------------------------------------------------------------- */
+    public function verify2FACode($input)
+    {
+        // Get user ID from session
+        $userId = Session::get('2fa_user_id');
+
+        if (!$userId) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('Invalid verification session.'));
+        }
+
+        // Fetch user
+        $user = $this->userRepository->fetchIt($userId);
+
+        if (__isEmpty($user)) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('User not found.'));
+        }
+
+        // Check if code matches
+        if ($user->two_factor_code !== $input['two_factor_code']) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('Invalid verification code.'));
+        }
+
+        // Check if code has expired (10 minutes)
+        if (now()->greaterThan($user->two_factor_expires_at)) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('Verification code has expired. Please login again.'));
+        }
+
+        // Code is valid - clear it and log the user in
+        $user->two_factor_code = null;
+        $user->two_factor_expires_at = null;
+        $user->save();
+
+        // Get remember me preference
+        $rememberMe = Session::get('2fa_remember', false);
+
+        // Log the user in
+        Auth::loginUsingId($user->_id, $rememberMe);
+
+        // Clear login attempts
+        $this->userRepository->clearLoginAttempts();
+
+        // Create login log if needed
+        if (!$this->loginLogsRepository->fetchIt(['user_id' => $user->_id])) {
+            $this->loginLogsRepository->createLoginLog($user);
+        }
+
+        activityLog($user->first_name . ' ' . $user->last_name . ' logged in successfully with 2FA.');
+
+        return $this->engineReaction(1, [
+            'auth_info' => getUserAuthInfo(1),
+            'redirectUrl' => Session::get('intendedUrl'),
+            'show_message' => true,
+        ], __tr('Welcome, you are logged in successfully.'));
     }
 
     /**

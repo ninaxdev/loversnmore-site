@@ -142,6 +142,14 @@
      var recaptchaInstance = "<?= getStoreSettings('allow_recaptcha') ?>";
     //on login success callback
     function onLoginCallback(response) {
+        //check if 2FA is required
+        if (response.reaction == 1 && response.data.requires_2fa) {
+            //redirect to 2FA verification page
+            _.defer(function() {
+                window.location.href = response.data.redirect_to_2fa;
+            });
+            return;
+        }
         //check reaction code is 1 and intended url is not empty
         if (response.reaction == 1 && !_.isEmpty(response.data.intendedUrl)) {
             //redirect to intendedUrl location

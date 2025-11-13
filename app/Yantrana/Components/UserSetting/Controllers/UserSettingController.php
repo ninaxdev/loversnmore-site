@@ -291,4 +291,19 @@ class UserSettingController extends BaseController
             $this->processResponse($processReaction, [], [], true)
         );
     }
+
+    /**
+     * Toggle Two-Factor Authentication
+     *
+     * @param CommonUnsecuredPostRequest $request
+     * @return json response
+     *---------------------------------------------------------------- */
+    public function toggleTwoFactor(CommonUnsecuredPostRequest $request)
+    {
+        $processReaction = $this->userSettingEngine->processTwoFactorToggle($request->all());
+
+        return $this->responseAction(
+            $this->processResponse($processReaction, [], [], true)
+        );
+    }
 }

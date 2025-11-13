@@ -168,6 +168,8 @@ if (! function_exists('getUserAuthInfo')) {
                     'last_name' => ! __isEmpty($user) ? $user->last_name : '',
                     'country' => ! __isEmpty($userProfile) ? $userProfile->countries__id : '',
                     'email' => $user->email,
+                    'mobile_number' => ! __isEmpty($user) ? $user->mobile_number : '',
+                    'two_factor_enabled' => ! __isEmpty($user) ? $user->two_factor_enabled : false,
                     'role_id' => $userRole->_id,
                     'role' => $userRole->title,
                     'authority_id' => $userRole->user_authority_id,

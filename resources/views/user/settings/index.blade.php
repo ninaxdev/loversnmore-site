@@ -50,27 +50,14 @@
                 </div>
             </a>
 
-            <!-- Privacy -->
+            <!-- Privacy & Access -->
             <a href="<?= route('user.settings.privacy') ?>" class="lw-ajax-link-action lw-action-with-url block py-4 px-6 rounded-3xl transition-all duration-200 hover:shadow-lg" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; text-decoration: none;">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #FCE7F3;">
                             <i class="fas fa-shield-alt text-xl" style="color: #EC4899;"></i>
                         </div>
-                        <span class="text-lg font-medium" style="color: #1F1638; font-family: 'Poppins', sans-serif;"><?= __tr('Privacy') ?></span>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color: #999;"></i>
-                </div>
-            </a>
-
-            <!-- Preferences -->
-            <a href="<?= route('user.settings.preferences') ?>" class="lw-ajax-link-action lw-action-with-url block py-4 px-6 rounded-3xl transition-all duration-200 hover:shadow-lg" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; text-decoration: none;">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #FCE7F3;">
-                            <i class="far fa-heart text-xl" style="color: #EC4899;"></i>
-                        </div>
-                        <span class="text-lg font-medium" style="color: #1F1638; font-family: 'Poppins', sans-serif;"><?= __tr('Preferences') ?></span>
+                        <span class="text-lg font-medium" style="color: #1F1638; font-family: 'Poppins', sans-serif;"><?= __tr('Privacy & Access') ?></span>
                     </div>
                     <i class="fas fa-chevron-right" style="color: #999;"></i>
                 </div>

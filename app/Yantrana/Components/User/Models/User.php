@@ -41,6 +41,24 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
     ];
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'username',
+        'email',
+        'mobile_number',
+        'password',
+        'status',
+        'two_factor_enabled',
+        'two_factor_code',
+        'two_factor_expires_at',
+    ];
+
+    /**
      * Let the system knows Text columns treated as JSON
      *
      * @var array

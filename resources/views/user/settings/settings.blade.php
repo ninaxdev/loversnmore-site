@@ -1,6 +1,6 @@
 <?php $pageType = $pageType ?? request()->pageType ?? 'account' ?>
 <!-- Settings Page Container -->
-<div class="w-full min-h-screen py-8 px-4 md:px-8" style="background-color: #FAFAFA; font-family: 'Poppins', sans-serif;">
+<div class="w-full min-h-screen  md:px-8" style="background-color: #FAFAFA; font-family: 'Poppins', sans-serif;">
 	<!-- Settings Header -->
 	<!-- <div class="max-w-6xl mx-auto mb-8">
 		<h1 class="text-4xl md:text-5xl font-bold" style="color: #1F1638;">Settings</h1>

@@ -9,6 +9,7 @@
 namespace App\Yantrana\Components\User\Controllers;
 
 use Auth;
+use Session;
 use Illuminate\Http\Request;
 use App\Yantrana\Base\BaseController;
 use App\Yantrana\Components\User\UserEngine;
@@ -76,6 +77,18 @@ class UserController extends BaseController
 
         //check reaction code equal to 1
         if ($processReaction['reaction_code'] === 1) {
+            // Check if 2FA is required
+            if (isset($processReaction['data']['requires_2fa']) && $processReaction['data']['requires_2fa']) {
+                // Redirect to 2FA verification page
+                return $this->responseAction(
+                    $this->processResponse($processReaction, [], [], true),
+                    [
+                        'type' => 'redirect',
+                        'url' => $processReaction['data']['redirect_to_2fa']
+                    ]
+                );
+            }
+
             // Check if user is admin and redirect to admin dashboard
             if (isAdmin()) {
                 return $this->responseAction(
@@ -83,10 +96,18 @@ class UserController extends BaseController
                     $this->redirectTo('manage.dashboard')
                 );
             }
-            
+
+            // Get username from the auth_info in the response data
+            $username = $processReaction['data']['auth_info']['profile']['username'] ?? null;
+
+            if (!$username) {
+                // Fallback: try to get it directly from the authenticated user
+                $username = getUserAuthInfo('profile.username');
+            }
+
             return $this->responseAction(
                 $this->processResponse($processReaction, [], [], true),
-                $this->redirectTo('user.profile_view', ['username' => getUserAuthInfo('profile.username')])
+                $this->redirectTo('user.profile_view', ['username' => $username])
             );
         } else {
             return $this->responseAction(
@@ -105,6 +126,63 @@ class UserController extends BaseController
         $processReaction = $this->userEngine->processLogout();
 
         return redirect()->route('user.login');
+    }
+
+    /**
+     * Show Two-Factor Authentication verification page
+     *
+     * @return view
+     *---------------------------------------------------------------- */
+    public function show2FAVerification()
+    {
+        // Check if user has pending 2FA verification
+        if (!Session::has('2fa_user_id')) {
+            return redirect()->route('user.login');
+        }
+
+        return $this->loadView('user.verify-2fa');
+    }
+
+    /**
+     * Verify Two-Factor Authentication code
+     *
+     * @param CommonUnsecuredPostRequest $request
+     * @return json object
+     *---------------------------------------------------------------- */
+    public function verify2FACode(CommonUnsecuredPostRequest $request)
+    {
+        $processReaction = $this->userEngine->verify2FACode($request->all());
+
+        if ($processReaction['reaction_code'] === 1) {
+            // Clear 2FA session data
+            Session::forget('2fa_user_id');
+            Session::forget('2fa_remember');
+
+            // Check if user is admin and redirect to admin dashboard
+            if (isAdmin()) {
+                return $this->responseAction(
+                    $this->processResponse($processReaction, [], [], true),
+                    $this->redirectTo('manage.dashboard')
+                );
+            }
+
+            // Get username from the auth_info in the response data
+            $username = $processReaction['data']['auth_info']['profile']['username'] ?? null;
+
+            if (!$username) {
+                // Fallback: try to get it directly from the authenticated user
+                $username = getUserAuthInfo('profile.username');
+            }
+
+            return $this->responseAction(
+                $this->processResponse($processReaction, [], [], true),
+                $this->redirectTo('user.profile_view', ['username' => $username])
+            );
+        } else {
+            return $this->responseAction(
+                $this->processResponse($processReaction, [], [], true)
+            );
+        }
     }
 
     /**

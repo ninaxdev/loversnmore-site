@@ -911,6 +911,14 @@ class UserSettingEngine extends BaseEngine implements UserSettingEngineInterface
             $updateData['email'] = $inputData['email'];
         }
 
+        // Handle Mobile Number (stored in users table)
+        if (isset($inputData['mobile_number'])) {
+            $mobileNumber = trim($inputData['mobile_number']);
+            if ($mobileNumber != $user->mobile_number) {
+                $updateData['mobile_number'] = $mobileNumber;
+            }
+        }
+
         // Update user basic info if there are changes
         if (!empty($updateData)) {
             if (!$this->userSettingRepository->updateUser($user, $updateData)) {
@@ -1000,6 +1008,47 @@ class UserSettingEngine extends BaseEngine implements UserSettingEngineInterface
 
         activityLog($user->first_name.' '.$user->last_name.' updated account settings.');
         return $this->engineReaction(1, null, __tr('Account settings updated successfully.'));
+    }
+
+    /**
+     * Toggle Two-Factor Authentication
+     *
+     * @param array $inputData
+     * @return array
+     *---------------------------------------------------------------- */
+    public function processTwoFactorToggle($inputData)
+    {
+        $userId = getUserID();
+        // Fetch the User model directly, not the joined user details
+        $user = \App\Yantrana\Components\User\Models\User::find($userId);
+
+        if (__isEmpty($user)) {
+            return $this->engineReaction(2, null, __tr('User does not exist.'));
+        }
+
+        $enabled = isset($inputData['two_factor_enabled']) && $inputData['two_factor_enabled'] === 'true';
+
+        $updateData = [
+            'two_factor_enabled' => $enabled?1:0,
+        ];
+
+        // If disabling 2FA, clear the code and expiry
+        if (!$enabled) {
+            $updateData['two_factor_code'] = null;
+            $updateData['two_factor_expires_at'] = null;
+        }
+        
+        if (!$this->userSettingRepository->updateUser($user, $updateData)) {
+            return $this->engineReaction(2, null, __tr('Failed to update two-factor authentication.'));
+        }
+
+        $message = $enabled
+            ? __tr('Two-factor authentication enabled successfully.')
+            : __tr('Two-factor authentication disabled successfully.');
+
+        activityLog($user->first_name.' '.$user->last_name.' '.($enabled ? 'enabled' : 'disabled').' two-factor authentication.');
+
+        return $this->engineReaction(1, null, $message);
     }
 
     /**

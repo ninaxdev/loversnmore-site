@@ -87,6 +87,17 @@ Route::group([
                 'uses' => 'UserController@loginProcess',
             ]);
 
+            // Two-Factor Authentication routes
+            Route::get('/verify-2fa', [
+                'as' => 'user.verify.2fa',
+                'uses' => 'UserController@show2FAVerification',
+            ]);
+
+            Route::post('/verify-2fa', [
+                'as' => 'user.verify.2fa_code',
+                'uses' => 'UserController@verify2FACode',
+            ]);
+
             // User Registration
             Route::get('/sign-up', [
                 'as' => 'user.sign_up',
@@ -451,6 +462,12 @@ Route::group([
                 Route::post('/process-account-settings', [
                     'as' => 'user.write.account_settings',
                     'uses' => 'UserSettingController@processAccountSettings',
+                ]);
+
+                // Toggle Two-Factor Authentication
+                Route::post('/toggle-two-factor', [
+                    'as' => 'user.write.toggle_two_factor',
+                    'uses' => 'UserSettingController@toggleTwoFactor',
                 ]);
 
                 // Process basic settings
