@@ -1592,8 +1592,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
         <div class="container-fluid">
             <a class="navbar-brand js-scroll-trigger" href="{{ url('') }}#page-top">
-                <img class="lw-logo-img" src="<?= getStoreSettings('logo_image_url') ?>"
-                             alt="<?= getStoreSettings('name') ?>" loading="eager">
+                {{-- <img class="lw-logo-img" src="<?= getStoreSettings('logo_image_url') ?>"
+                             alt="<?= getStoreSettings('name') ?>" loading="eager"> --}}
                     </a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                 data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"

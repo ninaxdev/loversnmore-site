@@ -443,6 +443,12 @@ Route::group([
                     'uses' => 'UserSettingController@getVisitorsSettingsView',
                 ]);
 
+                // Membership settings page
+                Route::get('/membership', [
+                    'as' => 'user.settings.membership',
+                    'uses' => 'UserSettingController@getMembershipSettingsView',
+                ]);
+
                 // View settings
                 Route::get('/{pageType}', [
                     'as' => 'user.read.setting',

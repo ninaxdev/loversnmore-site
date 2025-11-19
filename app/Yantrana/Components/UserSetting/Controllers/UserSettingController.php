@@ -90,6 +90,16 @@ class UserSettingController extends BaseController
     }
 
     /**
+     * Show membership settings view.
+     *
+     * @return view
+     *---------------------------------------------------------------- */
+    public function getMembershipSettingsView()
+    {
+        return $this->loadPublicView('user.settings.membership');
+    }
+
+    /**
      * Show user setting view.
      *
      * @return json object
