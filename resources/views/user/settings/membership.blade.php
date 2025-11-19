@@ -39,9 +39,9 @@
         <!-- Action Buttons -->
         <div class="space-y-4">
             <!-- Go Premium Button -->
-            <button class="w-full py-4 px-6 rounded-full font-semibold text-lg text-white text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl" style="background-color: #5B3E96; font-family: 'Poppins', sans-serif; box-shadow: 0 4px 14px rgba(91, 62, 150, 0.35); border: none; cursor: pointer;">
+            <a href="{{ route('user.premium_plan.read.view') }}" class="lw-ajax-link-action lw-action-with-url w-full py-4 px-6 rounded-full font-semibold text-lg text-white text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl block" style="background-color: #5B3E96; font-family: 'Poppins', sans-serif; box-shadow: 0 4px 14px rgba(91, 62, 150, 0.35); border: none; cursor: pointer; text-decoration: none;">
                 Go Premium
-            </button>
+            </a>
 
             <!-- Manage Subscription Button -->
             <button class="w-full py-4 px-6 rounded-full font-semibold text-lg text-center transition-all duration-300 hover:scale-105 hover:shadow-lg" style="background-color: #F8F4FF; color: #5B3E96; font-family: 'Poppins', sans-serif; border: 1px solid #E9D8FD; cursor: pointer;">
