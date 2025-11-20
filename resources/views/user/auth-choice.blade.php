@@ -169,6 +169,34 @@
     padding: 0 !important;
     margin: 0 !important;
 }
+
+/* Preloader Logo Fix - Centered and Stable */
+.lw-preloader-logo {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-bottom: var(--lw-space-lg) !important;
+    animation: none !important; /* Disable pulse animation */
+}
+
+.lw-preloader-logo .lw-logo {
+    display: block !important;
+    margin: 0 auto !important;
+    filter: brightness(0) invert(1) !important;
+    max-height: 80px !important;
+    max-width: 250px !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Make preloader content centered */
+.lw-preloader-content {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
 </style>
 
 @lwPush('appScripts')
