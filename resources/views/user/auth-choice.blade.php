@@ -12,6 +12,46 @@
 @include('includes.header')
 <!-- /include header -->
 
+<div id="preloader" class="lw-modern-preloader" role="status" aria-label="Loading">
+    <div class="lw-preloader-content">
+        <!-- Animated Heart Icon -->
+        <div class="lw-heart-loader" aria-hidden="true">
+            <div class="lw-heart lw-heart-1"></div>
+            <div class="lw-heart lw-heart-2"></div>
+            <div class="lw-heart lw-heart-3"></div>
+        </div>
+
+        <!-- Logo -->
+        <div class="lw-preloader-logo">
+            <img src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>" class="lw-logo lw-logo-white" loading="eager" />
+        </div>
+
+        <!-- Loading Text -->
+        <div class="lw-preloader-text">
+            <h3 class="lw-title lw-title-sm"><?= __tr('Finding Your Perfect Match') ?></h3>
+            <div class="lw-loading-dots" aria-hidden="true">
+                <span class="lw-dot lw-dot-1"></span>
+                <span class="lw-dot lw-dot-2"></span>
+                <span class="lw-dot lw-dot-3"></span>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="lw-progress-container">
+            <div class="lw-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="lw-progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Screen Reader Text -->
+        <span class="sr-only"><?= __tr('Loading application, please wait...') ?></span>
+    </div>
+
+    <!-- Background Elements -->
+    <div class="lw-preloader-bg-1" aria-hidden="true"></div>
+    <div class="lw-preloader-bg-2" aria-hidden="true"></div>
+</div>
+
 <body class="lw-auth-choice-page">
     <div class="min-h-screen flex">
         <!-- Left side - Desktop only (Purple gradient background) -->
@@ -133,7 +173,21 @@
 
 @lwPush('appScripts')
 <script>
-    // Optional: Add any JavaScript interactions here
+    // Preloader
+    document.addEventListener("DOMContentLoaded", () => {
+        const preloader = document.getElementById("preloader");
+
+        // Simulate progressive loading
+        setTimeout(() => {
+            // Add the hidden class for smooth transition
+            preloader.classList.add("lw-preloader-hidden");
+
+            // Remove from DOM after transition completes
+            setTimeout(() => {
+                preloader.style.display = "none";
+            }, 600); // Match the CSS transition duration
+        }, 1800); // Slightly longer to show the beautiful animation
+    });
 </script>
 @lwPush('appScripts')
 
