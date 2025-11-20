@@ -50,12 +50,12 @@ Route::group([
     ----------------------------------------------------------------------- */
     Route::group(['middleware' => 'guest'], function () {
         Route::group([
-            'namespace' => 'Home\Controllers',
+            'namespace' => 'User\Controllers',
         ], function () {
-            // Get landing page view
+            // Get auth choice page as home
             Route::get('/', [
                 'as' => 'landing_page',
-                'uses' => 'HomeController@landingPage',
+                'uses' => 'UserController@authChoice',
             ]);
            
             // Process search from landing page
