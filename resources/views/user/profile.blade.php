@@ -322,7 +322,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 <div class="md:hidden bg-white pb-20 font-lw" style="font-family: 'Poppins', sans-serif;">
 	<!-- Profile Header -->
 	<div class="relative p-4 bg-white">
-		<a href="https://google.com" class="absolute left-4 top-4 w-10 h-10 bg-white border-0 rounded-lg flex items-center justify-center text-[#2F1E4E] text-xl z-10">
+		<a href="javascript:void(0);" onclick="window.history.back();" class="absolute left-4 top-4 w-10 h-10 bg-white border-0 rounded-lg flex items-center justify-center text-[#2F1E4E] text-xl z-10">
 			<i class="fas fa-chevron-left"></i>
 		</a>
 		<h1 class="text-center font-bold text-2xl text-[#2F1E4E] m-0 py-2">{{ __tr('Profile') }}</h1>
