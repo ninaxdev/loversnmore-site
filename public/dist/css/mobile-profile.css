@@ -225,7 +225,7 @@
     width: calc(100% - 32px);
     margin: 24px 16px;
     padding: 16px 24px;
-    background: linear-gradient(135deg, #4F1DA1, #E78AB0);
+    background: #4F1DA1;
     border: none;
     border-radius: 12px;
     font-family: 'Poppins', sans-serif;
@@ -240,7 +240,7 @@
 
 .lw-mobile-edit-profile-btn:hover,
 .lw-mobile-edit-profile-btn:active {
-    background: linear-gradient(135deg, #5B2BB5, #F4A5C4);
+    background: #5B2BB5;
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(79, 29, 161, 0.3);
 }

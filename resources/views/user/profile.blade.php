@@ -260,6 +260,38 @@
 	.lw-remove-spinner {
 		-moz-appearance: textfield !important;
 	}
+
+	/* Mobile Photo Upload FilePond Styling */
+	#mobilePhotoUploadContainer .filepond--root {
+		background: transparent;
+		margin-bottom: 0;
+	}
+
+	#mobilePhotoUploadContainer .filepond--drop-label {
+		background: #F4E9FF;
+		border: 2px dashed #9B8AAE;
+		border-radius: 0.75rem;
+		color: #4F1DA1;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		min-height: 100px;
+	}
+
+	#mobilePhotoUploadContainer .filepond--drop-label:hover {
+		background: #E8D5FF;
+		border-color: #4F1DA1;
+	}
+
+	#mobilePhotoUploadContainer .filepond--panel-root {
+		background-color: transparent;
+		border-radius: 0.75rem;
+	}
+
+	#mobilePhotoUploadContainer .filepond--label-action {
+		text-decoration: none;
+		color: #4F1DA1;
+		font-weight: 600;
+	}
 </style>
 @lwPushEnd
 @lwPush('footer')
@@ -339,6 +371,13 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 					<p class="font-normal text-base text-[#9B8AAE]">{{ __tr('No information available') }}</p>
 				</div>
 			@endif
+
+			<!-- Edit Profile Button for About Tab -->
+			@if($isOwnProfile)
+				<button data-toggle="modal" data-target="#mobileEditProfileModal" class="block  mx-auto mt-6 px-5 py-3 bg-[#4F1DA1] border-0 rounded-full font-medium text-base text-white text-center cursor-pointer shadow-md transition-all hover:bg-[#5B2BB5] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0">
+					{{ __tr('Edit Profile') }}
+				</button>
+			@endif
 		</div>
 
 		<!-- Info Tab -->
@@ -382,12 +421,36 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 					<p class="font-normal text-base text-[#9B8AAE]">{{ __tr('No profile information available') }}</p>
 				</div>
 			@endif
+
+			<!-- Edit Profile Button for Info Tab -->
+			@if($isOwnProfile)
+				<button data-toggle="modal" data-target="#mobileEditProfileModal" class="block w-[calc(100%-64px)] mx-auto mt-6 px-5 py-3 bg-[#4F1DA1] border-0 rounded-full font-medium text-base text-white text-center cursor-pointer shadow-md transition-all hover:bg-[#5B2BB5] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0">
+					{{ __tr('Edit Profile') }}
+				</button>
+			@endif
 		</div>
 
 		<!-- Photos Tab -->
 		<div class="lw-mobile-tab-content hidden" id="mobile-photos-tab">
-			@if(!__isEmpty($photosData))
+			@if(!__isEmpty($photosData) || $isOwnProfile)
 				<div class="lw-masonry-grid" style="column-count: 2; column-gap: 0.5rem; margin: 0;">
+					<!-- Upload Button (only for own profile) -->
+					@if($isOwnProfile)
+						<div class="lw-masonry-item" style="break-inside: avoid; margin-bottom: 0.5rem;" id="mobilePhotoUploadContainer">
+							<input type="file"
+								class="lw-file-uploader"
+								id="mobilePhotoUpload"
+								data-instant-upload="true"
+								data-action="{{ route('user.upload_photos') }}"
+								data-default-image-url=""
+								data-allowed-media="{{ getMediaRestriction('photos') }}"
+								multiple
+								data-callback="afterMobilePhotoUpload"
+								data-remove-all-media="true"
+								data-label-idle='<div style="width: 100%; text-align: center; padding: 1.25rem 1rem;"><i class="fas fa-plus" style="font-size: 2rem; color: #4F1DA1; display: block; margin-bottom: 0.5rem;"></i><span style="color: #4F1DA1; font-weight: 500; font-size: 0.875rem;">{{ __tr("Add Photos") }}</span></div>'>
+						</div>
+					@endif
+
 					@foreach($photosData as $key => $photo)
 						<div class="lw-masonry-item" style="break-inside: avoid; margin-bottom: 0.5rem;">
 							<img src="{{ imageOrNoImageAvailable($photo['image_url']) }}"
@@ -409,13 +472,6 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			@endif
 		</div>
 	</div>
-
-	<!-- Edit Profile Button (only for own profile) -->
-	@if($isOwnProfile)
-		<button data-toggle="modal" data-target="#mobileEditProfileModal" class="block w-[calc(100%-32px)] mx-4 my-6 px-6 py-4 bg-gradient-to-r from-[#4F1DA1] to-[#E78AB0] border-0 rounded-xl font-semibold text-lg text-white text-center cursor-pointer shadow-lg transition-all hover:from-[#5B2BB5] hover:to-[#F4A5C4] hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0">
-			{{ __tr('Edit Profile') }}
-		</button>
-	@endif
 </div>
 <!-- /NEW MOBILE PROFILE VIEW -->
 
@@ -1877,9 +1933,27 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				const targetContent = document.getElementById(`mobile-${targetTab}-tab`);
 				if (targetContent) {
 					targetContent.classList.remove('hidden');
+
+					// Initialize photo uploader when Photos tab is shown
+					if (targetTab === 'photos' && $('#mobilePhotoUpload').length) {
+						setTimeout(function() {
+							if (window.lwPluginFuncs && !$('#mobilePhotoUpload').data('filepond-initialized')) {
+								window.lwPluginFuncs.lwUploader('#mobilePhotoUpload');
+								$('#mobilePhotoUpload').data('filepond-initialized', true);
+							}
+						}, 100);
+					}
 				}
 			});
 		});
 	});
+
+	// After successfully uploaded photo in mobile view
+	function afterMobilePhotoUpload(responseData) {
+		if (!_.isUndefined(responseData.data.stored_photo)) {
+			// Reload the page to show the new photo
+			location.reload();
+		}
+	}
 </script>
 @lwPushEnd
