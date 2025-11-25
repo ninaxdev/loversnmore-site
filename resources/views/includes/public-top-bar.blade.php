@@ -163,13 +163,13 @@
             showBoosterAlert();
         }, {
             title:"<?= __tr('✨ Become Featured') ?>",
-            confirmBtnColor: '#c53e8d',
+            confirmBtnColor: '#4F1DA1',
             confirmButtonText: "<i class='fas fa-bolt fa-fw mr-2'></i><?= __tr('Boost Profile') ?>",
             cancelButtonText: '<?= __tr("Maybe Later") ?>',
             type: "question",
             background: 'var(--lw-white)',
             showDenyButton: @if(isPremiumUser()) false @else true @endif,
-            denyButtonText: '<div onclick="premiumView()" style="color: var(--lw-gradient-start); font-weight: 600;"><i class="fas fa-crown mr-1"></i><?= __tr("Go Premium") ?></div>',
+            denyButtonText: '<div onclick="premiumView()" style="color: #4F1DA1; font-weight: 600;"><i class="fas fa-crown mr-1"></i><?= __tr("Go Premium") ?></div>',
             customClass: {
                 popup: 'lw-swal-popup',
                 title: 'lw-swal-title',
@@ -195,10 +195,10 @@
             showCloseButton: true,
             showCancelButton: true,
             focusConfirm: false,
-            confirmBtnColor: '#10b981',
+            confirmBtnColor: '#4F1DA1',
             confirmButtonText: '<i class="fas fa-bolt fa-fw mr-2"></i><?= __tr('Activate Boost') ?>',
             confirmButtonAriaLabel: 'Activate profile boost',
-            type: "success",
+            type: "info",
             background: 'var(--lw-white)',
             customClass: {
                 popup: 'lw-swal-popup',

@@ -1951,8 +1951,24 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	// After successfully uploaded photo in mobile view
 	function afterMobilePhotoUpload(responseData) {
 		if (!_.isUndefined(responseData.data.stored_photo)) {
-			// Reload the page to show the new photo
-			location.reload();
+			// Dynamically add the new photo to the masonry grid
+			var storedPhoto = responseData.data.stored_photo;
+			var photoIndex = $('.lw-masonry-grid .lw-user-photo').length;
+
+			var photoHtml = '<div class="lw-masonry-item" style="break-inside: avoid; margin-bottom: 0.5rem;">' +
+				'<img src="' + storedPhoto.image_url + '" ' +
+				'alt="Photo ' + (photoIndex + 1) + '" ' +
+				'class="w-full rounded-xl cursor-pointer transition-transform active:scale-95 lw-photoswipe-gallery-img lw-lazy-img lw-user-photo" ' +
+				'style="display: block; width: 100%; height: auto; border-radius: 0.75rem;" ' +
+				'data-img-index="' + photoIndex + '" ' +
+				'data-src="' + storedPhoto.image_url + '">' +
+				'</div>';
+
+			// Append new photo after the upload container
+			$('#mobilePhotoUploadContainer').after(photoHtml);
+
+			// Show success message
+			showSuccessMessage(responseData.data.message || '{{ __tr("Photo uploaded successfully") }}');
 		}
 	}
 </script>

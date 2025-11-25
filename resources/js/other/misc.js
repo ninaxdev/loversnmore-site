@@ -252,23 +252,43 @@ $(function () {
         }
     });
 
-    $('.lw-page-content').on('click', '.lw-photoswipe-gallery-img', function (event) {
-        var siblings = $(this).siblings('.lw-photoswipe-gallery-img').addBack();
+    $(document).on('click', '.lw-photoswipe-gallery-img', function (event) {
+        event.preventDefault();
+        console.log('Photo clicked!', this);
+
+        var $clickedImg = $(this);
+        var $container = $clickedImg.closest('.lw-masonry-grid, .lw-horizontal-container, .card-body');
+        var $allImages;
         var items;
         var index = 0;
 
-        if (siblings.length > 0) {
-            items = siblings.map(function (index, elem) {
+        console.log('Container found:', $container.length, $container);
+
+        // Check if images are in a masonry grid or container
+        if ($container.length > 0) {
+            $allImages = $container.find('.lw-photoswipe-gallery-img');
+        } else {
+            // Fallback to siblings if no container found
+            $allImages = $clickedImg.siblings('.lw-photoswipe-gallery-img').addBack();
+        }
+
+        console.log('All images found:', $allImages.length);
+
+        if ($allImages.length > 0) {
+            items = $allImages.map(function (idx, elem) {
+                var $elem = $(elem);
                 return {
-                    'src': $(elem).attr('src'),
+                    'src': $elem.attr('src') || $elem.data('src'),
                     'w': 900,
                     'h': 900
                 }
             });
 
-            //if index is set
-            if ($(event.target).data('img-index')) {
-                index = $(event.target).data('img-index');
+            // Get the index of the clicked image
+            if ($clickedImg.data('img-index') !== undefined) {
+                index = $clickedImg.data('img-index');
+            } else {
+                index = $allImages.index($clickedImg);
             }
 
             // if items not empty
@@ -276,15 +296,13 @@ $(function () {
                 photoSwipeGallery(items, index);
             }
         } else {
+            // Single image fallback
             items = [{
-                'src': $(event.target).attr('src'),
+                'src': $clickedImg.attr('src') || $clickedImg.data('src'),
                 'w': 900,
                 'h': 900
             }];
-            // if items not empty
-            if (items.length > 0) {
-                photoSwipeGallery(items, index);
-            }
+            photoSwipeGallery(items, index);
         }
     });
 });

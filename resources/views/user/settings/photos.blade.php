@@ -92,7 +92,6 @@
     background-color: transparent;
 }
 </style>
-
 <!-- Modern Photos Settings Page -->
 <div class="max-w-6xl mx-auto">
     <!-- Page Header -->
@@ -149,22 +148,23 @@
             <div class="lw-photo-thumbnail relative group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <!-- User photo container -->
                 <div class="relative aspect-square bg-gray-100">
-                    <img class="lw-user-photo lw-photoswipe-gallery-img lw-lazy-img absolute inset-0 w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-300" 
-                        data-img-index="<%= index %>" 
-                        src="<%= item.image_url %>" 
+                    <img class="lw-user-photo lw-photoswipe-gallery-img lw-lazy-img absolute inset-0 w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-300"
+                        data-img-index="<%= index %>"
+                        src="<%= item.image_url %>"
+                        data-src="<%= item.image_url %>"
                         alt="{{ __tr('User Photo') }}"
                         loading="lazy">
-                    
+
                     <!-- Delete photo button -->
-                    <button class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 lw-remove-photo-btn lw-ajax-link-action z-10 shadow-lg" 
-                        data-href="<%- item.removePhotoUrl %>" 
-                        data-callback="onDeletePhotoCallback" 
+                    <button class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 lw-remove-photo-btn lw-ajax-link-action z-10 shadow-lg"
+                        data-href="<%- item.removePhotoUrl %>"
+                        data-callback="onDeletePhotoCallback"
                         data-method="post">
                         <i class="fas fa-trash-alt text-xs"></i>
                     </button>
-                    
+
                     <!-- Overlay on hover -->
-                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200"></div>
+                    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 pointer-events-none"></div>
                 </div>
             </div>
         <% }); %>
@@ -191,14 +191,23 @@
             });
         $('#lwUserPhotos').html(compiledHtml);
 
+        // Apply lazy loading to newly added images
+        if (typeof applyLazyImages === 'function') {
+            applyLazyImages();
+        }
+
+        // Debug: Check if photos are rendered
+        console.log('Photos rendered:', $('.lw-photoswipe-gallery-img').length);
+
         // Re-bind click events for delete buttons
         $('.lw-remove-photo-btn').off('click').on('click', function(e) {
             e.preventDefault();
+            e.stopPropagation(); // Prevent event bubbling to image
             var $this = $(this);
             var href = $this.data('href');
             var callback = $this.data('callback');
             var method = $this.data('method');
-            
+
             // Make AJAX request
             __DataRequest.post(href, {}, function(responseData) {
                 if (typeof window[callback] === 'function') {
