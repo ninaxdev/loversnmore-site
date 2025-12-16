@@ -15,6 +15,14 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
+| Stripe Webhook Route (must be outside middleware to receive webhooks)
+|--------------------------------------------------------------------------
+*/
+Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::class, 'handleWebhook'])
+    ->name('stripe.webhook');
+
+/*
+|--------------------------------------------------------------------------
 | Lw-Dating Routes
 |--------------------------------------------------------------------------
 */

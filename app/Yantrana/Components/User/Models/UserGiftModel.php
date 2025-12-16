@@ -19,4 +19,5 @@ class UserGiftModel extends BaseModel
      * @var array
      */
     protected $casts = [];
+    protected $guarded = ['id'];
 }

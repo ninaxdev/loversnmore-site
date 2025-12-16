@@ -1230,6 +1230,20 @@ class UserRepository extends BaseRepository implements UserRepositoryBlueprint
             'items__id',
             'price',
             'credit_wallet_transactions__id',
+            // Stripe payment fields
+            'stripe_payment_intent_id',
+            'stripe_payment_status',
+            'stripe_amount',
+            'stripe_charge_id',
+            'stripe_currency',
+            'recipient_amount',
+            'recipient_transfer_id',
+            'affiliate_commission',
+            'affiliate_user_id',
+            'affiliate_transfer_id',
+            'platform_fee',
+            'stripe_fee',
+            'payment_metadata',
         ];
 
         // Get Instance of user gift model
@@ -1237,6 +1251,35 @@ class UserRepository extends BaseRepository implements UserRepositoryBlueprint
         // Store user gift data
         if ($userGiftModel->assignInputsAndSave($storeData, $keyValues)) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Fetch gift by Stripe Payment Intent ID
+     *
+     * @param  string  $paymentIntentId
+     *
+     *-----------------------------------------------------------------------*/
+    public function fetchGiftByPaymentIntent($paymentIntentId)
+    {
+        return UserGiftModel::where('stripe_payment_intent_id', $paymentIntentId)->first();
+    }
+
+    /**
+     * Update user gift record
+     *
+     * @param  int  $giftId
+     * @param  array  $updateData
+     *
+     *-----------------------------------------------------------------------*/
+    public function updateUserGift($giftId, $updateData)
+    {
+        $userGift = UserGiftModel::find($giftId);
+
+        if (!__isEmpty($userGift)) {
+            return $userGift->update($updateData);
         }
 
         return false;

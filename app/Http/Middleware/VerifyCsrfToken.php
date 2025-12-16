@@ -24,6 +24,7 @@ class VerifyCsrfToken extends Middleware
         '/in-app-process',
         '/coingate-callback',
         '/stripe/order-payment-webhook',
+        '/stripe/webhook', // Stripe gift payment webhook
         '/razorpay/order-payment-razorpay-webhook',
         '/crypto/crypto-order-payment-webhook',
         '/paystack-webhook-order',

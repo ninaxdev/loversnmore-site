@@ -1334,13 +1334,13 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 
 	<!-- send gift Modal-->
 	<div class="modal fade" id="lwSendGiftDialog" tabindex="-1" role="dialog" aria-labelledby="sendGiftModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-md" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					@php $totalAvailableCredits = totalUserCredits() @endphp
-					<h5 class="modal-title" id="sendGiftModalLabel">{{ __tr('Send Gift') }} <small class="text-muted">{{ __tr('(Credits Available:  __availableCredits__)', [
-																															'__availableCredits__' => $totalAvailableCredits
-																														]) }}</small></h5>
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content" style="border-radius: 20px; font-family: 'Poppins', sans-serif;">
+				<div class="modal-header" style="border-bottom: 1px solid #F0F0F0;">
+										<div>
+						<h5 class="modal-title font-weight-bold mb-1" id="sendGiftModalLabel" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 20px;">{{ __tr('Send Gift') }}</h5>
+						<small class="text-muted" style="font-family: 'Poppins', sans-serif; font-size: 14px;">{{ __tr('Select a gift and pay securely with card') }}</small>
+					</div>
 					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">×</span>
 					</button>
@@ -1348,43 +1348,57 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				@if(isset($giftListData) and !__isEmpty($giftListData))
 
 				<!-- insufficient balance error message -->
-				<div class="alert alert-info" id="lwGiftModalErrorText" style="display: none">
-					{{ __tr('Your credit balance is too low, please') }}
-					<a href="{{ route('user.credit_wallet.read.view') }}">{{ __tr('purchase credits') }}</a>
-				</div>
+				<div class="alert alert-danger mx-4 mt-3" id="lwGiftPaymentErrorText" style="display: none; border-radius: 12px;">
+					<span id="lwGiftPaymentErrorMessage"></span>
+									</div>
 				<!-- / insufficient balance error message -->
-
-				<form class="lw-ajax-form lw-form" id="lwSendGiftForm" method="post" data-callback="sendGiftCallback" action="{{ route('user.write.send_gift', ['sendUserUId' => $userData['userUId']]) }}">
-					<div class="modal-body">
-						<div class="btn-group-toggle" data-toggle="buttons">
+				<form id="lwSendGiftForm" method="post" action="{{ route('user.write.send_gift', ['sendUserUId' => $userData['userUId']]) }}">
+					@csrf
+					<div class="modal-body p-4">
+						<!-- Gift Selection Grid -->
+						<div class="row" data-toggle="buttons">
 							@foreach($giftListData as $key => $gift)
-							<span class="btn lw-group-radio-option-img" id="lwSendGiftRadioBtn_{{ $gift['_uid'] }}">
-								<input type="radio" value="{{ $gift['_uid'] }}" name="selected_gift" />
-								<span>
-									<img class="lw-lazy-img" data-src="{{ imageOrNoImageAvailable($gift['gift_image_url']) }}" /><br>
-									{{ $gift['formattedPrice'] }}
-								</span>
-							</span>
+							<div class="col-6 col-md-3 mb-3">
+								<label class="lw-gift-card w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-center" id="lwSendGiftRadioBtn_{{ $gift['_uid'] }}" style="cursor: pointer; background-color: #F8F4FF; border: 2px solid #E9D8FD; border-radius: 16px; transition: all 0.3s ease; position: relative; min-height: 160px;">
+									<input type="radio" value="{{ $gift['_uid'] }}" name="selected_gift" style="position: absolute; opacity: 0;" />
+									<img class="lw-lazy-img mb-2" data-src="{{ imageOrNoImageAvailable($gift['gift_image_url']) }}" style="width: 60px; height: 60px; object-fit: contain;" />
+									<div class="lw-gift-title font-weight-semibold mb-1" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 14px;">{{ $gift['title'] ?? 'Gift' }}</div>
+									<div class="lw-gift-price font-weight-bold" style="color: #5B3E96; font-family: 'Poppins', sans-serif; font-size: 16px;">{{ $gift['formattedPrice'] }}</div>
+								</label>
+							</div>
 							@endforeach
 						</div>
 
 						<!-- select private / public -->
-						<div class="custom-control custom-checkbox custom-control-inline mt-3">
-							<input type="checkbox" class="custom-control-input" id="isPrivateCheck" name="isPrivateGift">
-							<label class="custom-control-label" for="isPrivateCheck">{{ __tr('Private') }}</label>
+						<div class="d-flex align-items-center justify-content-between py-3 px-4 mt-3" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; border-radius: 16px;">
+							<span class="font-weight-semibold" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 15px;">{{ __tr('Private Gift') }}</span>
+							<div class="relative">
+								<input type="checkbox" class="sr-only peer" id="isPrivateCheck" name="isPrivateGift">
+								<div class="lw-gift-toggle w-14 h-7 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all cursor-pointer" style="background-color: #D1D5DB; width: 56px; height: 28px; position: relative;" onclick="document.getElementById('isPrivateCheck').click()">
+									<div class="lw-gift-toggle-thumb" style="position: absolute; top: 2px; left: 4px; width: 24px; height: 24px; background-color: white; border-radius: 9999px; transition: all 0.3s ease;"></div>
+								</div>
+							</div>
 						</div>
 						<!-- /select private / public -->
+
+					<!-- Stripe Card Payment Section -->
+					<div class="mt-4" id="lwStripeCardSection" style="display: none;">
+						<label class="font-weight-semibold mb-2" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 15px;">{{ __tr('Payment Details') }}</label>
+						<div id="lwStripeCardElement" style="padding: 12px; background-color: white; border: 2px solid #E9D8FD; border-radius: 12px; font-family: 'Poppins', sans-serif;"></div>
+						<div id="lwStripeCardErrors" role="alert" class="text-danger mt-2" style="font-size: 13px; font-family: 'Poppins', sans-serif;"></div>
+					</div>
+					<!-- /Stripe Card Payment Section -->
 					</div>
 					<!-- modal footer -->
-					<div class="modal-footer mt-3">
-						<button class="btn btn-light btn-sm" id="lwCloseSendGiftDialog">{{ __tr('Cancel') }}</button>
-						<button type="submit" class="btn btn-primary btn-sm lw-ajax-form-submit-action btn-user lw-btn-block-mobile">{{ __tr('Send') }}</button>
+					<div class="modal-footer" style="border-top: 1px solid #F0F0F0; padding: 16px 24px;">
+						<button class="btn px-4 py-2" id="lwCloseSendGiftDialog" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #5B3E96; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 9999px; transition: all 0.2s ease;">{{ __tr('Cancel') }}</button>
+						<button type="submit" class="btn px-5 py-2" id="lwSendGiftBtn" style="background-color: #5B3E96; color: white; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 9999px; border: none; transition: all 0.2s ease;">{{ __tr('Send Gift') }}</button>
 					</div>
 					<!-- modal footer -->
 				</form>
 				@else
 				<!-- info message -->
-				<div class="alert alert-info">
+				<div class="alert alert-info m-4" style="border-radius: 12px;">
 					{{ __tr('There are no gifts') }}
 				</div>
 				<!-- / info message -->
@@ -1407,6 +1421,10 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 @if(getStoreSettings('allow_google_map'))
 <script src="https://maps.googleapis.com/maps/api/js?key={{ getStoreSettings('google_map_key') }}&libraries=places&callback=initialize&language={{ app()->getLocale() }}" async defer></script>
 @endif
+<!-- Stripe.js for gift payments (load once) -->
+@once
+<script src="https://js.stripe.com/v3/"></script>
+@endonce
 <script>
 	//start show more gift item if user gift length is greater then 10
 	var userGiftLength = $("#lwUserGift, .lw-user-gift-container").length;
@@ -1586,32 +1604,10 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	/**************** User Like Dislike Fetch and Callback Block End ******************/
 
 
-	//send gift callback
+	// OLD CALLBACK - No longer used for Stripe payments
+	// Keeping for backward compatibility with any other gift sending methods
 	function sendGiftCallback(response) {
-		//check success reaction is 1
-		if (response.reaction == 1) {
-			var requestData = response.data;
-			//form reset after success
-			$("#lwSendGiftForm").trigger("reset");
-			//remove active class after success on select gift radio option
-			$("#lwSendGiftRadioBtn_" + requestData.giftUid).removeClass('active');
-			//close dialog after success
-			$('#lwSendGiftDialog').modal('hide');
-            $('.modal-backdrop').remove();
-            $('body').removeClass('modal-open');
-            //updated credit wallet amt
-            if (_.has(requestData, 'creditsRemaining')) {
-                $("#lwTotalCreditWalletAmt").html(requestData.creditsRemaining)
-            }
-
-			//if error type is insufficient balance then show error message
-		} else if (response.data['errorType'] == 'insufficient_balance') {
-			//show error div
-			$("#lwGiftModalErrorText").show();
-		} else {
-			//hide error div
-			$("#lwGiftModalErrorText").hide();
-		}
+		console.log('Old sendGiftCallback called (should not be used for Stripe payments):', response);
 	}
 
 	//close Send Gift Dialog
@@ -1619,9 +1615,278 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		e.preventDefault();
 		//form reset after success
 		$("#lwSendGiftForm").trigger("reset");
+		// Remove active state from all gift cards
+		$('.lw-gift-card').removeClass('lw-gift-card-active');
+		// Reset private gift toggle
+		$('#isPrivateCheck').prop('checked', false);
+		$('.lw-gift-toggle').css('background-color', '#D1D5DB');
+		$('.lw-gift-toggle-thumb').css('left', '4px');
+		// Hide and clear Stripe card section
+		$('#lwStripeCardSection').hide();
+		cardElement.clear();
+		$('#lwGiftPaymentErrorText').hide();
 		//close dialog after success
 		$('#lwSendGiftDialog').modal('hide');
 	});
+
+	// Gift card selection handler
+	$(document).on('click', '.lw-gift-card', function() {
+		console.log('Gift card clicked'); // Debug log
+		// Remove active state from all cards
+		$('.lw-gift-card').removeClass('lw-gift-card-active');
+		// Add active state to clicked card
+		$(this).addClass('lw-gift-card-active');
+		// Check the radio button
+		$(this).find('input[type="radio"]').prop('checked', true);
+		// Show Stripe card section when a gift is selected
+		console.log('Showing card section'); // Debug log
+		$('#lwStripeCardSection').slideDown();
+	});
+
+	// Private gift toggle handler
+	$('#isPrivateCheck').on('change', function() {
+		var isChecked = $(this).is(':checked');
+		var toggle = $('.lw-gift-toggle');
+		var thumb = $('.lw-gift-toggle-thumb');
+
+		if (isChecked) {
+			toggle.css('background-color', '#5B3E96');
+			thumb.css('left', '28px');
+		} else {
+			toggle.css('background-color', '#D1D5DB');
+			thumb.css('left', '4px');
+		}
+	});
+
+	// Initialize Stripe for gift payments
+	if (typeof Stripe === 'undefined') {
+		console.error('Stripe.js not loaded. Cannot process gift payments.');
+		$('#lwStripeCardSection').html('<div class="alert alert-danger">Payment system not available. Please contact support.</div>');
+	} else {
+		console.log('Stripe.js loaded successfullyy'); // Debug log
+
+	var stripe = Stripe('{{ config("services.stripe.public_key") }}');
+	var elements = stripe.elements();
+	var cardElement = elements.create('card', {
+		style: {
+			base: {
+				fontSize: '16px',
+				color: '#1F1638',
+				fontFamily: '"Poppins", sans-serif',
+				'::placeholder': {
+					color: '#9CA3AF'
+				}
+			},
+			invalid: {
+				color: '#DC2626'
+			}
+		}
+	});
+	cardElement.mount('#lwStripeCardElement');
+	console.log('Stripe card element mounted successfully'); // Debug log
+
+	// Handle card errors
+	cardElement.on('change', function(event) {
+		var displayError = document.getElementById('lwStripeCardErrors');
+		if (event.error) {
+			displayError.textContent = event.error.message;
+		} else {
+			displayError.textContent = '';
+		}
+	});
+
+	// Handle form submission with Stripe
+	var giftFormProcessing = false;
+
+	// Unbind any existing submit handlers added by the framework
+	$('#lwSendGiftForm').off('submit');
+
+	// Add our custom handler
+	$('#lwSendGiftForm').on('submit', function(e) {
+		e.preventDefault();
+		e.stopImmediatePropagation(); // Stop other handlers
+		console.log('Custom submit handler triggered'); // Debug log
+		if (giftFormProcessing) {
+			return false;
+		}
+
+		// Check if a gift is selected
+		var selectedGift = $('input[name="selected_gift"]:checked').val();
+		if (!selectedGift) {
+			$('#lwGiftPaymentErrorMessage').text('{{ __tr("Please select a gift") }}');
+			$('#lwGiftPaymentErrorText').slideDown();
+			return false;
+		}
+
+		// Disable submit button
+		giftFormProcessing = true;
+		var submitBtn = $('#lwSendGiftBtn');
+		var originalText = submitBtn.html();
+		submitBtn.html('{{ __tr("Processing...") }}').prop('disabled', true);
+
+		// Hide any previous errors
+		$('#lwGiftPaymentErrorText').slideUp();
+		$('#lwStripeCardErrors').text('');
+
+		console.log('Starting gift payment process...'); // Debug log
+
+		// Failsafe: Re-enable button after 30 seconds if something goes wrong
+		var failsafeTimeout = setTimeout(function() {
+			console.warn('Payment took too long, re-enabling button');
+			submitBtn.html(originalText).prop('disabled', false);
+			giftFormProcessing = false;
+			$('#lwGiftPaymentErrorMessage').text('{{ __tr("Payment timed out. Please try again.") }}');
+			$('#lwGiftPaymentErrorText').slideDown();
+		}, 30000);
+
+		// Create Payment Intent on backend first
+		var formData = {
+			selected_gift: $('input[name="selected_gift"]:checked').val(),
+			isPrivateGift: $('#isPrivateCheck').is(':checked') ? 'on' : 'off'
+		};
+		console.log('Sending gift payment request...', formData); // Debug log
+		console.log('Card section visible?', $('#lwStripeCardSection').is(':visible')); // Debug log
+		console.log('Card element container exists?', $('#lwStripeCardElement').length > 0); // Debug log
+
+		// Use __DataRequest with callback to handle Stripe payment
+		__DataRequest.post('{{ route("user.write.send_gift", ["sendUserUId" => $userData["userUId"]]) }}', formData, function(response) {
+			console.log('Backend response:', response); // Debug log
+
+			if (response.reaction == 1 && response.data.client_secret) {
+				console.log('Payment Intent created, confirming payment...'); // Debug log
+
+				// Check if card element is still mounted and visible
+				var cardElementContainer = document.getElementById('lwStripeCardElement');
+				if (!cardElementContainer || !cardElementContainer.offsetParent) {
+					console.error('Card element not mounted or not visible!');
+					clearTimeout(failsafeTimeout);
+					$('#lwGiftPaymentErrorMessage').text('{{ __tr("Payment form error. Please try again.") }}');
+					$('#lwGiftPaymentErrorText').slideDown();
+					submitBtn.html(originalText).prop('disabled', false);
+					giftFormProcessing = false;
+					return;
+				}
+
+				console.log('Card element is mounted, proceeding with payment...'); // Debug log
+
+				// Try to confirm payment with Stripe
+				var paymentPromise;
+				try {
+					paymentPromise = stripe.confirmCardPayment(response.data.client_secret, {
+						payment_method: {
+							card: cardElement
+						}
+					});
+				} catch (error) {
+					console.error('Error creating payment promise:', error);
+					clearTimeout(failsafeTimeout);
+					$('#lwGiftPaymentErrorMessage').text('{{ __tr("Payment system error. Please refresh and try again.") }}');
+					$('#lwGiftPaymentErrorText').slideDown();
+					submitBtn.html(originalText).prop('disabled', false);
+					giftFormProcessing = false;
+					return;
+				}
+
+				paymentPromise.then(function(result) {
+					clearTimeout(failsafeTimeout); // Clear failsafe
+					console.log('Stripe confirmation result:', result); // Debug log
+
+					if (result.error) {
+						// Show error
+						console.error('Payment error:', result.error); // Debug log
+						$('#lwGiftPaymentErrorMessage').text(result.error.message);
+						$('#lwGiftPaymentErrorText').slideDown();
+						submitBtn.html(originalText).prop('disabled', false);
+						giftFormProcessing = false;
+					} else {
+						// Payment successful
+						console.log('Payment successful!'); // Debug log
+						showSuccessMessage('{{ __tr("Gift sent successfully!") }}');
+
+						// Reset form
+						$('#lwSendGiftForm')[0].reset();
+						$('.lw-gift-card').removeClass('lw-gift-card-active');
+						$('#isPrivateCheck').prop('checked', false);
+						$('.lw-gift-toggle').css('background-color', '#D1D5DB');
+						$('.lw-gift-toggle-thumb').css('left', '4px');
+						$('#lwStripeCardSection').hide();
+						cardElement.clear();
+
+						// Close modal
+						$('#lwSendGiftDialog').modal('hide');
+						$('.modal-backdrop').remove();
+						$('body').removeClass('modal-open');
+
+						submitBtn.html(originalText).prop('disabled', false);
+						giftFormProcessing = false;
+
+						// Reload page after a short delay to show updated gifts
+						setTimeout(function() {
+							location.reload();
+						}, 1500);
+					}
+				}).catch(function(error) {
+					clearTimeout(failsafeTimeout); // Clear failsafe
+					console.error('Stripe confirmCardPayment error:', error); // Debug log
+					$('#lwGiftPaymentErrorMessage').text('{{ __tr("Payment confirmation failed. Please try again.") }}');
+					$('#lwGiftPaymentErrorText').slideDown();
+					submitBtn.html(originalText).prop('disabled', false);
+					giftFormProcessing = false;
+				});
+			} else {
+				// Handle backend error
+				clearTimeout(failsafeTimeout); // Clear failsafe
+				console.error('Backend error or missing client_secret:', response); // Debug log
+				var errorMsg = (response.data && response.data.message) || '{{ __tr("Failed to process gift payment") }}';
+				$('#lwGiftPaymentErrorMessage').text(errorMsg);
+				$('#lwGiftPaymentErrorText').slideDown();
+				submitBtn.html(originalText).prop('disabled', false);
+				giftFormProcessing = false;
+			}
+		});
+
+		return false;
+	});
+	} // End Stripe initialization check
+
+	// Add hover effects and active state styles
+	$('<style>')
+		.prop('type', 'text/css')
+		.html(`
+			.lw-gift-card:hover {
+				transform: scale(1.05);
+				box-shadow: 0 8px 20px rgba(91, 62, 150, 0.15);
+			}
+			.lw-gift-card-active {
+				border-color: #5B3E96 !important;
+				background-color: #F3E8FF !important;
+				box-shadow: 0 4px 12px rgba(91, 62, 150, 0.2);
+			}
+			.lw-gift-card-active::after {
+				content: '✓';
+				position: absolute;
+				top: 8px;
+				right: 8px;
+				background-color: #5B3E96;
+				color: white;
+				width: 24px;
+				height: 24px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: bold;
+				font-size: 14px;
+			}
+			#lwCloseSendGiftDialog:hover {
+				opacity: 0.8;
+			}
+			button[type="submit"].lw-ajax-form-submit-action:hover {
+				opacity: 0.9;
+				transform: scale(1.02);
+			}
+		`)
+		.appendTo('head');
 
 	//user report callback
 	function userReportCallback(response) {

@@ -22,6 +22,7 @@ use App\Yantrana\Components\User\Repositories\UserRepository;
 use App\Yantrana\Support\CommonTrait;
 use App\Yantrana\Support\Country\Repositories\CountryRepository;
 use App\Yantrana\Support\Utils;
+use App\Services\StripeGiftPaymentService;
 use Auth;
 use Carbon\Carbon;
 use Hash;
@@ -1046,26 +1047,19 @@ class UserEngine extends BaseEngine
                     $giftImageUrl = '';
                     $giftImageFolderPath = getPathByKey('gift_image', ['{_uid}' => $giftData->_uid]);
                     $giftImageUrl = getMediaUrl($giftImageFolderPath, $giftData->file_name);
-                    //get normal price or normal price is zero then show free gift
-                    $normalPrice = (isset($giftData['normal_price']) and intval($giftData['normal_price']) <= 0) ? 'Free' : intval($giftData['normal_price']) . ' ' . __tr('credits');
 
-                    //get premium price or premium price is zero then show free gift
-                    $premiumPrice = (isset($giftData['premium_price']) and $giftData['premium_price'] <= 0) ? 'Free' : $giftData['premium_price'] . ' ' . __tr('credits');
-                    $giftData['premium_price'] . ' ' . __tr('credits');
+                    // Format price in USD (Phase 1: Direct Stripe payments)
+                    $priceInDollars = (isset($giftData['normal_price']) and floatval($giftData['normal_price']) <= 0)
+                        ? 'Free'
+                        : '$' . number_format(floatval($giftData['normal_price']), 2);
 
-                    $price = 'Free';
-                    //check user is premium or normal or Set price
-                    if ($loggedInUserIsPremium) {
-                        $price = $premiumPrice;
-                    } else {
-                        $price = $normalPrice;
-                    }
                     $giftListData[] = [
                         '_id' => $giftData['_id'],
                         '_uid' => $giftData['_uid'],
-                        'normal_price' => $normalPrice,
+                        'title' => $giftData['title'] ?? 'Gift',
+                        'normal_price' => floatval($giftData['normal_price']),
                         'premium_price' => $giftData['premium_price'],
-                        'formattedPrice' => $price,
+                        'formattedPrice' => $priceInDollars,
                         'gift_image_url' => $giftImageUrl,
                     ];
                 }
@@ -1533,118 +1527,163 @@ class UserEngine extends BaseEngine
     }
 
     /**
-     * Process User Send Gift.
+     * Process User Send Gift - Stripe Payment (Phase 1)
+     * Creates Stripe Payment Intent and returns client_secret
      *
      *-----------------------------------------------------------------------*/
     public function processUserSendGift($inputData, $sendUserUId)
     {
-        //buy premium plan request
-        $userSendGiftRequest = $this->userRepository->processTransaction(function () use ($inputData, $sendUserUId) {
-            //fetch user
-            $user = $this->userRepository->fetch($sendUserUId);
-            //if user not exists
-            if (__isEmpty($user)) {
-                return $this->userRepository->transactionResponse(2, ['show_message' => true], __tr('User does not exists.'));
-            }
+        // Fetch recipient user
+        $user = $this->userRepository->fetch($sendUserUId);
 
-            $blockMeUser = $this->userRepository->fetchBlockMeUser($user->_id);
-            if(!__isEmpty($blockMeUser) && !__isEmpty($blockMeUser['_id']) )
-            {
-                return $this->userRepository->transactionResponse(4, ['show_message' => true], __tr('This action is prohibited for this user.'));
-            }
-            else{
-                 //fetch gift data
-            $giftData = $this->manageItemRepository->fetch($inputData['selected_gift']);
+        // if user not exists
+        if (__isEmpty($user)) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('User does not exists.'));
+        }
 
-            //if gift not exists
-            if (__isEmpty($giftData)) {
-                return $this->userRepository->transactionResponse(2, ['show_message' => true], __tr('Gift data does not exists.'));
-            }
+        // Check if user is blocked
+        $blockMeUser = $this->userRepository->fetchBlockMeUser($user->_id);
+        if (!__isEmpty($blockMeUser) && !__isEmpty($blockMeUser['_id'])) {
+            return $this->engineReaction(4, ['show_message' => true], __tr('This action is prohibited for this user.'));
+        }
 
-            //fetch user credits data
-            $totalUserCredits = totalUserCredits();
-            //check user is premium or normal or Set price
-            if (isPremiumUser()) {
-                $credits = $giftData->premium_price;
-            } else {
-                $credits = $giftData->normal_price;
-            }
+        // Fetch gift data
+        $giftData = $this->manageItemRepository->fetch($inputData['selected_gift']);
 
-            //if gift price greater then total user credits then show error message
-            if ($credits > $totalUserCredits) {
-                return $this->userRepository->transactionResponse(2, [
-                    'show_message' => true,
-                    'errorType' => 'insufficient_balance',
-                ], __tr('Your credit balance is too low, please purchase credits.'));
-            }
+        // if gift not exists
+        if (__isEmpty($giftData)) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('Gift data does not exists.'));
+        }
 
-            //credit wallet store data
-            $creditWalletStoreData = [
-                'status' => 1,
-                'users__id' => getUserID(),
-                'credits' => '-' . '' . $credits,
-            ];
+        // Get gift price in USD (using normal_price field which we'll update to USD)
+        // For Phase 1: $4.99, $9.99, $14.99, $19.99
+        $giftAmount = (float) $giftData->normal_price;
 
-            //store user gift data
-            if ($creditWalledId = $this->userRepository->storeCreditWalletTransaction($creditWalletStoreData)) {
-                //store gift data
-                $giftStoreData = [
-                    'status' => (isset($inputData['isPrivateGift'])
-                        and $inputData['isPrivateGift'] == 'on') ? 1 : 0,
-                    'from_users__id' => getUserID(),
-                    'to_users__id' => $user->_id,
-                    'items__id' => $giftData->_id,
-                    'price' => $giftData->normal_price,
-                    'credit_wallet_transactions__id' => $creditWalledId,
+        // Initialize Stripe service
+        $stripeService = new StripeGiftPaymentService();
+
+        // Get or create Stripe Customer for the sender
+        $senderEmail = getUserAuthInfo('profile.email');
+        $senderName = getUserAuthInfo('profile.full_name');
+        $customerResult = $stripeService->getOrCreateCustomer(getUserID(), $senderEmail, $senderName);
+
+        if (!$customerResult['success']) {
+            return $this->engineReaction(2, [
+                'show_message' => true,
+            ], __tr('Failed to initialize payment customer. Please try again.'));
+        }
+
+        // Calculate payment splits
+        $paymentSplits = $stripeService->calculateGiftSplits($giftAmount);
+
+        // Create Payment Intent with Stripe Customer
+        $paymentIntent = $stripeService->createGiftPaymentIntent($giftAmount, [
+            'sender_user_id' => getUserID(),
+            'sender_name' => $senderName,
+            'sender_email' => $senderEmail,
+            'recipient_user_id' => $user->_id,
+            'recipient_name' => $user->first_name . ' ' . $user->last_name,
+            'gift_id' => $giftData->_id,
+            'gift_name' => $giftData->name,
+            'is_private' => isset($inputData['isPrivateGift']) && $inputData['isPrivateGift'] == 'on' ? '1' : '0',
+        ], $customerResult['customer_id']);
+
+        if (!$paymentIntent['success']) {
+            return $this->engineReaction(2, [
+                'show_message' => true,
+            ], __tr('Payment initialization failed. Please try again.'));
+        }
+
+        // Store preliminary gift record with pending status
+        $giftStoreData = [
+            'status' => isset($inputData['isPrivateGift']) && $inputData['isPrivateGift'] == 'on' ? 1 : 0,
+            'from_users__id' => getUserID(),
+            'to_users__id' => $user->_id,
+            'items__id' => $giftData->_id,
+            'price' => $giftAmount,
+            'stripe_payment_intent_id' => $paymentIntent['payment_intent_id'],
+            'stripe_payment_status' => 'pending',
+            'stripe_amount' => $giftAmount,
+            'stripe_currency' => 'usd',
+            'recipient_amount' => $paymentSplits['recipient_amount'],
+            'affiliate_commission' => $paymentSplits['affiliate_commission'],
+            'platform_fee' => $paymentSplits['platform_fee'],
+            'stripe_fee' => $paymentSplits['stripe_fee'],
+            'credit_wallet_transactions__id' => null, // No longer using credits
+        ];
+
+        // Store gift with pending payment
+        if ($this->userRepository->storeUserGift($giftStoreData)) {
+            return $this->engineReaction(1, [
+                'client_secret' => $paymentIntent['client_secret'],
+                'payment_intent_id' => $paymentIntent['payment_intent_id'],
+                'amount' => $giftAmount,
+                'payment_splits' => $paymentSplits,
+                'username' => $user->username,
+                'recipient_name' => $user->first_name . ' ' . $user->last_name,
+            ], __tr('Payment initialized. Complete payment to send gift.'));
+        }
+
+        return $this->engineReaction(2, ['show_message' => true], __tr('Gift not sent. Please try again.'));
+    }
+
+    /**
+     * Complete Stripe Gift Purchase (called by webhook after payment succeeds)
+     *
+     * @param string $paymentIntentId
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function completeStripeGiftPurchase($paymentIntentId)
+    {
+        // Find gift record by payment intent ID
+        $giftRecord = $this->userRepository->fetchGiftByPaymentIntent($paymentIntentId);
+
+        if (__isEmpty($giftRecord)) {
+            return ['success' => false, 'message' => 'Gift record not found'];
+        }
+
+        // Update gift status to completed
+        $updateData = [
+            'stripe_payment_status' => 'succeeded',
+        ];
+
+        if ($this->userRepository->updateUserGift($giftRecord->_id, $updateData)) {
+            // Fetch recipient user
+            $recipient = $this->userRepository->fetch($giftRecord->to_users__id);
+            $sender = $this->userRepository->fetch($giftRecord->from_users__id);
+
+            if (!__isEmpty($recipient) && !__isEmpty($sender)) {
+                // Log activity
+                activityLog($sender->first_name . ' ' . $sender->last_name . ' sent gift to ' .
+                           $recipient->first_name . ' ' . $recipient->last_name);
+
+                // Create notification
+                $notificationData = [
+                    'message' => 'Gift sent by ' . $sender->first_name . ' ' . $sender->last_name,
+                    'action' => route('user.profile_view', ['username' => $sender->username]),
+                    'isRead' => null,
+                    'userId' => $recipient->_id,
+                    'type' => 4, // gift notification
+                    'from_users__id' => $sender->_id,
                 ];
+                notificationLog($notificationData);
 
-                //store gift data
-                if ($this->userRepository->storeUserGift($giftStoreData)) {
-                    $userFullName = $user->first_name . ' ' . $user->last_name;
-                    activityLog($userFullName . ' ' . 'send gift.');
-                    $loginUserID=getUserID();
-                    //loggedIn user name
-                    $loggedInUserName = Auth::user()->first_name . ' ' . Auth::user()->last_name;
-                     //notification log message
-                     $notificationData=[
-                        'message'=> 'Gift send by' . ' ' . $loggedInUserName,      //Message request received from,
-                         'action'=> route('user.profile_view', ['username' => Auth::user()->username]), 
-                         'isRead'=> null,
-                          'userId'=> $user->_id,
-                          'type'=> 4,//new visitor
-                          'from_users__id'=>$loginUserID,
-                    ];
-                    notificationLog($notificationData);
-                
-
-                    //push data to pusher
-                    PushBroadcast::notifyViaPusher('event.user.notification', [
-                        'type' => 'user-gift',
-                        'userUid' => $user->_uid,
-                        'subject' => __tr('Gift send successfully'),
-                        'message' => __tr('Gift send by') . ' ' . $loggedInUserName,
-                        'messageType' => 'success',
-                        'showNotification' => getUserSettings('show_gift_notification', $user->_id),
-                        'getNotificationList' => getNotificationList($user->_id),
-                    ]);
-
-                    return $this->userRepository->transactionResponse(1, [
-                        'message' => __tr('Gift Sent.'),
-                        'creditsRemaining' => totalUserCredits(),
-                        'username' => $user->username,
-                        'giftUid' => $giftData->_uid,
-                    ], __tr('Gift Sent.'));
-                }
+                // Send push notification
+                PushBroadcast::notifyViaPusher('event.user.notification', [
+                    'type' => 'user-gift',
+                    'userUid' => $recipient->_uid,
+                    'subject' => __tr('Gift sent successfully'),
+                    'message' => __tr('Gift sent by') . ' ' . $sender->first_name . ' ' . $sender->last_name,
+                    'messageType' => 'success',
+                    'showNotification' => getUserSettings('show_gift_notification', $recipient->_id),
+                    'getNotificationList' => getNotificationList($recipient->_id),
+                ]);
             }
-            //error message
-            return $this->userRepository->transactionResponse(2, ['show_message' => true], __tr('Gift not send.'));
-            }
-      
-           
-        });
 
-        //response
-        return $this->engineReaction($userSendGiftRequest);
+            return ['success' => true, 'message' => 'Gift purchase completed'];
+        }
+
+        return ['success' => false, 'message' => 'Failed to update gift status'];
     }
 
     /**
@@ -2651,26 +2690,19 @@ class UserEngine extends BaseEngine
                     $giftImageUrl = '';
                     $giftImageFolderPath = getPathByKey('gift_image', ['{_uid}' => $giftData->_uid]);
                     $giftImageUrl = getMediaUrl($giftImageFolderPath, $giftData->file_name);
-                    //get normal price or normal price is zero then show free gift
-                    $normalPrice = (isset($giftData['normal_price']) and intval($giftData['normal_price']) <= 0) ? __tr('Free') : intval($giftData['normal_price']) . ' ' . __tr('credits');
 
-                    //get premium price or premium price is zero then show free gift
-                    $premiumPrice = (isset($giftData['premium_price']) and $giftData['premium_price'] <= 0) ? __tr('Free') : $giftData['premium_price'] . ' ' . __tr('credits');
-                    $giftData['premium_price'] . ' ' . __tr('credits');
+                    // Format price in USD (Phase 1: Direct Stripe payments)
+                    $priceInDollars = (isset($giftData['normal_price']) and floatval($giftData['normal_price']) <= 0)
+                        ? 'Free'
+                        : '$' . number_format(floatval($giftData['normal_price']), 2);
 
-                    $price = __tr('Free');
-                    //check user is premium or normal or Set price
-                    if ($loggedInUserIsPremium) {
-                        $price = $premiumPrice;
-                    } else {
-                        $price = $normalPrice;
-                    }
                     $giftListData[] = [
                         '_id' => $giftData['_id'],
                         '_uid' => $giftData['_uid'],
-                        'normal_price' => $normalPrice,
+                        'title' => $giftData['title'] ?? 'Gift',
+                        'normal_price' => floatval($giftData['normal_price']),
                         'premium_price' => $giftData['premium_price'],
-                        'formattedPrice' => $price,
+                        'formattedPrice' => $priceInDollars,
                         'gift_image_url' => $giftImageUrl,
                     ];
                 }

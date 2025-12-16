@@ -641,10 +641,8 @@ class UserController extends BaseController
     {
         $processReaction = $this->userEngine->processUserSendGift($request->all(), $sendUserUId);
 
-        if ($processReaction['reaction_code'] === 1) {
-            return $this->getUserProfile($processReaction['data']['username'], $processReaction['data']);
-        }
-
+        // NEW: For Stripe gift payments, return JSON with client_secret
+        // Don't reload profile page, let frontend handle Stripe confirmation
         return $this->responseAction(
             $this->processResponse($processReaction, [], [], true)
         );
