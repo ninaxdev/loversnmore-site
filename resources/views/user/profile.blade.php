@@ -330,15 +330,27 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 
 	<!-- Profile Picture and Name -->
 	<div class="flex flex-col items-center px-4 py-6 bg-white">
+
 		<div class="relative w-[280px] h-[280px] mb-4">
 			<img src="{{ imageOrNoImageAvailable($userData['profilePicture']) }}"
 				 alt="{{ $userData['fullName'] }}"
 				 class="w-[280px] h-[280px] rounded-full object-cover border-[6px] border-[#F4E9FF] bg-[#F4E9FF] lw-lazy-img"
 				 data-src="{{ imageOrNoImageAvailable($userData['profilePicture']) }}">
 		</div>
+	
 		<h2 class="font-semibold text-[28px] text-[#2F1E4E] mt-2 mb-0">
 			{{ $userData['fullName'] }}@if(!__isEmpty($userData['userAge'])), {{ __tr($userData['userAge']) }}@endif
 		</h2>
+				@if(!$isOwnProfile)
+    <!-- Send Gift Button -->
+    <button
+        data-toggle="modal"
+        data-target="#lwSendGiftDialog"
+        class="flex items-center gap-2 px-6 py-3 bg-[#F4E9FF] text-[#4F1DA1] rounded-full font-medium shadow-md active:scale-95">
+        <i class="fa fa-gift"></i>
+        {{ __tr('Gift') }}
+    </button>	
+@endif
 	</div>
 
 	<!-- Tab Navigation -->
