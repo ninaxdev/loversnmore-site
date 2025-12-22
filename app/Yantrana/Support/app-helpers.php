@@ -1243,7 +1243,7 @@ if (! function_exists('bonusCreditNotification')) {
             $walletTransactions['credit_type'] === 1 and
             ($loginLogs and Carbon::parse($loginLogs['updated_at'])->lt($walletTransactions['updated_at']));
             $loginLogsRepository->createLoginLog($loggedInUser);
-        if($userProfile['status']==1){
+        if(isset($userProfile['status']) && $userProfile['status']==1){
             $result = ['isAlreadyNotNotified' => $isAlreadyNotNotified,'showBadge'=> true, 'credits' => $walletTransactions];
         }else{
             $result = ['isAlreadyNotNotified' => $isAlreadyNotNotified,'showBadge'=> false, 'credits' => $walletTransactions];
