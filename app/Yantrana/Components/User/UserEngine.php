@@ -1642,16 +1642,68 @@ class UserEngine extends BaseEngine
             return ['success' => false, 'message' => 'Gift record not found'];
         }
 
-        // Update gift status to completed
+        // Initialize StripeConnectService
+        $stripeConnectService = app(\App\Services\StripeConnectService::class);
+        $stripeGiftService = app(\App\Services\StripeGiftPaymentService::class);
+
+        // Calculate payment splits
+        $splits = $stripeGiftService->calculateGiftSplits($giftRecord->stripe_amount);
+
+        // Prepare update data
         $updateData = [
             'stripe_payment_status' => 'succeeded',
+            'recipient_amount' => $splits['recipient_amount'],
+            'affiliate_commission' => $splits['affiliate_commission'],
+            'platform_fee' => $splits['platform_fee'],
+            'stripe_fee' => $splits['stripe_fee'],
         ];
 
-        if ($this->userRepository->updateUserGift($giftRecord->_id, $updateData)) {
-            // Fetch recipient user
-            $recipient = $this->userRepository->fetch($giftRecord->to_users__id);
-            $sender = $this->userRepository->fetch($giftRecord->from_users__id);
+        // Fetch recipient user
+        $recipient = $this->userRepository->fetch($giftRecord->to_users__id);
+        $sender = $this->userRepository->fetch($giftRecord->from_users__id);
 
+        // Process Stripe Connect transfer to recipient if they have Connect account
+        if (!__isEmpty($recipient) && $recipient->stripe_connect_account_id && $recipient->stripe_onboarding_completed) {
+            $transferResult = $stripeConnectService->transferToRecipient(
+                $recipient->stripe_connect_account_id,
+                $splits['recipient_amount'],
+                [
+                    'gift_id' => $giftRecord->_id,
+                    'gift_name' => $giftRecord->items_name ?? 'Gift',
+                    'sender_id' => $sender->_id ?? null,
+                    'recipient_id' => $recipient->_id,
+                ]
+            );
+
+            if ($transferResult['success']) {
+                $updateData['recipient_transfer_id'] = $transferResult['transfer_id'];
+
+                // Update recipient's total earnings
+                $recipient->increment('total_earnings', $splits['recipient_amount']);
+
+                \Log::info('Gift payment transferred to recipient', [
+                    'gift_id' => $giftRecord->_id,
+                    'recipient_id' => $recipient->_id,
+                    'transfer_id' => $transferResult['transfer_id'],
+                    'amount' => $splits['recipient_amount'],
+                ]);
+            } else {
+                \Log::error('Failed to transfer gift payment to recipient', [
+                    'gift_id' => $giftRecord->_id,
+                    'recipient_id' => $recipient->_id,
+                    'error' => $transferResult['error'] ?? 'Unknown error',
+                ]);
+            }
+        } else {
+            \Log::warning('Recipient cannot receive payment - Connect account not set up', [
+                'gift_id' => $giftRecord->_id,
+                'recipient_id' => $recipient->_id ?? null,
+                'has_connect_account' => !empty($recipient->stripe_connect_account_id),
+                'onboarding_completed' => $recipient->stripe_onboarding_completed ?? false,
+            ]);
+        }
+
+        if ($this->userRepository->updateUserGift($giftRecord->_id, $updateData)) {
             if (!__isEmpty($recipient) && !__isEmpty($sender)) {
                 // Log activity
                 activityLog($sender->first_name . ' ' . $sender->last_name . ' sent gift to ' .

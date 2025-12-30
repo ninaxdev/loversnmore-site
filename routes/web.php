@@ -65,13 +65,14 @@ Route::group([
                 'as' => 'landing_page',
                 'uses' => 'UserController@authChoice',
             ]);
-           
-            // Process search from landing page
-            Route::post('/search-matches', [
-                'as' => 'search_matches',
-                'uses' => 'HomeController@searchMatches',
-            ]);
         });
+
+        // Process search from landing page
+        Route::post('/search-matches', [
+            'namespace' => 'Home\Controllers',
+            'as' => 'search_matches',
+            'uses' => 'Home\Controllers\HomeController@searchMatches',
+        ]);
 
         Route::group([
             'namespace' => 'User\Controllers',
@@ -536,6 +537,66 @@ Route::group([
                 Route::post('/{photoUid}/delete-photos', [
                     'as' => 'user.upload_photos.write.delete',
                     'uses' => 'UserSettingController@deleteUserPhotos',
+                ]);
+            });
+
+            // Stripe Connect related routes
+            Route::group([
+                'namespace' => 'User\Controllers',
+                'prefix' => 'stripe-connect',
+            ], function () {
+                // Onboarding page
+                Route::get('/onboarding', [
+                    'as' => 'user.stripe_connect.onboarding',
+                    'uses' => 'StripeConnectController@showOnboarding',
+                ]);
+
+                // Start onboarding process (AJAX)
+                Route::post('/start-onboarding', [
+                    'as' => 'user.stripe_connect.start_onboarding',
+                    'uses' => 'StripeConnectController@startOnboarding',
+                ]);
+
+                // Return URL after Stripe onboarding
+                Route::get('/onboarding/return', [
+                    'as' => 'user.stripe_connect.onboarding_return',
+                    'uses' => 'StripeConnectController@onboardingReturn',
+                ]);
+
+                // Refresh URL when onboarding link expires
+                Route::get('/onboarding/refresh', [
+                    'as' => 'user.stripe_connect.onboarding_refresh',
+                    'uses' => 'StripeConnectController@onboardingRefresh',
+                ]);
+
+                // Earnings dashboard page
+                Route::get('/earnings', [
+                    'as' => 'user.stripe_connect.earnings',
+                    'uses' => 'StripeConnectController@showEarnings',
+                ]);
+
+                // Get earnings data (AJAX)
+                Route::get('/earnings/data', [
+                    'as' => 'user.stripe_connect.earnings_data',
+                    'uses' => 'StripeConnectController@getEarningsData',
+                ]);
+
+                // Get account status (AJAX)
+                Route::get('/account/status', [
+                    'as' => 'user.stripe_connect.account_status',
+                    'uses' => 'StripeConnectController@getAccountStatus',
+                ]);
+
+                // Get Stripe Express Dashboard link (AJAX)
+                Route::post('/dashboard/link', [
+                    'as' => 'user.stripe_connect.dashboard_link',
+                    'uses' => 'StripeConnectController@getDashboardLink',
+                ]);
+
+                // Settings page
+                Route::get('/settings', [
+                    'as' => 'user.stripe_connect.settings',
+                    'uses' => 'StripeConnectController@showSettings',
                 ]);
             });
 

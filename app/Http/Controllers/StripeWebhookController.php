@@ -7,14 +7,18 @@ use Stripe\Stripe;
 use Stripe\Webhook;
 use Stripe\Exception\SignatureVerificationException;
 use App\Yantrana\Components\User\UserEngine;
+use App\Services\StripeConnectService;
+use App\Yantrana\Components\User\Models\User;
 
 class StripeWebhookController extends Controller
 {
     protected $userEngine;
+    protected $stripeConnectService;
 
-    public function __construct(UserEngine $userEngine)
+    public function __construct(UserEngine $userEngine, StripeConnectService $stripeConnectService)
     {
         $this->userEngine = $userEngine;
+        $this->stripeConnectService = $stripeConnectService;
     }
 
     /**
@@ -64,9 +68,26 @@ class StripeWebhookController extends Controller
                 $this->handlePaymentIntentCanceled($event->data->object);
                 break;
 
+            // Stripe Connect account events
+            case 'account.updated':
+                $this->handleAccountUpdated($event->data->object);
+                break;
+
+            case 'account.application.authorized':
+                $this->handleAccountAuthorized($event->data->object);
+                break;
+
+            case 'account.application.deauthorized':
+                $this->handleAccountDeauthorized($event->data->object);
+                break;
+
+            case 'capability.updated':
+                $this->handleCapabilityUpdated($event->data->object);
+                break;
+
             default:
-                // Unexpected event type
-                return response()->json(['error' => 'Unexpected event type'], 400);
+                // Log unexpected event type but don't error
+                \Log::info('Unhandled webhook event type: ' . $event->type);
         }
 
         // Return a 200 response to acknowledge receipt of the event
@@ -136,4 +157,107 @@ class StripeWebhookController extends Controller
 
         // You could update the gift record status to 'canceled' here if needed
     }
+
+    /**
+     * Handle Stripe Connect account updated event
+     *
+     * @param \Stripe\Account $account
+     * @return void
+     */
+    protected function handleAccountUpdated($account)
+    {
+        // Find user with this Connect account
+        $user = User::where('stripe_connect_account_id', $account->id)->first();
+
+        if (!$user) {
+            \Log::warning('Connect account updated but no user found', [
+                'account_id' => $account->id,
+            ]);
+            return;
+        }
+
+        // Update user's account status
+        $result = $this->stripeConnectService->updateUserAccountStatus($user);
+
+        if ($result['success']) {
+            \Log::info('Connect account status updated', [
+                'user_id' => $user->_id,
+                'account_id' => $account->id,
+                'status' => $result['status'],
+            ]);
+        } else {
+            \Log::error('Failed to update Connect account status', [
+                'user_id' => $user->_id,
+                'account_id' => $account->id,
+                'error' => $result['message'] ?? 'Unknown error',
+            ]);
+        }
+    }
+
+    /**
+     * Handle account authorized event
+     *
+     * @param object $data
+     * @return void
+     */
+    protected function handleAccountAuthorized($data)
+    {
+        \Log::info('Connect account authorized', [
+            'account_id' => $data->id ?? 'unknown',
+        ]);
+    }
+
+    /**
+     * Handle account deauthorized event
+     *
+     * @param object $data
+     * @return void
+     */
+    protected function handleAccountDeauthorized($data)
+    {
+        // Find user and mark Connect account as deauthorized
+        if (isset($data->account)) {
+            $user = User::where('stripe_connect_account_id', $data->account)->first();
+
+            if ($user) {
+                $user->update([
+                    'stripe_connect_status' => 'disabled',
+                    'stripe_charges_enabled' => false,
+                    'stripe_payouts_enabled' => false,
+                ]);
+
+                \Log::info('Connect account deauthorized', [
+                    'user_id' => $user->_id,
+                    'account_id' => $data->account,
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Handle capability updated event
+     *
+     * @param \Stripe\Capability $capability
+     * @return void
+     */
+    protected function handleCapabilityUpdated($capability)
+    {
+        // Find user with this Connect account
+        $user = User::where('stripe_connect_account_id', $capability->account)->first();
+
+        if (!$user) {
+            return;
+        }
+
+        // Update user's capabilities
+        $this->stripeConnectService->updateUserAccountStatus($user);
+
+        \Log::info('Connect account capability updated', [
+            'user_id' => $user->_id,
+            'account_id' => $capability->account,
+            'capability' => $capability->id,
+            'status' => $capability->status,
+        ]);
+    }
 }
+

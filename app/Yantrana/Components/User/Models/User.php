@@ -57,6 +57,16 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
         'two_factor_code',
         'two_factor_expires_at',
         'stripe_customer_id',
+        'stripe_connect_account_id',
+        'stripe_connect_status',
+        'stripe_onboarding_completed',
+        'stripe_charges_enabled',
+        'stripe_payouts_enabled',
+        'stripe_details_submitted',
+        'total_earnings',
+        'available_balance',
+        'stripe_onboarding_started_at',
+        'stripe_onboarding_completed_at',
     ];
 
     /**

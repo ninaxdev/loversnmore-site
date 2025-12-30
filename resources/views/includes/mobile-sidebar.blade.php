@@ -177,6 +177,17 @@
             </a>
         </div>
 
+        <!-- My Earnings -->
+        <div class="nav-item {{ makeLinkActive('user.stripe_connect.earnings') }}" style="margin-bottom: 0.25rem;">
+            <a class="flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.stripe_connect.earnings') }}"
+               onclick="closeMobileSidebar()"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.stripe_connect.earnings') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="fas fa-dollar-sign" style="color: #10b981 !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('My Earnings') }}</span>
+            </a>
+        </div>
+
         <!-- Profile Booster -->
         <div class="nav-item" style="margin-bottom: 0.25rem;">
             <a href="#"

@@ -20,4 +20,20 @@ class UserGiftModel extends BaseModel
      */
     protected $casts = [];
     protected $guarded = ['id'];
+
+    /**
+     * Get the user who sent the gift
+     */
+    public function fromUser()
+    {
+        return $this->belongsTo(User::class, 'from_users__id', '_id');
+    }
+
+    /**
+     * Get the user who received the gift
+     */
+    public function toUser()
+    {
+        return $this->belongsTo(User::class, 'to_users__id', '_id');
+    }
 }

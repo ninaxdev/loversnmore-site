@@ -353,6 +353,23 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 @endif
 	</div>
 
+	<!-- Stripe Connect Onboarding Banner (Own Profile Only) -->
+	@if($isOwnProfile && !auth()->user()->stripe_onboarding_completed)
+	<div class="mx-4 mb-4 py-3 px-4 rounded-2xl" style="background-color: #FEF3C7; border: 1px solid #FCD34D;">
+		<div class="flex items-center justify-between gap-3">
+			<div class="flex items-center gap-3 flex-1">
+				<i class="fas fa-gift text-xl" style="color: #F59E0B;"></i>
+				<span class="text-sm font-medium" style="color: #92400E; font-family: 'Poppins', sans-serif;">
+					Enable gift payments to start earning
+				</span>
+			</div>
+			<a href="<?= route('user.stripe_connect.onboarding') ?>" class="px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap" style="background-color: #F59E0B; color: white; text-decoration: none;">
+				Enable Now
+			</a>
+		</div>
+	</div>
+	@endif
+
 	<!-- Tab Navigation -->
 	<div class="flex justify-center items-center gap-0 bg-[#F4E9FF] rounded-xl p-1 mx-4 mb-6">
 		<button class="lw-mobile-tab flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border-0 rounded-lg font-medium text-sm text-[#4F1DA1] cursor-pointer transition-all shadow-sm" data-tab="about">
@@ -662,6 +679,31 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			</div>
 		</div>
 	</x-lw.card>
+
+	<!-- Stripe Connect Onboarding Banner (Desktop - Own Profile Only) -->
+	@if($isOwnProfile && !auth()->user()->stripe_onboarding_completed)
+	<div class="mb-6 py-4 px-6 rounded-2xl" style="background-color: #FEF3C7; border: 1px solid #FCD34D;">
+		<div class="flex items-center justify-between gap-4">
+			<div class="flex items-center gap-4 flex-1">
+				<div class="flex items-center justify-center w-12 h-12 rounded-full" style="background-color: #FDE68A;">
+					<i class="fas fa-gift text-2xl" style="color: #F59E0B;"></i>
+				</div>
+				<div>
+					<h3 class="text-base font-semibold mb-1" style="color: #78350F; font-family: 'Poppins', sans-serif;">
+						Start Earning from Gifts
+					</h3>
+					<p class="text-sm mb-0" style="color: #92400E; font-family: 'Poppins', sans-serif;">
+						Enable gift payments to receive 60% from every gift sent to you
+					</p>
+				</div>
+			</div>
+			<a href="<?= route('user.stripe_connect.onboarding') ?>" class="px-6 py-3 rounded-full text-sm font-semibold whitespace-nowrap transition-all hover:opacity-90" style="background-color: #F59E0B; color: white; text-decoration: none;">
+				<i class="fas fa-arrow-right mr-2"></i>Enable Now
+			</a>
+		</div>
+	</div>
+	@endif
+
 	<!-- User Profile and Cover photo -->
 	<x-lw.card class="lw-profile-image-card-container">
 		<div class="card-body">

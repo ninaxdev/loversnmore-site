@@ -143,6 +143,15 @@
         </a>
     </li>
 
+     <li class="nav-item {{ makeLinkActive('user.stripe_connect.earnings') }}" style="margin-bottom: 0.25rem;">
+        <a class="nav-link flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+           href="{{ route('user.stripe_connect.earnings') }}"
+           style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 0.5rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-dollar-sign" style="color: #10b981 !important; font-size: 18px; width: 20px;"></i>
+            <span style="font-size: 15px; color: white !important;">{{ __tr('My Earnings') }}</span>
+        </a>
+    </li>
+
      <li class="nav-item" style="margin-bottom: 0.25rem;">
         <a class="nav-link flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
            href="#"
