@@ -74,6 +74,20 @@ Route::group([
             'uses' => 'Home\Controllers\HomeController@searchMatches',
         ]);
 
+        // Beta Waitlist Landing Page
+        Route::get('/beta', [
+            'namespace' => 'Waitlist\Controllers',
+            'as' => 'waitlist.landing',
+            'uses' => 'Waitlist\Controllers\WaitlistController@showLandingPage',
+        ]);
+
+        // Beta Waitlist Signup
+        Route::post('/beta/signup', [
+            'namespace' => 'Waitlist\Controllers',
+            'as' => 'waitlist.signup.process',
+            'uses' => 'Waitlist\Controllers\WaitlistController@processSignup',
+        ])->middleware('throttle:5,1'); // Rate limit: 5 attempts per minute
+
         Route::group([
             'namespace' => 'User\Controllers',
             'prefix' => 'user',
