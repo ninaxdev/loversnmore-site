@@ -14,8 +14,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@400;700&display=swap" rel="stylesheet">
-	<link rel="shortcut icon" href="<?= getStoreSettings('favicon_image_url') ?>" type="image/x-icon">
-	<link rel="icon" href="<?= getStoreSettings('favicon_image_url') ?>" type="image/x-icon">
+	<!-- Loversnmore Brand Icons -->
+	<link rel="manifest" href="{{ asset('manifest.json') }}">
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('icons/icon-32.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('icons/icon-16.png') }}">
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('icons/icon-180.png') }}">
 	@if(getStoreSettings('allow_recaptcha'))
 	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 	@endif
@@ -68,14 +71,16 @@
         }
         /* PWA Meta Theme Color */
         meta[name="theme-color"] {
-            content: "#33196b";
+            content: "#6A36A8";
         }
     </style>
     <!-- PWA and Mobile Optimization -->
-    <meta name="theme-color" content="#33196b">
+    <meta name="theme-color" content="#6A36A8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="<?= getStoreSettings('name') ?>">
     <meta name="mobile-web-app-capable" content="yes">
 	@stack('header')
 </head>
+<!-- Include Loversnmore Splash Screen -->
+@include('includes.loading-screen')

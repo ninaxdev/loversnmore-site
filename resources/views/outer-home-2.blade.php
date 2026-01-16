@@ -1547,45 +1547,6 @@
     }
     </style>
 </head>
-<div id="preloader" class="lw-modern-preloader" role="status" aria-label="Loading">
-    <div class="lw-preloader-content">
-        <!-- Animated Heart Icon -->
-        <div class="lw-heart-loader" aria-hidden="true">
-            <div class="lw-heart lw-heart-1"></div>
-            <div class="lw-heart lw-heart-2"></div>
-            <div class="lw-heart lw-heart-3"></div>
-        </div>
-        
-        <!-- Logo -->
-        <div class="lw-preloader-logo">
-            <img src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>" class="lw-logo lw-logo-white" loading="eager" />
-        </div>
-        
-        <!-- Loading Text -->
-        <div class="lw-preloader-text">
-            <h3 class="lw-title lw-title-sm"><?= __tr('Finding Your Perfect Match') ?></h3>
-            <div class="lw-loading-dots" aria-hidden="true">
-                <span class="lw-dot lw-dot-1"></span>
-                <span class="lw-dot lw-dot-2"></span>
-                <span class="lw-dot lw-dot-3"></span>
-            </div>
-        </div>
-        
-        <!-- Progress Bar -->
-        <div class="lw-progress-container">
-            <div class="lw-progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                <div class="lw-progress-fill"></div>
-            </div>
-        </div>
-        
-        <!-- Screen Reader Text -->
-        <span class="sr-only"><?= __tr('Loading application, please wait...') ?></span>
-    </div>
-    
-    <!-- Background Elements -->
-    <div class="lw-preloader-bg-1" aria-hidden="true"></div>
-    <div class="lw-preloader-bg-2" aria-hidden="true"></div>
-</div>
 
 <body id="page-top">
     <!-- Navigation -->
@@ -1712,11 +1673,15 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-sm-12 col-md-12 col-lg-6">
+                    <!-- Loversnmore Wordmark (Secondary Branding - Text Only) -->
+                    <div class="mb-4">
+                        <img src="{{ asset('images/wordmark-text-only.svg') }}" alt="loversnmore" style="height: 50px; width: auto;">
+                    </div>
                     <h4 class="text-primary h2 mb-0"><?= __tr('About us') ?></h4>
                     <h3 class="lw-sub-title-katibeh text-dark"><?= __tr('Love Made Simple, Connections Made Real.') ?>
                     </h3>
                     <p class="mt-3">
-                        <?= __tr("Finding love should be simple, secure, and exciting. Our platform is designed to connect like-minded individuals, fostering genuine relationships that last. With advanced search, user-friendly features, and a commitment to privacy, we make your dating journey effortless. Whether you're looking for friendship, romance, or a lifelong partner, we’re here to help you every step of the way. Start exploring and let meaningful connections unfold!") ?>
+                        <?= __tr("Finding love should be simple, secure, and exciting. Our platform is designed to connect like-minded individuals, fostering genuine relationships that last. With advanced search, user-friendly features, and a commitment to privacy, we make your dating journey effortless. Whether you're looking for friendship, romance, or a lifelong partner, we're here to help you every step of the way. Start exploring and let meaningful connections unfold!") ?>
                     </p>
                 </div>
                 <div class="col-sm-12 col-md-12 col-lg-6 ">
@@ -2420,24 +2385,6 @@
         });
     });
     // fAQ
-
-    // preloader
-    document.addEventListener("DOMContentLoaded", () => {
-        // Add a more sophisticated loading experience
-        const preloader = document.getElementById("preloader");
-        
-        // Simulate progressive loading
-        setTimeout(() => {
-            // Add the hidden class for smooth transition
-            preloader.classList.add("lw-preloader-hidden");
-            
-            // Remove from DOM after transition completes
-            setTimeout(() => {
-                preloader.style.display = "none";
-            }, 600); // Match the CSS transition duration
-        }, 1800); // Slightly longer to show the beautiful animation
-    });
-    // preloader
 
     // testimonial slider
     $(function() {

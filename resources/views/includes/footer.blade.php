@@ -1,6 +1,10 @@
 <!-- Footer -->
 <footer class="sticky-footer " >
     <div class="container my-auto">
+        <div class="text-center my-3">
+            <!-- Loversnmore Wordmark (Secondary Branding - Text Only) -->
+            <img src="{{ asset('images/wordmark-text-only.svg') }}" alt="loversnmore" style="height: 40px; width: auto;">
+        </div>
         <div class="copyright text-center my-auto">
             <span><?= __tr('Copyright © __storeName__ __copyrightYear__', [
                         '__storeName__' => getStoreSettings('name'),
