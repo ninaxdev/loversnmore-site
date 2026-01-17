@@ -1,8 +1,8 @@
 <!-- Footer -->
-<footer class="sticky-footer " >
-    <div class="container my-auto">
-        <div class="text-center my-3">
-            <!-- Loversnmore Wordmark (Secondary Branding - Text Only) -->
+<footer class="sticky-footer">
+    <div class="container my-auto" style="margin-left: auto; margin-right: auto; padding-left: 15px; padding-right: 15px;">
+        <div class="text-center my-3 d-none d-md-block">
+            <!-- Loversnmore Wordmark (Secondary Branding - Text Only) - Desktop Only -->
             <img src="{{ asset('images/wordmark-text-only.svg') }}" alt="loversnmore" style="height: 40px; width: auto;">
         </div>
         <div class="copyright text-center my-auto">
@@ -14,6 +14,25 @@
         </div>
     </div>
 </footer>
+<style>
+.sticky-footer .my-3 {
+    margin-top: -5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+@media (min-width: 768px) {
+    .sticky-footer {
+        margin-left: 6.5rem; /* Width of sidebar when expanded */
+    }
+    body.sidebar-toggled .sticky-footer {
+        margin-left: 6.5rem; /* Width of sidebar when collapsed */
+    }
+}
+@media (max-width: 767px) {
+    .sticky-footer {
+        margin-left: 0; /* No sidebar offset on mobile */
+    }
+}
+</style>
 <!-- End of Footer -->
 
 <!-- Messenger Dialog -->
