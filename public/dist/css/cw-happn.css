@@ -393,11 +393,11 @@ a:hover {
   font-weight: 700;
 }
 .sidebar-dark .collapse-inner {
-  background: var(--lw-white-color) !important;
+  background: #5B3E96 !important;
 }
 .sidebar-dark .collapse-inner span,
 .sidebar-dark .collapse-inner i {
-  color: var(--lw-black-color) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 .sidebar-dark .lw-featured-users-block {
   margin: 5rem 1rem !important;

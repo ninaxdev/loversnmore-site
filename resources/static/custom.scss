@@ -3098,7 +3098,13 @@ div.lw-validation-error {
     }
 }
 .sidebar-dark .collapse-inner{
-    border: 1px solid #2f2f2f;
+    border: none;
+}
+// Show border only when expanded on desktop
+@media (min-width: 769px) {
+    .sidebar-dark #collapseUtilities.show .collapse-inner {
+        border: 1px solid #2f2f2f;
+    }
 }
 .error{
     font-size: 14px;

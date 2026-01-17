@@ -9,10 +9,10 @@ $currentRouteName = Route::getCurrentRoute()->getName();
     <li>
         <a class="sidebar-brand d-flex align-items-center" href="<?= route('user.profile_view', ['username' => getUserAuthInfo('profile.username')]) ?>" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
             <div class="sidebar-brand-icon">
-                <img class="lw-logo-img" src="<?= getStoreSettings('small_logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>" style="filter: brightness(0) invert(1);">
+                <img class="lw-logo-img" src="<?= asset('images/heart-outline.svg') ?>" alt="<?= getStoreSettings('name') ?>" style="width: 40px; height: 40px;">
             </div>
-            <img class="lw-logo-img d-sm-none d-none d-md-block" src="<?= getStoreSettings('logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>" style="filter: brightness(0) invert(1);">
-            <img class="lw-logo-img d-sm-block d-md-none" src="<?= getStoreSettings('small_logo_image_url') ?>" alt="<?= getStoreSettings('name') ?>" style="filter: brightness(0) invert(1);">
+            <img class="lw-logo-img d-sm-none d-none d-md-block" src="<?= asset('images/wordmark-loversnmore.svg') ?>" alt="<?= getStoreSettings('name') ?>" style="height: 32px;">
+            <img class="lw-logo-img d-sm-block d-md-none" src="<?= asset('images/heart-outline.svg') ?>" alt="<?= getStoreSettings('name') ?>" style="width: 40px; height: 40px;">
         </a>
     </li>
 
@@ -82,79 +82,79 @@ $currentRouteName = Route::getCurrentRoute()->getName();
             <span>{{  __tr('Settings') }}</span>
         </a>
         <div id="collapseUtilities" class="collapse <?= makeLinkActive('manage.configuration.read', $currentRouteName, 'show') ?>" data-parent="#accordionSidebar" style="transition: all 0.3s ease;">
-            <div class="collapse-inner rounded" style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; margin: 8px;">
+            <div class="collapse-inner rounded" style="background: #5B3E96; border-radius: 12px; margin: 8px;">
                 <a class="nav-link lw-ajax-link-action lw-action-with-url {{ $pageType == 'general' ? 'active' : '' }}" href="<?= route('manage.configuration.read', ['pageType' => 'general']) ?>" data-event-callback="lwPrepareUploadPlugIn" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                    <i class="fas fa-wrench" style="color: {{ $pageType == 'general' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                    <i class="fas fa-wrench" style="color: {{ $pageType == 'general' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                     <span><?= __tr('General') ?></span>
                 </a>
                 <a class="nav-link lw-ajax-link-action lw-action-with-url {{ $pageType == 'user' ? 'active' : '' }}" href="<?= route('manage.configuration.read', ['pageType' => 'user']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                    <i class="fas fa-user" style="color: {{ $pageType == 'user' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                    <i class="fas fa-user" style="color: {{ $pageType == 'user' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                     <span><?= __tr('Users') ?></span>
                 </a>
                  <!-- Currency & Credit Packages -->
                 <a class="nav-link lw-ajax-link-action lw-action-with-url {{ $pageType == 'currency' ? 'active' : '' }}" href="<?= route('manage.configuration.read', ['pageType' => 'currency']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class="fas fa-money-bill-alt" style="color: {{ $pageType == 'currency' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class="fas fa-money-bill-alt" style="color: {{ $pageType == 'currency' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span> <?= __tr('Currency') ?></span>
                 </a>
                 <!-- /Currency & Credit Packages -->
                   <!-- Payment Settings -->
                <a class="nav-link lw-ajax-link-action lw-action-with-url {{$pageType == 'payment' ? 'active' : '' }}" href="<?= route('manage.configuration.read', ['pageType' => 'payment']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class="fas fa-credit-card" style="color: {{$pageType == 'payment' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class="fas fa-credit-card" style="color: {{$pageType == 'payment' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span> <?= __tr('Payment Gateways') ?></span>
               </a>
             <!-- /Payment Settings -->
              <!-- Social Login Settings -->
              <a class="nav-link lw-ajax-link-action lw-action-with-url {{$pageType == 'social-login' ? 'active' : '' }}"  href="<?= route('manage.configuration.read', ['pageType' => 'social-login']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class="fas fa-share-alt" style="color: {{$pageType == 'social-login' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class="fas fa-share-alt" style="color: {{$pageType == 'social-login' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span><?= __tr('Social Logins') ?></span>
             </a>
              <!-- /Social Login Settings -->
                <!-- Integration Settings -->
             <a class="nav-link lw-ajax-link-action lw-action-with-url {{$pageType == 'integration' ? 'active' : '' }}"  href="<?= route('manage.configuration.read', ['pageType' => 'integration']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class="far fa-sun" style="color: {{$pageType == 'integration' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class="far fa-sun" style="color: {{$pageType == 'integration' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span><?= __tr('Integrations') ?></span>
             </a>
             <!-- /Integration Settings -->
                <!-- Misc Settings -->
                <a class="nav-link lw-ajax-link-action lw-action-with-url {{$pageType == 'misc' ? 'active' : '' }}"  href="<?= route('manage.configuration.read', ['pageType' => 'misc']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class=" fa fa-cogs" style="color: {{$pageType == 'misc' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class=" fa fa-cogs" style="color: {{$pageType == 'misc' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span><?= __tr('Misc') ?></span>
-             
+
             </a>
             <!-- /Misc Settings -->
               <!-- Premium Plans Settings -->
               <a class="nav-link lw-ajax-link-action lw-action-with-url {{ $pageType == 'premium-plans' ? 'active' : '' }}"  href="<?= route('manage.configuration.read', ['pageType' => 'premium-plans']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class="far fa-gem" style="color: {{ $pageType == 'premium-plans' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class="far fa-gem" style="color: {{ $pageType == 'premium-plans' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span><?= __tr('Premium Plans') ?></span>
             </a>
               <!-- /Premium Plans Settings -->
                 <!-- Premium Features Settings -->
             <a class="nav-link lw-ajax-link-action lw-action-with-url {{ $pageType == 'premium-feature' ? 'active' : '' }}"  href="<?= route('manage.configuration.read', ['pageType' => 'premium-feature']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class="fas fa-database" style="color: {{ $pageType == 'premium-feature' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class="fas fa-database" style="color: {{ $pageType == 'premium-feature' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span> <?= __tr('Features') ?></span>
             </a>
             <!-- /Premium Features Settings -->
              <!-- Email Settings -->
              <a class="nav-link lw-ajax-link-action lw-action-with-url {{ $pageType == 'email' ? 'active' : ''}}"  href="<?= route('manage.configuration.read', ['pageType' => 'email']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class="fas fa-envelope-open" style="color: {{ $pageType == 'email' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class="fas fa-envelope-open" style="color: {{ $pageType == 'email' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span><?= __tr('Email & SMS') ?></span>
             </a>
              <!-- /Email Settings -->
                <!-- Booster Settings -->
             <a class="nav-link lw-ajax-link-action lw-action-with-url {{ $pageType == 'booster' ? 'active' : ''}}"  href="<?= route('manage.configuration.read', ['pageType' => 'booster']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class="far fa-paper-plane" style="color: {{ $pageType == 'booster' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class="far fa-paper-plane" style="color: {{ $pageType == 'booster' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span><?= __tr('Booster') ?></span>
             </a>
             <!-- /Booster Settings -->
              <!-- Advertisement Settings -->
              <a class="nav-link lw-ajax-link-action lw-action-with-url {{ $pageType == 'advertisement' ? 'active' : ''}}"  href="<?= route('manage.configuration.read', ['pageType' => 'advertisement']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class="far fa-newspaper" style="color: {{ $pageType == 'advertisement' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class="far fa-newspaper" style="color: {{ $pageType == 'advertisement' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span><?= __tr('Advertisement') ?></span>
             </a>
              <!-- /Advertisement Settings -->
              <!-- color settings Settings -->
              <a class="nav-link lw-ajax-link-action lw-action-with-url {{ $pageType == 'custom-profile-fields' ? 'active' : ''}}"  href="<?= route('manage.configuration.read', ['pageType' => 'custom-profile-fields']) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 4px;">
-                <i class="fas fa-indent" style="color: {{ $pageType == 'custom-profile-fields' ? '#e91e63' : 'white' }}; width: 18px;"></i>
+                <i class="fas fa-indent" style="color: {{ $pageType == 'custom-profile-fields' ? '#e91e63' : 'rgba(255,255,255,0.9)' }}; width: 18px;"></i>
                 <span><?= __tr('Custom Profile Fields') ?></span>
             </a>
              <!-- /color settings Settings -->
@@ -252,6 +252,26 @@ $currentRouteName = Route::getCurrentRoute()->getName();
     background-color: rgba(255,255,255,0.1) !important;
     border-radius: 8px !important;
 }
+
+/* Remove border by default */
+.sidebar-dark .collapse-inner {
+    border: none !important;
+}
+
+/* Desktop view: Show border only when expanded */
+@media (min-width: 769px) {
+    .sidebar-dark #collapseUtilities.show .collapse-inner {
+        border: 1px solid #2f2f2f !important;
+    }
+}
+
+/* Mobile view: Match sidebar dark theme */
+@media (max-width: 768px) {
+    /* Ensure dropdown follows dark theme */
+    .sidebar .collapse-inner .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+}
 </style>
 <script>
     //fetch abuse report counts
@@ -263,7 +283,7 @@ $currentRouteName = Route::getCurrentRoute()->getName();
             });
         }
     });
-    
+
     // Ensure Bootstrap collapse functionality works correctly
     $(document).ready(function() {
         // Initialize Bootstrap collapse if not already initialized
@@ -272,18 +292,38 @@ $currentRouteName = Route::getCurrentRoute()->getName();
                 toggle: false
             });
         }
-        
+
         // Handle collapse events
         $('#collapseUtilities').on('show.bs.collapse', function () {
             $('[data-target="#collapseUtilities"]').removeClass('collapsed').attr('aria-expanded', 'true');
         }).on('hide.bs.collapse', function () {
             $('[data-target="#collapseUtilities"]').addClass('collapsed').attr('aria-expanded', 'false');
         });
-        
+
         // Manual click handler for settings menu (in case Bootstrap isn't working)
         $('[data-target="#collapseUtilities"]').on('click', function(e) {
             e.preventDefault();
             $('#collapseUtilities').collapse('toggle');
+        });
+
+        // Auto-collapse settings dropdown when clicking other menu items (all screen sizes)
+        // Collapse settings dropdown when clicking any other nav-link that's not in the settings dropdown
+        $('.sidebar .nav-item:not(.lw-settings-sub-menu-items) .nav-link').on('click', function() {
+            // Check if settings dropdown is open
+            if ($('#collapseUtilities').hasClass('show')) {
+                $('#collapseUtilities').collapse('hide');
+            }
+        });
+
+        // Close sidebar in mobile view when clicking dropdown menu items
+        $('#collapseUtilities .nav-link').on('click', function() {
+            if ($(window).width() <= 768) {
+                // Close the sidebar
+                $("body").addClass("sidebar-toggled");
+                $(".sidebar").addClass("toggled");
+                // Also collapse the settings dropdown
+                $('#collapseUtilities').collapse('hide');
+            }
         });
     });
 </script>
