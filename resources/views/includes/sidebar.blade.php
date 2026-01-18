@@ -192,7 +192,7 @@ $currentRouteName = Route::getCurrentRoute()->getName();
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" title="<?= __tr("If you have made changes which doesn't reflecting this link may help to clear all the cache.") ?>" href="<?= route('manage.configuration.clear_cache', []) . '?redirectTo=' . base64_encode(Request::fullUrl()); ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 8px;">
+        <a class="nav-link lw-clear-cache-link" title="<?= __tr("If you have made changes which doesn't reflecting this link may help to clear all the cache.") ?>" href="<?= route('manage.configuration.clear_cache', []) ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 8px; cursor: pointer;">
             <i class="fas fa-broom" style="color: white; width: 18px;"></i>
             <span><?= __tr('Clear System Cache') ?></span>
         </a>
@@ -324,6 +324,27 @@ $currentRouteName = Route::getCurrentRoute()->getName();
                 // Also collapse the settings dropdown
                 $('#collapseUtilities').collapse('hide');
             }
+        });
+
+        // Handle Clear System Cache click
+        $('.lw-clear-cache-link').on('click', function(e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+
+            // Show loading message
+            showWarnMessage("<?= __tr('Clearing cache...') ?>");
+
+            // Make AJAX request to clear cache
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(response) {
+                    showSuccessMessage("<?= __tr('Cache cleared successfully!') ?>");
+                },
+                error: function() {
+                    showErrorMessage("<?= __tr('Failed to clear cache. Please try again.') ?>");
+                }
+            });
         });
     });
 </script>
