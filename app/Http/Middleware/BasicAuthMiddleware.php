@@ -16,6 +16,11 @@ class BasicAuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        // Skip basic auth for beta waitlist routes (publicly accessible)
+        if ($request->is('beta') || $request->is('beta/*')) {
+            return $next($request);
+        }
+
         // Skip basic auth if disabled via environment variable
         if (env('BASIC_AUTH_ENABLED', false) === false) {
             return $next($request);
