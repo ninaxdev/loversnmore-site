@@ -30,6 +30,7 @@ class WaitlistSignupRequest extends BaseRequest
     {
         return [
             'email' => 'required|email|max:255',
+            'city' => 'required|string|max:100',
             'full_name' => 'nullable|string|max:100',
         ];
     }
@@ -45,6 +46,8 @@ class WaitlistSignupRequest extends BaseRequest
             'email.required' => __tr('Email is required'),
             'email.email' => __tr('Please enter a valid email address'),
             'email.max' => __tr('Email must not exceed 255 characters'),
+            'city.required' => __tr('City is required'),
+            'city.max' => __tr('City must not exceed 100 characters'),
             'full_name.max' => __tr('Name must not exceed 100 characters'),
         ];
     }

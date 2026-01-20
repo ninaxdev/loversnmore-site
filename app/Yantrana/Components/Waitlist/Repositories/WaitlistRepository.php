@@ -36,6 +36,7 @@ class WaitlistRepository extends BaseRepository implements WaitlistRepositoryBlu
         $keyValues = [
             'full_name',
             'email',
+            'city',
             'interest',
         ];
 

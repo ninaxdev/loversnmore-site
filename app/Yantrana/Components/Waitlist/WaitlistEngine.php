@@ -47,6 +47,7 @@ class WaitlistEngine extends BaseEngine
     public function processSignup($request)
     {
         $email = $request->input('email');
+        $city = $request->input('city', '');
         $fullName = $request->input('full_name', '');
 
         // Check if email already exists in waitlist
@@ -68,6 +69,7 @@ class WaitlistEngine extends BaseEngine
         $signupData = [
             'full_name' => $fullName,
             'email' => $email,
+            'city' => $city,
             'interest' => [], // Will be added when we have interest checkboxes
         ];
 
@@ -106,6 +108,7 @@ class WaitlistEngine extends BaseEngine
                     [
                         'fullName' => $signup->full_name,
                         'email' => $signup->email,
+                        'city' => $signup->city,
                         'priorityScore' => $signup->priority_score,
                         'signupDate' => $signup->created_at->format('M d, Y H:i'),
                     ],

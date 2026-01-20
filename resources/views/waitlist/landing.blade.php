@@ -75,16 +75,38 @@
             50% { transform: translateY(-15px); }
         }
 
-        .gradient-card-1 {
-            background: linear-gradient(135deg, #6A36A8 0%, #8B5FBF 100%);
+        .card-stack {
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .gradient-card-2 {
-            background: linear-gradient(135deg, #c53e8d 0%, #e85d9f 100%);
+        /* Mobile hover - smaller spread */
+        @media (max-width: 639px) {
+            .card-stack-container:hover .card-back {
+                transform: translateX(100px) translateY(12px) rotate(12deg) !important;
+            }
+
+            .card-stack-container:hover .card-middle {
+                transform: translateX(50px) translateY(6px) rotate(8deg) !important;
+            }
+
+            .card-stack-container:hover .card-front {
+                transform: translateX(-50px) rotate(-8deg) !important;
+            }
         }
 
-        .gradient-card-3 {
-            background: linear-gradient(135deg, #8B5FBF 0%, #c53e8d 100%);
+        /* Tablet and Desktop hover - wider spread */
+        @media (min-width: 640px) {
+            .card-stack-container:hover .card-back {
+                transform: translateX(160px) translateY(16px) rotate(15deg) !important;
+            }
+
+            .card-stack-container:hover .card-middle {
+                transform: translateX(80px) translateY(8px) rotate(10deg) !important;
+            }
+
+            .card-stack-container:hover .card-front {
+                transform: translateX(-80px) rotate(-10deg) !important;
+            }
         }
 
         .pulse-slow {
@@ -96,26 +118,72 @@
             50% { opacity: .7; }
         }
 
-        /* Hover improvements for image visibility */
-        .person-card {
+        /* Phone-like card styling for swipe effect */
+        .swipe-card {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px;
+            border-radius: 3rem;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
         }
 
-        .person-card:hover {
+        .swipe-card:hover {
             z-index: 100 !important;
-            transform: scale(1.08) !important;
+            transform: scale(1.08) translateY(-15px) !important;
         }
 
-        .image-overlay {
-            transition: opacity 0.5s ease;
+        .swipe-card-inner {
+            border-radius: 2.5rem;
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+            background: #000;
         }
 
-        .person-card:hover .image-overlay {
-            opacity: 0.15 !important;
+        .swipe-card-1 {
+            background: linear-gradient(135deg, #B794F6 0%, #E879F9 100%);
         }
 
-        .person-card:hover img {
-            filter: brightness(1.1) contrast(1.05);
+        .swipe-card-2 {
+            background: linear-gradient(135deg, #F472B6 0%, #FB7185 100%);
+        }
+
+        .swipe-card-3 {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+        }
+
+        .card-label {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            padding: 1.5rem 1.25rem;
+            border-radius: 0 0 2rem 2rem;
+        }
+
+        .card-label-1 {
+            background: linear-gradient(135deg, #B794F6 0%, #E879F9 100%);
+        }
+
+        .card-label-2 {
+            background: linear-gradient(135deg, #F472B6 0%, #FB7185 100%);
+        }
+
+        .card-label-3 {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+        }
+
+        .card-label h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+
+        .card-label p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.3;
         }
     </style>
 </head>
@@ -128,14 +196,17 @@
                 <!-- Logo -->
                 <div class="flex items-center space-x-3">
                     <img src="{{ asset('images/heart-outline.svg') }}" alt="Loversnmore" class="w-8 h-8" style="filter: invert(24%) sepia(80%) saturate(2087%) hue-rotate(262deg) brightness(84%) contrast(94%);">
-                    <span class="text-2xl font-bold" style="color: #6A36A8;">loversnmore</span>
+                    <div class="flex flex-col">
+                        <span class="text-2xl font-bold" style="color: #6A36A8;">loversnmore</span>
+                        <span class="text-xs text-gray-500">Dating, reimagined</span>
+                    </div>
                 </div>
 
                 <!-- Menu Items -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#waitlist" class="gradient-brand text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all">
+                    <button onclick="openWaitlistModal()" class="gradient-brand text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all">
                         Join Waitlist
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
@@ -143,218 +214,69 @@
 
     <!-- Hero Section -->
     <section class="gradient-hero py-20 lg:py-32">
+        
         <div class="container mx-auto px-6 lg:px-20">
             <div class="grid lg:grid-cols-2 gap-16 items-center">
 
                 <!-- Left Column: Text Content -->
                 <div class="order-2 lg:order-1 animate-fade-in">
                     <div class="inline-block px-4 py-2 rounded-full text-sm font-semibold mb-6" style="background: rgba(106, 54, 168, 0.1); color: #6A36A8;">
-                        🎉 Beta Access Opening Soon
+                        Private beta. Select cities.
                     </div>
 
                     <h1 class="text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight" style="color: #1a202c;">
-                        Shared experiences<br>
-                        <span class="text-gradient">make dating easier.</span>
+                        Connection shouldn't live<br>
+                        <span class="text-gradient">only on a screen.</span>
                     </h1>
 
                     <p class="text-xl text-gray-600 mb-10 leading-relaxed max-w-xl">
-                        A dating platform that helps real connections happen — using shared real-world moments to move things off the screen naturally.
+                        Dating works better when there's something real to share.
                     </p>
 
-                    <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                        <a href="#waitlist" class="gradient-brand text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-xl transition-all inline-flex items-center justify-center glow-brand">
-                            Join the Waitlist
+                    <div class="mb-6">
+                        <button onclick="openWaitlistModal()" class="gradient-brand text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-xl transition-all inline-flex items-center justify-center glow-brand">
+                            Join the waitlist
                             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                             </svg>
-                        </a>
-                        <a href="#how-it-works" class="bg-white border-2 px-8 py-4 rounded-full font-semibold text-lg hover:bg-purple-50 transition-all inline-flex items-center justify-center" style="color: #6A36A8; border-color: #6A36A8;">
-                            Learn More
-                        </a>
+                        </button>
                     </div>
 
                     <p class="text-sm text-gray-500">
-                        ✨ Get early access when your city opens • No credit card required
+                        Private beta. Select cities.
                     </p>
                 </div>
 
                 <!-- Right Column: Bold Creative People Collage -->
-                <div class="order-1 lg:order-2 relative">
-                    <div class="relative h-[550px] lg:h-[700px] w-full">
+                <div class="order-1 lg:order-2 relative flex items-center justify-center">
+                    <div class="relative w-64 sm:w-72 lg:w-80 h-[380px] sm:h-[450px] lg:h-[500px] mx-auto card-stack-container">
 
-                        <!-- Large Feature Card 1 - Asian Woman - Left Side -->
-                        <div class="person-card absolute top-0 left-0 w-80 lg:w-96 bg-white rounded-3xl shadow-2xl transform -rotate-3 hover:rotate-0 card-float overflow-hidden" style="animation-delay: 0s; z-index: 15;">
-                            <div class="relative h-80 lg:h-96 overflow-hidden group">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=800&fit=crop&auto=format&q=80"
-                                     alt="Happy Asian woman"
-                                     class="w-full h-full object-cover transition-all duration-700">
-                                <div class="image-overlay absolute inset-0 bg-gradient-to-t from-[#6A36A8] via-transparent to-transparent opacity-30"></div>
-                                <div class="absolute bottom-0 left-0 right-0 p-6">
-                                    <div class="flex items-center space-x-3 mb-3">
-                                        <div class="bg-white bg-opacity-30 backdrop-blur-sm p-3 rounded-xl">
-                                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-white text-2xl font-bold">Shared Moments</h3>
-                                            <p class="text-white text-sm text-opacity-90">Connect through experiences</p>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="card-stack card-back absolute inset-0 translate-x-6 sm:translate-x-8 translate-y-12 sm:translate-y-16 rotate-6 rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-br from-[#2D2B52] to-[#1A1832] shadow-2xl border border-white/10 flex flex-col justify-end p-4 sm:p-6 z-10">
+                            <h3 class="text-white text-lg sm:text-xl font-bold">Real Connections</h3>
+                        </div>
+
+                        <div class="card-stack card-middle absolute inset-0 translate-x-3 sm:translate-x-4 translate-y-6 sm:translate-y-8 rotate-3 rounded-[2rem] sm:rounded-[2.5rem] bg-white shadow-2xl border border-gray-100 overflow-hidden z-20">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&h=800&fit=crop&auto=format&q=80" alt="Profile" class="h-2/3 w-full object-cover">
+                            <div class="h-1/3 bg-gradient-to-br from-[#F472B6] to-[#FB7185] p-4 sm:p-5 flex flex-col justify-center">
+                                <h3 class="text-white text-lg sm:text-xl font-bold">Dating, Not Swiping</h3>
                             </div>
                         </div>
 
-                        <!-- Large Feature Card 2 - Black Man - Top Right -->
-                        <div class="person-card absolute top-8 lg:top-12 right-0 w-80 lg:w-96 bg-white rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 card-float overflow-hidden" style="animation-delay: 0.8s; z-index: 14;">
-                            <div class="relative h-80 lg:h-96 overflow-hidden group">
-                                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&h=800&fit=crop&auto=format&q=80"
-                                     alt="Confident Black man"
-                                     class="w-full h-full object-cover transition-all duration-700">
-                                <div class="image-overlay absolute inset-0 bg-gradient-to-t from-[#c53e8d] via-transparent to-transparent opacity-30"></div>
-                                <div class="absolute bottom-0 left-0 right-0 p-6">
-                                    <div class="flex items-center space-x-3 mb-3">
-                                        <div class="bg-white bg-opacity-30 backdrop-blur-sm p-3 rounded-xl">
-                                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-white text-2xl font-bold">Real Connections</h3>
-                                            <p class="text-white text-sm text-opacity-90">Context over swiping</p>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="card-stack card-front absolute inset-0 -rotate-3 rounded-[2.5rem] sm:rounded-[3rem] bg-white shadow-2xl border-2 sm:border-4 border-white/20 overflow-hidden z-30">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=800&fit=crop&auto=format&q=80" alt="Profile" class="h-[65%] w-full object-cover">
+                            <div class="h-[35%] bg-gradient-to-br from-[#9367E8] via-[#D378B1] to-[#FF9C9C] p-4 sm:p-6 flex flex-col justify-center">
+                                <h3 class="text-white text-xl sm:text-2xl font-bold">Shared Moments</h3>
                             </div>
-                        </div>
-
-                        <!-- Medium Card 3 - Latina Woman - Bottom Left -->
-                        <div class="person-card absolute bottom-0 left-12 lg:left-16 w-64 lg:w-80 bg-white rounded-3xl shadow-2xl transform rotate-6 hover:rotate-0 card-float overflow-hidden" style="animation-delay: 1.2s; z-index: 16;">
-                            <div class="relative h-64 lg:h-80 overflow-hidden group">
-                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&h=700&fit=crop&auto=format&q=80"
-                                     alt="Beautiful Latina woman"
-                                     class="w-full h-full object-cover transition-all duration-700">
-                                <div class="image-overlay absolute inset-0 bg-gradient-to-t from-[#8B5FBF] via-transparent to-transparent opacity-30"></div>
-                                <div class="absolute bottom-0 left-0 right-0 p-5">
-                                    <div class="flex items-center space-x-2 mb-2">
-                                        <div class="bg-white bg-opacity-30 backdrop-blur-sm p-2.5 rounded-xl">
-                                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-white text-xl font-bold">Authentic Dating</h3>
-                                            <p class="text-white text-xs text-opacity-90">Be yourself</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Medium Card 4 - Caucasian Woman - Bottom Right -->
-                        <div class="person-card absolute bottom-4 lg:bottom-8 right-8 lg:right-12 w-56 lg:w-72 bg-white rounded-3xl shadow-2xl transform -rotate-6 hover:rotate-0 card-float overflow-hidden" style="animation-delay: 1.6s; z-index: 13;">
-                            <div class="relative h-56 lg:h-72 overflow-hidden group">
-                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&h=700&fit=crop&auto=format&q=80"
-                                     alt="Smiling Caucasian woman"
-                                     class="w-full h-full object-cover transition-all duration-700">
-                                <div class="image-overlay absolute inset-0 bg-gradient-to-t from-[#e85d9f] via-transparent to-transparent opacity-30"></div>
-                                <div class="absolute bottom-0 left-0 right-0 p-4">
-                                    <div class="bg-white bg-opacity-30 backdrop-blur-sm rounded-xl p-3">
-                                        <div class="flex items-center space-x-2 mb-1">
-                                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
-                                            </svg>
-                                            <p class="text-white text-sm font-bold">500K+ Connections</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Accent Card 5 - South Asian Man - Center Overlap -->
-                        <div class="person-card absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 lg:w-60 bg-white rounded-2xl shadow-2xl rotate-12 hover:rotate-0 card-float overflow-hidden" style="animation-delay: 0.4s; z-index: 17;">
-                            <div class="relative h-48 lg:h-60 overflow-hidden group">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&auto=format&q=80"
-                                     alt="South Asian man"
-                                     class="w-full h-full object-cover transition-all duration-700">
-                                <div class="image-overlay absolute inset-0 bg-gradient-to-t from-[#6A36A8] to-transparent opacity-25"></div>
-                                <div class="absolute bottom-0 left-0 right-0 p-3">
-                                    <div class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-2.5 text-center">
-                                        <div class="flex items-center justify-center space-x-1.5">
-                                            <svg class="w-4 h-4 text-[#6A36A8]" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                            </svg>
-                                            <p class="text-[#6A36A8] text-sm font-bold">4.9★ Rated</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Accent Card 6 - Multiracial Woman - Top Center -->
-                        <div class="person-card absolute top-28 lg:top-36 left-1/2 transform -translate-x-1/2 w-44 lg:w-56 bg-white rounded-2xl shadow-xl -rotate-12 hover:rotate-0 card-float overflow-hidden" style="animation-delay: 2s; z-index: 12;">
-                            <div class="relative h-44 lg:h-56 overflow-hidden group">
-                                <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=600&fit=crop&auto=format&q=80"
-                                     alt="Multiracial woman"
-                                     class="w-full h-full object-cover transition-all duration-700">
-                                <div class="image-overlay absolute inset-0 bg-gradient-to-t from-[#c53e8d] to-transparent opacity-25"></div>
-                                <div class="absolute bottom-0 left-0 right-0 p-2.5">
-                                    <div class="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-2 text-center">
-                                        <div class="flex items-center justify-center space-x-1.5">
-                                            <svg class="w-4 h-4 text-[#c53e8d]" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                            </svg>
-                                            <p class="text-[#c53e8d] text-xs font-bold">Verified</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Large Decorative Elements -->
-                        <div class="absolute top-1/4 right-1/4 pulse-slow opacity-10 hidden lg:block">
-                            <svg class="w-24 h-24 text-[#6A36A8]" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <div class="absolute bottom-1/4 left-1/4 pulse-slow opacity-10 hidden lg:block" style="animation-delay: 1.5s;">
-                            <svg class="w-20 h-20 text-pink-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                            </svg>
                         </div>
 
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section class="bg-white py-16">
-        <div class="container mx-auto px-6 lg:px-20">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div class="animate-slide-up">
-                    <div class="text-4xl font-bold mb-2" style="color: #6A36A8;">10K+</div>
-                    <div class="text-gray-600">Early Signups</div>
-                </div>
-                <div class="animate-slide-up" style="animation-delay: 0.1s;">
-                    <div class="text-4xl font-bold mb-2" style="color: #6A36A8;">25+</div>
-                    <div class="text-gray-600">Cities Ready</div>
-                </div>
-                <div class="animate-slide-up" style="animation-delay: 0.2s;">
-                    <div class="text-4xl font-bold mb-2" style="color: #6A36A8;">4.9★</div>
-                    <div class="text-gray-600">Beta Rating</div>
-                </div>
-                <div class="animate-slide-up" style="animation-delay: 0.3s;">
-                    <div class="text-4xl font-bold mb-2" style="color: #6A36A8;">500K+</div>
-                    <div class="text-gray-600">Shared Moments</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="py-24 gradient-hero" id="features">
+    <section class="py-24 bg-white" id="features">
         <div class="container mx-auto px-6 lg:px-20">
             <div class="text-center mb-16">
                 <h2 class="text-4xl lg:text-5xl font-bold mb-4" style="color: #1a202c;">
@@ -387,9 +309,9 @@
                             <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4" style="color: #1a202c;">Real-World Context</h3>
+                    <h3 class="text-2xl font-bold mb-4" style="color: #1a202c;">Shared Context</h3>
                     <p class="text-gray-600 leading-relaxed">
-                        Moments create context. It's easier to move from chatting to meeting when you have something real to talk about.
+                        Connect around what's happening nearby.
                     </p>
                 </div>
 
@@ -400,9 +322,9 @@
                             <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-bold mb-4" style="color: #1a202c;">Thoughtful Gestures</h3>
+                    <h3 class="text-2xl font-bold mb-4" style="color: #1a202c;">Easier First Moves</h3>
                     <p class="text-gray-600 leading-relaxed">
-                        Start with a message, or send a thoughtful gift
+                        Start with a message, or send a thoughtful gift.
                     </p>
                 </div>
 
@@ -410,50 +332,16 @@
         </div>
     </section>
 
-    <!-- How It Works Section -->
+    <!-- How It Comes To Life Section -->
     <section class="bg-white py-24" id="how-it-works">
         <div class="container mx-auto px-6 lg:px-20">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-bold mb-4" style="color: #1a202c;">
-                    How Loversnmore Works
+            <div class="text-center max-w-3xl mx-auto">
+                <h2 class="text-4xl lg:text-5xl font-bold mb-6" style="color: #1a202c;">
+                    How it comes to life
                 </h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                    Three simple steps to more meaningful connections
+                <p class="text-xl text-gray-600 leading-relaxed">
+                    We're building a city-by-city dating platform that blends swiping with shared experiences — helping people connect more naturally, beyond just profiles.
                 </p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
-
-                <div class="text-center">
-                    <div class="text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg" style="background: #6A36A8;">
-                        1
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4" style="color: #1a202c;">Share Your Moments</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Post about places you've been, things you've done, and experiences that matter to you
-                    </p>
-                </div>
-
-                <div class="text-center">
-                    <div class="text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg" style="background: #6A36A8;">
-                        2
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4" style="color: #1a202c;">Connect Naturally</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Meet people who share your interests and have experienced the same places as you
-                    </p>
-                </div>
-
-                <div class="text-center">
-                    <div class="text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg" style="background: #6A36A8;">
-                        3
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4" style="color: #1a202c;">Meet In Person</h3>
-                    <p class="text-gray-600 leading-relaxed">
-                        Take conversations offline with context that makes first dates natural and comfortable
-                    </p>
-                </div>
-
             </div>
         </div>
     </section>
@@ -468,37 +356,16 @@
                 Join thousands already on the waitlist. Be the first to know when loversnmore launches in your city.
             </p>
 
-            @if(session('success'))
-                <div class="max-w-md mx-auto mb-6 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-2xl">
-                    {{ session('success') }}
-                </div>
-            @endif
+            <button onclick="openWaitlistModal()" class="bg-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-xl transition-all inline-flex items-center justify-center" style="color: #6A36A8;">
+                Join the Waitlist
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </button>
 
-            @if($errors->any())
-                <div class="max-w-md mx-auto mb-6 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-2xl">
-                    @foreach($errors->all() as $error)
-                        <p>{{ $error }}</p>
-                    @endforeach
-                </div>
-            @endif
-
-            <form action="{{ route('waitlist.signup.process') }}" method="POST" class="max-w-md mx-auto" id="waitlistForm">
-                @csrf
-                <div class="bg-white rounded-full p-2 shadow-2xl flex">
-                    <input type="email"
-                           name="email"
-                           value="{{ old('email') }}"
-                           placeholder="Enter your email address"
-                           class="flex-1 px-6 py-3 rounded-full border-0 focus:ring-0 text-gray-900 @error('email') border-red-500 @enderror"
-                           required>
-                    <button type="submit" class="text-white px-8 py-3 rounded-full font-semibold transition whitespace-nowrap hover:opacity-90" style="background: #542e85;">
-                        Join Waitlist
-                    </button>
-                </div>
-                <p class="text-purple-100 text-sm mt-4">
-                    🔒 We respect your privacy. Unsubscribe anytime.
-                </p>
-            </form>
+            <p class="text-purple-100 text-sm mt-6">
+                Private beta • City-by-city rollout
+            </p>
         </div>
     </section>
 
@@ -513,7 +380,7 @@
                         <span class="text-2xl font-bold">loversnmore</span>
                     </div>
                     <p class="text-purple-200">
-                        Making dating easier through shared experiences.
+                        Dating, reimagined.
                     </p>
                 </div>
 
@@ -523,8 +390,7 @@
                     <ul class="space-y-2 text-purple-200">
                         <li><a href="#features" class="hover:text-white transition">Features</a></li>
                         <li><a href="#how-it-works" class="hover:text-white transition">How It Works</a></li>
-                        <li><a href="#" class="hover:text-white transition">Pricing</a></li>
-                        <li><a href="#" class="hover:text-white transition">FAQ</a></li>
+                        <li><a href="#waitlist" class="hover:text-white transition">Join Waitlist</a></li>
                     </ul>
                 </div>
 
@@ -568,6 +434,116 @@
             </div>
         </div>
     </footer>
+
+    <!-- Waitlist Modal -->
+    <div id="waitlistModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 relative animate-fade-in">
+            <!-- Close Button -->
+            <button onclick="closeWaitlistModal()" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <!-- Modal Header -->
+            <div class="mb-6">
+                <h3 class="text-3xl font-bold mb-2" style="color: #1a202c;">Join the Waitlist</h3>
+                <p class="text-gray-600">Be the first to know when we launch in your city.</p>
+            </div>
+
+            <!-- Beta Notice -->
+            <div class="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-6">
+                <p class="text-sm" style="color: #6A36A8;">
+                    <strong>Private Beta</strong> • We're launching city-by-city to ensure the best experience for everyone.
+                </p>
+            </div>
+
+            <!-- Success Message -->
+            @if(session('success'))
+                <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl text-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <!-- Error Messages -->
+            @if($errors->any())
+                <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl text-sm">
+                    @foreach($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
+
+            <!-- Waitlist Form -->
+            <form action="{{ route('waitlist.signup.process') }}" method="POST" id="waitlistForm">
+                @csrf
+
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-semibold mb-2" style="color: #1a202c;">Email Address</label>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           value="{{ old('email') }}"
+                           placeholder="you@example.com"
+                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition @error('email') border-red-500 @enderror"
+                           required>
+                </div>
+
+                <div class="mb-6">
+                    <label for="city" class="block text-sm font-semibold mb-2" style="color: #1a202c;">Your City</label>
+                    <input type="text"
+                           id="city"
+                           name="city"
+                           value="{{ old('city') }}"
+                           placeholder="e.g., New York, Los Angeles, Chicago"
+                           class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition @error('city') border-red-500 @enderror"
+                           required>
+                    <p class="text-xs text-gray-500 mt-2">We'll notify you when we launch in your city</p>
+                </div>
+
+                <button type="submit" class="w-full gradient-brand text-white px-6 py-4 rounded-full font-semibold text-lg hover:shadow-xl transition-all">
+                    Join the Waitlist
+                </button>
+
+                <p class="text-xs text-gray-500 text-center mt-4">
+                    We respect your privacy. Unsubscribe anytime.
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openWaitlistModal() {
+            document.getElementById('waitlistModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeWaitlistModal() {
+            document.getElementById('waitlistModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('waitlistModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeWaitlistModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeWaitlistModal();
+            }
+        });
+
+        // Auto-open modal if there are form errors or success message
+        @if($errors->any() || session('success'))
+            window.addEventListener('DOMContentLoaded', function() {
+                openWaitlistModal();
+            });
+        @endif
+    </script>
 
 </body>
 </html>

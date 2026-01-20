@@ -50,6 +50,7 @@ class WaitlistSignup extends BaseModel
     protected $fillable = [
         'full_name',
         'email',
+        'city',
         'interest',
         'status',
         'priority_score',
