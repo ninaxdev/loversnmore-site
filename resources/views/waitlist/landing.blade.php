@@ -230,7 +230,7 @@
                     </h1>
 
                     <p class="text-xl text-gray-600 mb-10 leading-relaxed max-w-xl">
-                        Dating works better when there's something real to share.
+                        We're building a city-by-city dating platform that blends swiping with shared experiences and local events — helping people connect more naturally beyond just profiles
                     </p>
 
                     <div class="mb-6">
@@ -280,10 +280,10 @@
         <div class="container mx-auto px-6 lg:px-20">
             <div class="text-center mb-16">
                 <h2 class="text-4xl lg:text-5xl font-bold mb-4" style="color: #1a202c;">
-                    Dating feels better when there's<br>something real to share
+                    Dating, reimagined.
                 </h2>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                    Move beyond endless swiping and start connecting through meaningful experiences
+                    Less guessing. Less swiping. More reasons to actually meet.
                 </p>
             </div>
 
