@@ -340,8 +340,10 @@
                     How it comes to life
                 </h2>
                 <p class="text-xl text-gray-600 leading-relaxed">
-                    We're building a city-by-city dating platform that blends swiping with shared experiences — helping people connect more naturally, beyond just profiles.
-                </p>
+                Dating, without the pressure <br/>
+                More shared moments. <br/>
+                Better first moves  
+                          </p>
             </div>
         </div>
     </section>
