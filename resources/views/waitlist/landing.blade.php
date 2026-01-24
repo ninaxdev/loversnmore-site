@@ -79,35 +79,6 @@
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Mobile hover - smaller spread */
-        @media (max-width: 639px) {
-            .card-stack-container:hover .card-back {
-                transform: translateX(100px) translateY(12px) rotate(12deg) !important;
-            }
-
-            .card-stack-container:hover .card-middle {
-                transform: translateX(50px) translateY(6px) rotate(8deg) !important;
-            }
-
-            .card-stack-container:hover .card-front {
-                transform: translateX(-50px) rotate(-8deg) !important;
-            }
-        }
-
-        /* Tablet and Desktop hover - wider spread */
-        @media (min-width: 640px) {
-            .card-stack-container:hover .card-back {
-                transform: translateX(160px) translateY(16px) rotate(15deg) !important;
-            }
-
-            .card-stack-container:hover .card-middle {
-                transform: translateX(80px) translateY(8px) rotate(10deg) !important;
-            }
-
-            .card-stack-container:hover .card-front {
-                transform: translateX(-80px) rotate(-10deg) !important;
-            }
-        }
 
         .pulse-slow {
             animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -249,23 +220,26 @@
 
                 <!-- Right Column: Bold Creative People Collage -->
                 <div class="order-1 lg:order-2 relative flex items-center justify-center">
-                    <div class="relative w-64 sm:w-72 lg:w-80 h-[380px] sm:h-[450px] lg:h-[500px] mx-auto card-stack-container">
+                    <div class="relative w-[360px] sm:w-[450px] lg:w-[500px] h-[280px] sm:h-[520px] lg:h-[580px] mx-auto card-stack-container translate-x-[20px] sm:translate-x-0 lg:translate-x-0">
 
-                        <div class="card-stack card-back absolute inset-0 translate-x-6 sm:translate-x-8 translate-y-12 sm:translate-y-16 rotate-6 rounded-[2rem] sm:rounded-[2.5rem] bg-gradient-to-br from-[#2D2B52] to-[#1A1832] shadow-2xl border border-white/10 flex flex-col justify-end p-4 sm:p-6 z-10">
-                            <h3 class="text-white text-lg sm:text-xl font-bold">Real Connections</h3>
-                        </div>
-
-                        <div class="card-stack card-middle absolute inset-0 translate-x-3 sm:translate-x-4 translate-y-6 sm:translate-y-8 rotate-3 rounded-[2rem] sm:rounded-[2.5rem] bg-white shadow-2xl border border-gray-100 overflow-hidden z-20">
-                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&h=800&fit=crop&auto=format&q=80" alt="Profile" class="h-2/3 w-full object-cover">
-                            <div class="h-1/3 bg-gradient-to-br from-[#F472B6] to-[#FB7185] p-4 sm:p-5 flex flex-col justify-center">
-                                <h3 class="text-white text-lg sm:text-xl font-bold">Dating, Not Swiping</h3>
+                        <div class="card-stack card-back absolute w-40 sm:w-72 lg:w-80 h-[250px] sm:h-[450px] lg:h-[500px] translate-x-[139px] sm:translate-x-[200px] lg:translate-x-[278px] translate-y-[91px] sm:translate-y-[140px] lg:translate-y-[182px] rotate-[14deg] rounded-[1.5rem] sm:rounded-[3rem] bg-white shadow-2xl border border-gray-100 overflow-hidden z-10">
+                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=600&h=800&fit=crop&auto=format&q=80" alt="Profile" class="h-2/3 w-full object-cover">
+                            <div class="h-1/3 bg-gradient-to-br from-[#2D2B52] to-[#1A1832] p-2 sm:p-6 flex flex-col justify-center">
+                                <h3 class="text-white text-xs sm:text-xl font-bold">Real Connections</h3>
                             </div>
                         </div>
 
-                        <div class="card-stack card-front absolute inset-0 -rotate-3 rounded-[2.5rem] sm:rounded-[3rem] bg-white shadow-2xl border-2 sm:border-4 border-white/20 overflow-hidden z-30">
+                        <div class="card-stack card-middle absolute w-40 sm:w-72 lg:w-80 h-[250px] sm:h-[450px] lg:h-[500px] translate-x-[47px] sm:translate-x-[70px] lg:translate-x-[94px] translate-y-[22px] sm:translate-y-[35px] lg:translate-y-[45px] rotate-[8deg] rounded-[1.5rem] sm:rounded-[2.5rem] bg-white shadow-2xl border border-gray-100 overflow-hidden z-20">
+                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&h=800&fit=crop&auto=format&q=80" alt="Profile" class="h-2/3 w-full object-cover">
+                            <div class="h-1/3 bg-gradient-to-br from-[#F472B6] to-[#FB7185] p-2 sm:p-5 flex flex-col justify-center">
+                                <h3 class="text-white text-xs sm:text-xl font-bold">Dating, Not Swiping</h3>
+                            </div>
+                        </div>
+
+                        <div class="card-stack card-front absolute w-40 sm:w-72 lg:w-80 h-[250px] sm:h-[450px] lg:h-[500px] -translate-x-[40px] sm:-translate-x-[70px] lg:-translate-x-[80px] -translate-y-[45px] sm:-translate-y-[80px] lg:-translate-y-[90px] rotate-6 rounded-[1.5rem] sm:rounded-[2.5rem] bg-white shadow-2xl border border-white/20 overflow-hidden z-30">
                             <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=800&fit=crop&auto=format&q=80" alt="Profile" class="h-[65%] w-full object-cover">
-                            <div class="h-[35%] bg-gradient-to-br from-[#9367E8] via-[#D378B1] to-[#FF9C9C] p-4 sm:p-6 flex flex-col justify-center">
-                                <h3 class="text-white text-xl sm:text-2xl font-bold">Shared Moments</h3>
+                            <div class="h-[35%] bg-gradient-to-br from-[#9367E8] via-[#D378B1] to-[#FF9C9C] p-2 sm:p-6 flex flex-col justify-center">
+                                <h3 class="text-white text-sm sm:text-2xl font-bold">Shared Moments</h3>
                             </div>
                         </div>
 
