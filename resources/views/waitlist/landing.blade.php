@@ -184,10 +184,10 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="gradient-hero py-20 lg:py-32">
-        
+    <section class="gradient-hero py-8 sm:py-16 lg:py-32">
+
         <div class="container mx-auto px-6 lg:px-20">
-            <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <div class="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
 
                 <!-- Left Column: Text Content -->
                 <div class="order-2 lg:order-1 animate-fade-in">
@@ -218,32 +218,10 @@
                     </p>
                 </div>
 
-                <!-- Right Column: Bold Creative People Collage -->
+                <!-- Right Column: Swipe Feature -->
                 <div class="order-1 lg:order-2 relative flex items-center justify-center">
-                    <div class="relative w-[360px] sm:w-[450px] lg:w-[500px] h-[280px] sm:h-[520px] lg:h-[580px] mx-auto card-stack-container -translate-y-[50px] sm:translate-y-0">
-
-                        <div class="card-stack card-back absolute w-40 sm:w-72 lg:w-80 h-[250px] sm:h-[450px] lg:h-[500px] translate-x-[110px] sm:translate-x-[100px] lg:translate-x-[130px] translate-y-[105px] sm:translate-y-[165px] lg:translate-y-[200px] rotate-[12deg] rounded-[1.5rem] sm:rounded-[3rem] bg-white shadow-2xl border border-gray-100 overflow-hidden z-10">
-                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=600&h=800&fit=crop&auto=format&q=80" alt="Profile" class="h-2/3 w-full object-cover">
-                            <div class="h-1/3 bg-gradient-to-br from-[#2D2B52] to-[#1A1832] p-2 sm:p-6 flex flex-col justify-center">
-                                <h3 class="text-white text-xs sm:text-xl font-bold">Real Connections</h3>
-                            </div>
-                        </div>
-
-                        <div class="card-stack card-middle absolute w-40 sm:w-72 lg:w-80 h-[250px] sm:h-[450px] lg:h-[500px] translate-x-[65px] sm:translate-x-[35px] lg:translate-x-[45px] translate-y-[30px] sm:translate-y-[50px] lg:translate-y-[62px] rotate-[6deg] rounded-[1.5rem] sm:rounded-[2.5rem] bg-white shadow-2xl border border-gray-100 overflow-hidden z-20">
-                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&h=800&fit=crop&auto=format&q=80" alt="Profile" class="h-2/3 w-full object-cover">
-                            <div class="h-1/3 bg-gradient-to-br from-[#F472B6] to-[#FB7185] p-2 sm:p-5 flex flex-col justify-center">
-                                <h3 class="text-white text-xs sm:text-xl font-bold">Dating, Not Swiping</h3>
-                            </div>
-                        </div>
-
-                        <div class="card-stack card-front absolute w-40 sm:w-72 lg:w-80 h-[250px] sm:h-[450px] lg:h-[500px] translate-x-[20px] sm:-translate-x-[35px] lg:-translate-x-[45px] -translate-y-[25px] sm:-translate-y-[40px] lg:-translate-y-[50px] rotate-3 rounded-[1.5rem] sm:rounded-[2.5rem] bg-white shadow-2xl border border-white/20 overflow-hidden z-30">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=800&fit=crop&auto=format&q=80" alt="Profile" class="h-[65%] w-full object-cover">
-                            <div class="h-[35%] bg-gradient-to-br from-[#9367E8] via-[#D378B1] to-[#FF9C9C] p-2 sm:p-6 flex flex-col justify-center">
-                                <h3 class="text-white text-sm sm:text-2xl font-bold">Shared Moments</h3>
-                            </div>
-                        </div>
-
-                    </div>
+                    <!-- Single Image with 3-degree tilt -->
+                    <img src="{{ asset('images/bg-removed-new.png') }}" alt="Swipe Feature" class="rotate-3 drop-shadow-2xl w-[90vw] sm:w-[70vw] lg:w-[50vw] h-auto">
                 </div>
             </div>
         </div>
