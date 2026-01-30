@@ -184,27 +184,32 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="gradient-hero py-8 sm:py-16 lg:py-32">
+    <section class="gradient-hero py-4 sm:py-16 lg:py-32">
 
         <div class="container mx-auto px-6 lg:px-20">
             <div class="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
 
                 <!-- Left Column: Text Content -->
                 <div class="order-2 lg:order-1 animate-fade-in">
-                    <div class="inline-block px-4 py-2 rounded-full text-sm font-semibold mb-6" style="background: rgba(106, 54, 168, 0.1); color: #6A36A8;">
+                    <div class="inline-block px-4 py-2 rounded-full text-sm font-semibold mb-6 lg:mb-6" style="background: rgba(106, 54, 168, 0.1); color: #6A36A8;">
                         Private beta. Select cities.
                     </div>
 
-                    <h1 class="text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight" style="color: #1a202c;">
+                    <h1 class="text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 lg:mb-6 leading-tight" style="color: #1a202c;">
                         Connection shouldn't live<br>
                         <span class="text-gradient">only on a screen.</span>
                     </h1>
 
-                    <p class="text-xl text-gray-600 mb-10 leading-relaxed max-w-xl">
+                    <p class="text-xl text-gray-600 mb-0 lg:mb-10 leading-relaxed max-w-xl">
                         We're building a city-by-city dating platform that blends swiping with shared experiences and local events — helping people connect more naturally beyond just profiles
                     </p>
 
-                    <div class="mb-6">
+                    <!-- Image shown on mobile/tablet after description text -->
+                    <div class="lg:hidden my-0 flex justify-center">
+                        <img src="{{ asset('updated-mockup.png') }}" alt="Swipe Feature" class="rotate-3 drop-shadow-2xl w-[90vw] sm:w-[70vw] h-auto">
+                    </div>
+
+                    <div class="mb-6 flex justify-center lg:justify-start">
                         <button onclick="openWaitlistModal()" class="gradient-brand text-white px-8 py-4 rounded-full font-semibold text-lg hover:shadow-xl transition-all inline-flex items-center justify-center glow-brand">
                             Join the waitlist
                             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -213,24 +218,24 @@
                         </button>
                     </div>
 
-                    <p class="text-sm text-gray-500">
+                    <p class="text-sm text-gray-500 text-center lg:text-left">
                         Private beta. Select cities.
                     </p>
                 </div>
 
-                <!-- Right Column: Swipe Feature -->
-                <div class="order-1 lg:order-2 relative flex items-center justify-center">
+                <!-- Right Column: Swipe Feature (hidden on mobile/tablet, shown on desktop) -->
+                <div class="order-1 lg:order-2 relative hidden lg:flex items-center justify-center">
                     <!-- Single Image with 3-degree tilt -->
-                    <img src="{{ asset('images/bg-removed-new.png') }}" alt="Swipe Feature" class="rotate-3 drop-shadow-2xl w-[90vw] sm:w-[70vw] lg:w-[50vw] h-auto">
+                    <img src="{{ asset('updated-mockup.png') }}" alt="Swipe Feature" class="rotate-3 drop-shadow-2xl w-[50vw] h-auto translate-y-24">
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="py-24 bg-white" id="features">
+    <section class="py-16 lg:py-24 bg-white" id="features">
         <div class="container mx-auto px-6 lg:px-20">
-            <div class="text-center mb-16">
+            <div class="text-center mb-10 lg:mb-16">
                 <h2 class="text-4xl lg:text-5xl font-bold mb-4" style="color: #1a202c;">
                     Dating, reimagined.
                 </h2>
@@ -239,7 +244,7 @@
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-10 lg:gap-8 max-w-6xl mx-auto">
 
                 <!-- Feature 1 -->
                 <div class="bg-white p-8 rounded-2xl shadow-lw-light feature-card">
