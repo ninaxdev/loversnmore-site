@@ -1415,8 +1415,19 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 							<div class="col-6 col-md-3 mb-3">
 								<label class="lw-gift-card w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-center" id="lwSendGiftRadioBtn_{{ $gift['_uid'] }}" style="cursor: pointer; background-color: #F8F4FF; border: 2px solid #E9D8FD; border-radius: 16px; transition: all 0.3s ease; position: relative; min-height: 160px;">
 									<input type="radio" value="{{ $gift['_uid'] }}" name="selected_gift" style="position: absolute; opacity: 0;" />
+									@if(stripos($gift['title'], 'dinner') !== false)
+										<div style="position: absolute; top: 6px; right: 6px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: white; font-size: 8px; font-weight: 700; padding: 2px 5px; border-radius: 6px; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 0.3px;">
+											⭐ Popular
+										</div>
+									@elseif(stripos($gift['title'], 'surprise') !== false)
+										<div style="position: absolute; top: 6px; right: 6px; background: linear-gradient(135deg, #C53E8D 0%, #D6589B 100%); color: white; font-size: 8px; font-weight: 700; padding: 2px 5px; border-radius: 6px; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 0.3px;">
+											✨ Special
+										</div>
+									@endif
 									<img class="lw-lazy-img mb-2" data-src="{{ imageOrNoImageAvailable($gift['gift_image_url']) }}" style="width: 60px; height: 60px; object-fit: contain;" />
-									<div class="lw-gift-title font-weight-semibold mb-1" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 14px;">{{ $gift['title'] ?? 'Gift' }}</div>
+									<div class="lw-gift-title font-weight-semibold mb-1" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 14px;">
+										{{ $gift['title'] ?? 'Gift' }}
+									</div>
 									<div class="lw-gift-price font-weight-bold" style="color: #5B3E96; font-family: 'Poppins', sans-serif; font-size: 16px;">{{ $gift['formattedPrice'] }}</div>
 								</label>
 							</div>
@@ -1434,6 +1445,58 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 							</div>
 						</div>
 						<!-- /select private / public -->
+
+						<!-- Message Selection Section -->
+						<div class="mt-4 p-4 !bg-purple-50 !border !border-purple-200 rounded-2xl">
+							<h6 class="font-semibold mb-3 !text-purple-700 text-base flex items-center gap-2" style="font-family: 'Poppins', sans-serif;">
+								<i class="fas fa-comment-dots"></i>{{ __tr('Add a Message (Optional)') }}
+							</h6>
+
+							<!-- Message Type Selection -->
+							<div class="mb-3">
+								<div class="custom-control custom-radio mb-2">
+									<input type="radio" id="messageTypeNone" name="message_type" value="none" class="custom-control-input lw-message-radio" checked>
+									<label class="custom-control-label text-sm !text-purple-700 !cursor-pointer" for="messageTypeNone" style="font-family: 'Poppins', sans-serif;">
+										{{ __tr('No message') }}
+									</label>
+								</div>
+								<div class="custom-control custom-radio mb-2">
+									<input type="radio" id="messageTypeIcebreaker" name="message_type" value="icebreaker" class="custom-control-input lw-message-radio">
+									<label class="custom-control-label text-sm !text-purple-700 !cursor-pointer" for="messageTypeIcebreaker" style="font-family: 'Poppins', sans-serif;">
+										{{ __tr('Choose an icebreaker') }}
+									</label>
+								</div>
+								<div class="custom-control custom-radio">
+									<input type="radio" id="messageTypeCustom" name="message_type" value="custom" class="custom-control-input lw-message-radio">
+									<label class="custom-control-label text-sm !text-purple-700 !cursor-pointer" for="messageTypeCustom" style="font-family: 'Poppins', sans-serif;">
+										{{ __tr('Write a custom note') }}
+									</label>
+								</div>
+							</div>
+
+							<!-- Icebreaker Selector (hidden by default) -->
+							<div id="lwIcebreakerSelector" class="hidden">
+								<input type="hidden" id="lwIcebreakerSelect" name="icebreaker_id" value="">
+								<x-lw.icebreaker-carousel />
+							</div>
+
+							<!-- Custom Note Textarea (hidden by default) -->
+							<div id="lwCustomNoteContainer" class="hidden">
+								<textarea class="form-control w-full !border-2 !border-purple-200 rounded-xl text-sm !text-purple-700 px-3 py-2 !bg-white !resize-none focus:!border-purple-700 focus:!ring-2 focus:!ring-purple-100 focus:!outline-none placeholder:!text-purple-300" id="lwCustomNoteText" name="custom_note" rows="3" maxlength="200" placeholder="{{ __tr('Write a thoughtful message...') }}" style="font-family: 'Poppins', sans-serif;"></textarea>
+								<div class="text-right mt-1">
+									<small class="text-xs !text-gray-400" style="font-family: 'Poppins', sans-serif;">
+										<span id="lwCharCount" class="!text-purple-700 font-semibold">0</span>/200 {{ __tr('characters') }}
+									</small>
+								</div>
+							</div>
+
+							<!-- Message Preview -->
+							<div id="lwMessagePreview" class="hidden mt-4 p-4 bg-gradient-to-br from-purple-100 to-purple-50 !border-l-4 !border-purple-700 rounded-xl shadow-sm">
+								<small class="block mb-1 text-xs uppercase tracking-wider !text-gray-400 font-semibold" style="font-family: 'Poppins', sans-serif;">{{ __tr('MESSAGE PREVIEW') }}</small>
+								<div id="lwMessagePreviewText" class="text-sm !text-purple-700 italic leading-relaxed" style="font-family: 'Poppins', sans-serif;"></div>
+							</div>
+						</div>
+						<!-- /Message Selection Section -->
 
 					<!-- Stripe Card Payment Section -->
 					<div class="mt-4" id="lwStripeCardSection" style="display: none;">
@@ -1462,6 +1525,40 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	</div>
 	<!-- /send gift Modal-->
 
+	<!-- Gift Agreement Modal -->
+	<div class="modal fade" id="lwGiftAgreementDialog" tabindex="-1" role="dialog" aria-labelledby="giftAgreementModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content" style="border-radius: 20px; font-family: 'Poppins', sans-serif;">
+				<div class="modal-header" style="border-bottom: none; padding: 24px 24px 0;">
+					<h5 class="modal-title" id="giftAgreementModalLabel" style="color: #5B3E96; font-weight: 600;">Before You Send a Gift</h5>
+				</div>
+				<div class="modal-body" style="padding: 24px;">
+					<p style="font-size: 15px; color: #6B7280; line-height: 1.6; margin-bottom: 20px;">
+						Sending a gift is a thoughtful way to show interest, but please understand:
+					</p>
+					<ul style="font-size: 14px; color: #6B7280; line-height: 1.8; padding-left: 20px; margin-bottom: 24px;">
+						<li>A gift does not guarantee a response or match</li>
+						<li>Recipients can choose to thank you, chat, or politely decline</li>
+						<li>Be respectful and understanding of all responses</li>
+						<li>Gifts are non-refundable once sent</li>
+					</ul>
+					<div class="custom-control custom-checkbox" style="margin-bottom: 16px;">
+						<input type="checkbox" class="custom-control-input" id="lwGiftAgreementCheck">
+						<label class="custom-control-label" for="lwGiftAgreementCheck" style="font-size: 14px; color: #374151; cursor: pointer;">
+							I understand and agree to these terms
+						</label>
+					</div>
+				</div>
+				<div class="modal-footer" style="border-top: none; padding: 0 24px 24px; justify-content: center;">
+					<button type="button" class="btn" id="lwAcceptGiftAgreementBtn" style="background-color: #5B3E96; color: white; padding: 12px 48px; border-radius: 25px; font-weight: 500; border: none; opacity: 0.5; cursor: not-allowed;" disabled>
+						Continue
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Gift Agreement Modal -->
+
 	<!-- User block Confirmation text html -->
 	<div id="lwBlockUserConfirmationText" style="display: none;">
 		<h3>{{ __tr('Are You Sure!') }}</h3>
@@ -1472,6 +1569,59 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 <!-- /if user block then don't show profile page content -->
 
 @lwPush('appScripts')
+<!-- Gift Message Radio Buttons - Purple Theme Override -->
+<style>
+	/* Override Bootstrap's default pink (#c61d61) with purple theme for gift message radios */
+
+	/* Unchecked state - white circle with light purple border */
+	.custom-control.custom-radio .lw-message-radio ~ .custom-control-label::before {
+		border-color: #E9D8FD !important;
+		border-width: 2px !important;
+		border-radius: 50% !important;
+		background-color: #FFFFFF !important;
+		box-shadow: none !important;
+	}
+
+	/* Unchecked ::after should be invisible/transparent */
+	.custom-control.custom-radio .lw-message-radio ~ .custom-control-label::after {
+		border-radius: 50% !important;
+		background-image: none !important;
+		background-color: transparent !important;
+	}
+
+	/* Checked state - purple filled circle */
+	.custom-control.custom-radio .lw-message-radio:checked ~ .custom-control-label::before {
+		background-color: #5B3E96 !important;
+		border-color: #5B3E96 !important;
+		background-image: none !important;
+	}
+
+	/* Inner white dot for checked state */
+	.custom-control.custom-radio .lw-message-radio:checked ~ .custom-control-label::after {
+		background-image: none !important;
+		background-color: #FFFFFF !important;
+		border-radius: 50% !important;
+		width: 0.5rem !important;
+		height: 0.5rem !important;
+		top: 0.5rem !important;
+		left: -1.125rem !important;
+		position: absolute !important;
+	}
+
+	/* Focus state */
+	.custom-control.custom-radio .lw-message-radio:focus ~ .custom-control-label::before {
+		border-color: #5B3E96 !important;
+		box-shadow: 0 0 0 0.2rem rgba(91, 62, 150, 0.25) !important;
+	}
+
+	/* Disabled state */
+	.custom-control.custom-radio .lw-message-radio:disabled ~ .custom-control-label::before {
+		background-color: #F3F4F6 !important;
+		border-color: #E5E7EB !important;
+	}
+</style>
+<!-- /Gift Message Radio Buttons - Purple Theme Override -->
+
 @if(getStoreSettings('allow_google_map'))
 <script src="https://maps.googleapis.com/maps/api/js?key={{ getStoreSettings('google_map_key') }}&libraries=places&callback=initialize&language={{ app()->getLocale() }}" async defer></script>
 @endif
@@ -1681,6 +1831,142 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		$('#lwGiftPaymentErrorText').hide();
 		//close dialog after success
 		$('#lwSendGiftDialog').modal('hide');
+	});
+
+	// Gift Agreement Modal Logic
+	var hasAcceptedGiftAgreement = {{ Auth::user()->gift_agreement_accepted_at ? 'true' : 'false' }};
+
+	// Store original click handler
+	var originalGiftButtonClick = null;
+
+	// Override gift button click to check agreement first
+	$('[data-toggle="modal"][data-target="#lwSendGiftDialog"]').on('click', function(e) {
+		if (!hasAcceptedGiftAgreement) {
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			$('#lwGiftAgreementDialog').modal('show');
+			return false;
+		}
+	});
+
+	// Enable/disable continue button based on checkbox
+	$('#lwGiftAgreementCheck').on('change', function() {
+		var isChecked = $(this).is(':checked');
+		var $continueBtn = $('#lwAcceptGiftAgreementBtn');
+
+		if (isChecked) {
+			$continueBtn.prop('disabled', false);
+			$continueBtn.css({
+				'opacity': '1',
+				'cursor': 'pointer'
+			});
+		} else {
+			$continueBtn.prop('disabled', true);
+			$continueBtn.css({
+				'opacity': '0.5',
+				'cursor': 'not-allowed'
+			});
+		}
+	});
+
+	// Handle agreement acceptance
+	$('#lwAcceptGiftAgreementBtn').on('click', function(e) {
+		e.preventDefault();
+
+		if (!$('#lwGiftAgreementCheck').is(':checked')) {
+			return;
+		}
+
+		var requestUrl = '{{ route('user.write.accept_gift_agreement') }}';
+
+		__DataRequest.post(requestUrl, {}, function(response) {
+			if (response.reaction == 1) {
+				hasAcceptedGiftAgreement = true;
+				$('#lwGiftAgreementDialog').modal('hide');
+				// Small delay to ensure modal is closed before opening gift modal
+				setTimeout(function() {
+					$('#lwSendGiftDialog').modal('show');
+				}, 300);
+			}
+		});
+	});
+
+	// Message Selection Logic
+	var icebreakers = [];
+
+	// Load icebreakers when modal is shown
+	$('#lwSendGiftDialog').on('shown.bs.modal', function() {
+		if (icebreakers.length === 0) {
+			loadIcebreakers();
+		}
+	});
+
+	// Function to load icebreakers from API
+	function loadIcebreakers() {
+		__DataRequest.get('{{ route('user.icebreakers.list') }}', {}, function(response) {
+			if (response.reaction == 1 && response.data.icebreakers) {
+				icebreakers = response.data.icebreakers;
+				// Initialize the carousel component with the icebreakers data
+				if (typeof window.initIcebreakerCarousel === 'function') {
+					window.initIcebreakerCarousel(icebreakers);
+				}
+			}
+		});
+	}
+
+	// Handle message type change
+	$('input[name="message_type"]').on('change', function() {
+		var selectedType = $(this).val();
+
+		// Hide all message inputs with smooth animation
+		$('#lwIcebreakerSelector').slideUp(200);
+		$('#lwCustomNoteContainer').slideUp(200);
+		$('#lwMessagePreview').slideUp(200);
+
+		// Show appropriate input based on selection with smooth animation
+		setTimeout(function() {
+			if (selectedType === 'icebreaker') {
+				$('#lwIcebreakerSelector').slideDown(300);
+			} else if (selectedType === 'custom') {
+				$('#lwCustomNoteContainer').slideDown(300);
+				$('#lwCustomNoteText').focus();
+			}
+		}, 150);
+	});
+
+	// Handle custom note input
+	$('#lwCustomNoteText').on('input', function() {
+		var text = $(this).val();
+		var charCount = text.length;
+
+		// Update character count
+		$('#lwCharCount').text(charCount);
+
+		// Show/hide preview with animation
+		if (text.trim().length > 0) {
+			$('#lwMessagePreviewText').text(text);
+			if (!$('#lwMessagePreview').is(':visible')) {
+				$('#lwMessagePreview').slideDown(300);
+			}
+		} else {
+			$('#lwMessagePreview').slideUp(200);
+		}
+	});
+
+	// Reset message selection when modal is closed
+	$('#lwSendGiftDialog').on('hidden.bs.modal', function() {
+		// Reset to "No message" option
+		$('input[name="message_type"][value="none"]').prop('checked', true);
+
+		// Hide all message sections immediately
+		$('#lwIcebreakerSelector').hide();
+		$('#lwCustomNoteContainer').hide();
+		$('#lwMessagePreview').hide();
+
+		// Reset form values
+		$('#lwIcebreakerSelect').val('');
+		$('#lwCustomNoteText').val('');
+		$('#lwCharCount').text('0');
 	});
 
 	// Gift card selection handler
@@ -1938,6 +2224,29 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			button[type="submit"].lw-ajax-form-submit-action:hover {
 				opacity: 0.9;
 				transform: scale(1.02);
+			}
+			/* Custom radio button styles for message selection */
+			.lw-message-radio:checked ~ .custom-control-label::before {
+				background-color: #5B3E96 !important;
+				border-color: #5B3E96 !important;
+			}
+			.lw-message-radio ~ .custom-control-label::before {
+				border-color: #E9D8FD !important;
+				border-width: 2px !important;
+			}
+			.custom-control-label:hover {
+				color: #5B3E96 !important;
+			}
+			/* Select and textarea focus states */
+			#lwIcebreakerSelect:focus,
+			#lwCustomNoteText:focus {
+				border-color: #5B3E96 !important;
+				box-shadow: 0 0 0 0.2rem rgba(91, 62, 150, 0.15) !important;
+				outline: none !important;
+			}
+			/* Placeholder color */
+			#lwCustomNoteText::placeholder {
+				color: #C4B5FD !important;
 			}
 		`)
 		.appendTo('head');

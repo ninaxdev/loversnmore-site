@@ -389,6 +389,18 @@ Route::group([
                     'uses' => 'UserController@userSendGift',
                 ]);
 
+                // post Accept gift agreement
+                Route::post('/accept-gift-agreement', [
+                    'as' => 'user.write.accept_gift_agreement',
+                    'uses' => 'UserController@acceptGiftAgreement',
+                ]);
+
+                // get Icebreakers list
+                Route::get('/icebreakers', [
+                    'as' => 'user.icebreakers.list',
+                    'uses' => 'UserController@getIcebreakers',
+                ]);
+
                 // post report user
                 Route::post('/{sendUserUId}/report-user', [
                     'as' => 'user.write.report_user',

@@ -649,6 +649,34 @@ class UserController extends BaseController
     }
 
     /**
+     * Handle gift agreement acceptance.
+     *
+     * @return json object
+     *---------------------------------------------------------------- */
+    public function acceptGiftAgreement()
+    {
+        $processReaction = $this->userEngine->processAcceptGiftAgreement();
+
+        return $this->responseAction(
+            $this->processResponse($processReaction, [], [], true)
+        );
+    }
+
+    /**
+     * Get list of active icebreakers.
+     *
+     * @return json object
+     *---------------------------------------------------------------- */
+    public function getIcebreakers()
+    {
+        $processReaction = $this->userEngine->prepareIcebreakers();
+
+        return $this->responseAction(
+            $this->processResponse($processReaction, [], [], true)
+        );
+    }
+
+    /**
      * Handle report user request.
      *
      * @param object ReportUserRequest $request

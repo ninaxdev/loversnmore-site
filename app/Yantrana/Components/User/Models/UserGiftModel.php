@@ -18,7 +18,9 @@ class UserGiftModel extends BaseModel
      *
      * @var array
      */
-    protected $casts = [];
+    protected $casts = [
+        'payment_metadata' => 'array',
+    ];
     protected $guarded = ['id'];
 
     /**
@@ -35,5 +37,13 @@ class UserGiftModel extends BaseModel
     public function toUser()
     {
         return $this->belongsTo(User::class, 'to_users__id', '_id');
+    }
+
+    /**
+     * Get the icebreaker message associated with this gift
+     */
+    public function icebreaker()
+    {
+        return $this->belongsTo(GiftIcebreakerModel::class, 'icebreaker_id', 'id');
     }
 }

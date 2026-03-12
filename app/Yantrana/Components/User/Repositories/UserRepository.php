@@ -1562,4 +1562,84 @@ class UserRepository extends BaseRepository implements UserRepositoryBlueprint
     {
         return $this->user::where('_uid', $userUid)->first();
     }
+
+    /**
+     * Check if two users are matched (mutual likes)
+     *
+     * @param  int  $userId1
+     * @param  int  $userId2
+     * @return bool
+     */
+    public function areUsersMatched($userId1, $userId2)
+    {
+        // Check if both users liked each other
+        $user1LikesUser2 = LikeDislikeModal::where('by_users__id', $userId1)
+            ->where('to_users__id', $userId2)
+            ->where('like', 1)
+            ->exists();
+
+        $user2LikesUser1 = LikeDislikeModal::where('by_users__id', $userId2)
+            ->where('to_users__id', $userId1)
+            ->where('like', 1)
+            ->exists();
+
+        return $user1LikesUser2 && $user2LikesUser1;
+    }
+
+    /**
+     * Count gifts sent by user today
+     *
+     * @param  int  $userId
+     * @return int
+     */
+    public function countGiftsSentToday($userId)
+    {
+        return UserGiftModel::where('from_users__id', $userId)
+            ->whereDate('created_at', today())
+            ->count();
+    }
+
+    /**
+     * Count gifts sent to a specific recipient within time window
+     *
+     * @param  int  $senderId
+     * @param  int  $recipientId
+     * @param  int  $hours - Time window in hours (default 24)
+     * @return int
+     */
+    public function countGiftsSentToRecipient($senderId, $recipientId, $hours = 24)
+    {
+        return UserGiftModel::where('from_users__id', $senderId)
+            ->where('to_users__id', $recipientId)
+            ->where('created_at', '>=', now()->subHours($hours))
+            ->count();
+    }
+
+    /**
+     * Check if user has accepted gift agreement
+     *
+     * @param  int  $userId
+     * @return bool
+     */
+    public function hasAcceptedGiftAgreement($userId)
+    {
+        $user = UserModel::find($userId);
+
+        return $user && $user->gift_agreement_accepted_at !== null;
+    }
+
+    /**
+     * Count surprise gifts sent by user in last 24 hours
+     *
+     * @param  int  $userId
+     * @return int
+     */
+    public function countSurpriseGiftsSent24h($userId)
+    {
+        return UserGiftModel::join('items', 'user_gifts.items__id', '=', 'items._id')
+            ->where('user_gifts.from_users__id', $userId)
+            ->where('items.title', 'LIKE', '%surprise%')
+            ->where('user_gifts.created_at', '>=', now()->subHours(24))
+            ->count();
+    }
 }

@@ -1541,18 +1541,28 @@ class UserEngine extends BaseEngine
             return $this->engineReaction(2, ['show_message' => true], __tr('User does not exists.'));
         }
 
-        // Check if user is blocked
-        $blockMeUser = $this->userRepository->fetchBlockMeUser($user->_id);
-        if (!__isEmpty($blockMeUser) && !__isEmpty($blockMeUser['_id'])) {
-            return $this->engineReaction(4, ['show_message' => true], __tr('This action is prohibited for this user.'));
-        }
-
-        // Fetch gift data
+        // Fetch gift data first to validate surprise gift limit
         $giftData = $this->manageItemRepository->fetch($inputData['selected_gift']);
 
         // if gift not exists
         if (__isEmpty($giftData)) {
             return $this->engineReaction(2, ['show_message' => true], __tr('Gift data does not exists.'));
+        }
+
+        // Initialize validation services
+        $validationService = app(\App\Services\GiftValidationService::class);
+
+        // Run all validations including surprise gift check
+        $giftTitle = $giftData->title ?? null;
+        $validation = $validationService->validateAll(getUserID(), $user->_id, $giftTitle);
+
+        if (!$validation['valid']) {
+            // Return specific error based on validation code
+            $httpCode = $validation['code'] === 'AGREEMENT_REQUIRED' ? 3 : 2;
+            return $this->engineReaction($httpCode, [
+                'show_message' => true,
+                'validation_code' => $validation['code'] ?? null
+            ], $validation['message']);
         }
 
         // Get gift price in USD (using normal_price field which we'll update to USD)
@@ -1584,7 +1594,7 @@ class UserEngine extends BaseEngine
             'recipient_user_id' => $user->_id,
             'recipient_name' => $user->first_name . ' ' . $user->last_name,
             'gift_id' => $giftData->_id,
-            'gift_name' => $giftData->name,
+            'gift_name' => $giftData->title,
             'is_private' => isset($inputData['isPrivateGift']) && $inputData['isPrivateGift'] == 'on' ? '1' : '0',
         ], $customerResult['customer_id']);
 
@@ -1592,6 +1602,21 @@ class UserEngine extends BaseEngine
             return $this->engineReaction(2, [
                 'show_message' => true,
             ], __tr('Payment initialization failed. Please try again.'));
+        }
+
+        // Process message data
+        $messageType = isset($inputData['message_type']) ? $inputData['message_type'] : 'none';
+        $messageContent = null;
+        $icebreakerId = null;
+
+        if ($messageType === 'icebreaker' && isset($inputData['icebreaker_id'])) {
+            $icebreakerId = $inputData['icebreaker_id'];
+        } elseif ($messageType === 'custom' && isset($inputData['custom_note'])) {
+            $messageContent = trim($inputData['custom_note']);
+            // Limit to 200 characters
+            if (strlen($messageContent) > 200) {
+                $messageContent = substr($messageContent, 0, 200);
+            }
         }
 
         // Store preliminary gift record with pending status
@@ -1610,6 +1635,11 @@ class UserEngine extends BaseEngine
             'platform_fee' => $paymentSplits['platform_fee'],
             'stripe_fee' => $paymentSplits['stripe_fee'],
             'credit_wallet_transactions__id' => null, // No longer using credits
+            // Message fields
+            'message_type' => $messageType,
+            'message_content' => $messageContent,
+            'icebreaker_id' => $icebreakerId,
+            'recipient_action' => 'pending',
         ];
 
         // Store gift with pending payment
@@ -1625,6 +1655,49 @@ class UserEngine extends BaseEngine
         }
 
         return $this->engineReaction(2, ['show_message' => true], __tr('Gift not sent. Please try again.'));
+    }
+
+    /**
+     * Process gift agreement acceptance
+     *
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function processAcceptGiftAgreement()
+    {
+        $userId = getUserID();
+        $user = $this->userRepository->fetchByID($userId);
+
+        if (__isEmpty($user)) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('User not found.'));
+        }
+
+        // Update user record with agreement timestamp
+        $user->gift_agreement_accepted_at = now();
+
+        if ($user->save()) {
+            return $this->engineReaction(1, [
+                'accepted_at' => $user->gift_agreement_accepted_at
+            ], __tr('Agreement accepted successfully.'));
+        }
+
+        return $this->engineReaction(2, ['show_message' => true], __tr('Failed to accept agreement.'));
+    }
+
+    /**
+     * Prepare icebreakers list
+     *
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function prepareIcebreakers()
+    {
+        $icebreakers = \App\Yantrana\Components\User\Models\GiftIcebreakerModel::active()
+            ->select('id', 'message')
+            ->get()
+            ->toArray();
+
+        return $this->engineReaction(1, [
+            'icebreakers' => $icebreakers
+        ]);
     }
 
     /**
