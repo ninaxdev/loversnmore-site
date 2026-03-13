@@ -1701,6 +1701,58 @@ class UserEngine extends BaseEngine
     }
 
     /**
+     * Process Gift Validation - Check if user can send gift
+     *
+     * @param array $inputData
+     * @param string $sendUserUId
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function processValidateGift($inputData, $sendUserUId)
+    {
+        // Fetch recipient user
+        $user = $this->userRepository->fetch($sendUserUId);
+
+        // if user not exists
+        if (__isEmpty($user)) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('User does not exists.'));
+        }
+
+        // Check if gift is selected
+        if (!isset($inputData['selected_gift'])) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('Please select a gift.'));
+        }
+
+        // Fetch gift data to validate surprise gift limit
+        $giftData = $this->manageItemRepository->fetch($inputData['selected_gift']);
+
+        // if gift not exists
+        if (__isEmpty($giftData)) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('Gift data does not exists.'));
+        }
+
+        // Initialize validation services
+        $validationService = app(\App\Services\GiftValidationService::class);
+
+        // Run all validations including surprise gift check
+        $giftTitle = $giftData->title ?? null;
+        $validation = $validationService->validateAll(getUserID(), $user->_id, $giftTitle);
+
+        if (!$validation['valid']) {
+            // Return specific error based on validation code
+            $httpCode = $validation['code'] === 'AGREEMENT_REQUIRED' ? 3 : 2;
+            return $this->engineReaction($httpCode, [
+                'show_message' => true,
+                'validation_code' => $validation['code'] ?? null
+            ], $validation['message']);
+        }
+
+        // Validation passed
+        return $this->engineReaction(1, [
+            'can_send' => true
+        ], __tr('Gift validation passed.'));
+    }
+
+    /**
      * Complete Stripe Gift Purchase (called by webhook after payment succeeds)
      *
      * @param string $paymentIntentId

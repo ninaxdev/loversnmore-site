@@ -1388,9 +1388,9 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 
 	<!-- send gift Modal-->
 	<div class="modal fade" id="lwSendGiftDialog" tabindex="-1" role="dialog" aria-labelledby="sendGiftModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-			<div class="modal-content" style="border-radius: 20px; font-family: 'Poppins', sans-serif;">
-				<div class="modal-header" style="border-bottom: 1px solid #F0F0F0;">
+		<div class="modal-dialog modal-lg" role="document" style="margin-top: 30px; margin-bottom: 30px;">
+			<div class="modal-content" style="border-radius: 20px; font-family: 'Poppins', sans-serif; max-height: calc(100vh - 60px); display: flex; flex-direction: column;">
+				<div class="modal-header" style="border-bottom: 1px solid #F0F0F0; flex-shrink: 0;">
 										<div>
 						<h5 class="modal-title font-weight-bold mb-1" id="sendGiftModalLabel" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 20px;">{{ __tr('Send Gift') }}</h5>
 						<small class="text-muted" style="font-family: 'Poppins', sans-serif; font-size: 14px;">{{ __tr('Select a gift and pay securely with card') }}</small>
@@ -1406,9 +1406,9 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 					<span id="lwGiftPaymentErrorMessage"></span>
 									</div>
 				<!-- / insufficient balance error message -->
-				<form id="lwSendGiftForm" method="post" action="{{ route('user.write.send_gift', ['sendUserUId' => $userData['userUId']]) }}">
+				<form id="lwSendGiftForm" method="post" action="{{ route('user.write.send_gift', ['sendUserUId' => $userData['userUId']]) }}" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
 					@csrf
-					<div class="modal-body p-4">
+					<div class="modal-body p-4" style="overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch;">
 						<!-- Gift Selection Grid -->
 						<div class="row" data-toggle="buttons">
 							@foreach($giftListData as $key => $gift)
@@ -1507,7 +1507,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 					<!-- /Stripe Card Payment Section -->
 					</div>
 					<!-- modal footer -->
-					<div class="modal-footer" style="border-top: 1px solid #F0F0F0; padding: 16px 24px;">
+					<div class="modal-footer" style="border-top: 1px solid #F0F0F0; padding: 16px 24px; flex-shrink: 0;">
 						<button class="btn px-4 py-2" id="lwCloseSendGiftDialog" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #5B3E96; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 9999px; transition: all 0.2s ease;">{{ __tr('Cancel') }}</button>
 						<button type="submit" class="btn px-5 py-2" id="lwSendGiftBtn" style="background-color: #5B3E96; color: white; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 9999px; border: none; transition: all 0.2s ease;">{{ __tr('Send Gift') }}</button>
 					</div>
@@ -1558,6 +1558,63 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		</div>
 	</div>
 	<!-- /Gift Agreement Modal -->
+
+	<!-- Pre-Send Confirmation Modal -->
+	<div class="modal fade" id="lwPreSendConfirmationDialog" tabindex="-1" role="dialog" aria-labelledby="preSendConfirmationLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content" style="border-radius: 20px; font-family: 'Poppins', sans-serif;">
+				<div class="modal-header" style="border-bottom: none; padding: 24px 24px 16px;">
+					<h5 class="modal-title" id="preSendConfirmationLabel" style="color: #5B3E96; font-weight: 700; font-size: 20px;">
+						A Gift Is a Gesture
+					</h5>
+				</div>
+				<div class="modal-body" style="padding: 0 24px 24px;">
+					<p style="font-size: 15px; color: #6B7280; line-height: 1.6; margin-bottom: 20px;">
+						A thoughtful way to say hello — no reply required.
+					</p>
+
+					<ul style="list-style: none; padding-left: 0; margin-bottom: 24px;">
+						<li style="font-size: 14px; color: #374151; line-height: 2; padding-left: 24px; position: relative;">
+							<span style="position: absolute; left: 0; color: #5B3E96;">•</span>
+							Delivered instantly
+						</li>
+						<li style="font-size: 14px; color: #374151; line-height: 2; padding-left: 24px; position: relative;">
+							<span style="position: absolute; left: 0; color: #5B3E96;">•</span>
+							Private and respectful
+						</li>
+						<li style="font-size: 14px; color: #374151; line-height: 2; padding-left: 24px; position: relative;">
+							<span style="position: absolute; left: 0; color: #5B3E96;">•</span>
+							No pressure to respond
+						</li>
+						<li style="font-size: 14px; color: #374151; line-height: 2; padding-left: 24px; position: relative;">
+							<span style="position: absolute; left: 0; color: #5B3E96;">•</span>
+							Blocking always available
+						</li>
+					</ul>
+
+					<div class="custom-control custom-checkbox" style="margin-bottom: 16px; padding-left: 28px;">
+						<input type="checkbox" class="custom-control-input" id="lwPreSendConfirmCheck">
+						<label class="custom-control-label" for="lwPreSendConfirmCheck" style="font-size: 14px; color: #374151; font-weight: 500; cursor: pointer; line-height: 1.5;">
+							I understand this is a gesture, not a guaranteed response
+						</label>
+					</div>
+
+					<p style="font-size: 12px; color: #9CA3AF; line-height: 1.5; margin-top: 16px; margin-bottom: 0;">
+						Gifts are delivered instantly and cannot be refunded once sent.
+					</p>
+				</div>
+				<div class="modal-footer" style="border-top: 1px solid #F3F4F6; padding: 16px 24px; justify-content: space-between;">
+					<button type="button" class="btn btn-light" id="lwCancelPreSendBtn" style="padding: 10px 24px; border-radius: 20px; font-weight: 500; font-size: 14px;">
+						Cancel
+					</button>
+					<button type="button" class="btn" id="lwContinuePreSendBtn" style="background-color: #5B3E96; color: white; padding: 10px 32px; border-radius: 20px; font-weight: 500; font-size: 14px; border: none; opacity: 0.5; cursor: not-allowed;" disabled>
+						Continue to Payment
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Pre-Send Confirmation Modal -->
 
 	<!-- User block Confirmation text html -->
 	<div id="lwBlockUserConfirmationText" style="display: none;">
@@ -1972,15 +2029,42 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	// Gift card selection handler
 	$(document).on('click', '.lw-gift-card', function() {
 		console.log('Gift card clicked'); // Debug log
+		var $clickedCard = $(this);
+		var selectedGiftId = $clickedCard.find('input[type="radio"]').val();
+
 		// Remove active state from all cards
 		$('.lw-gift-card').removeClass('lw-gift-card-active');
 		// Add active state to clicked card
-		$(this).addClass('lw-gift-card-active');
+		$clickedCard.addClass('lw-gift-card-active');
 		// Check the radio button
-		$(this).find('input[type="radio"]').prop('checked', true);
-		// Show Stripe card section when a gift is selected
-		console.log('Showing card section'); // Debug log
-		$('#lwStripeCardSection').slideDown();
+		$clickedCard.find('input[type="radio"]').prop('checked', true);
+
+		// Validate gift selection before showing payment form
+		__DataRequest.post('{{ route('user.write.validate_gift', ['sendUserUId' => $userData['userUId']]) }}', {
+			selected_gift: selectedGiftId
+		}, function(response) {
+			if (response.reaction == 1) {
+				// Validation passed - show Stripe card section
+				console.log('Validation passed, showing card section'); // Debug log
+				$('#lwStripeCardSection').slideDown();
+			} else if (response.reaction == 3) {
+				// Agreement required - show agreement modal
+				$('#lwSendGiftDialog').modal('hide');
+				$('#lwGiftAgreementDialog').modal('show');
+			} else {
+				// Validation failed - show error and remove selection
+				$clickedCard.removeClass('lw-gift-card-active');
+				$clickedCard.find('input[type="radio"]').prop('checked', false);
+				$('#lwStripeCardSection').hide();
+
+				// Show error message
+				if (response.data && response.data.message) {
+					showErrorMessage(response.data.message);
+				} else {
+					showErrorMessage('{{ __tr("Unable to send this gift. Please try another one.") }}');
+				}
+			}
+		});
 	});
 
 	// Private gift toggle handler
@@ -2035,31 +2119,122 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		}
 	});
 
-	// Handle form submission with Stripe
-	var giftFormProcessing = false;
+	// Mobile-specific: Scroll to Stripe card element when it becomes visible
+	var cardSectionObserver = new MutationObserver(function(mutations) {
+		mutations.forEach(function(mutation) {
+			if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+				var cardSection = document.getElementById('lwStripeCardSection');
+				if (cardSection && cardSection.style.display !== 'none') {
+					// Check if mobile
+					if (window.innerWidth <= 768) {
+						setTimeout(function() {
+							cardSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+						}, 350); // Wait for animation to complete
+					}
+				}
+			}
+		});
+	});
 
-	// Unbind any existing submit handlers added by the framework
-	$('#lwSendGiftForm').off('submit');
+	var cardSectionElement = document.getElementById('lwStripeCardSection');
+	if (cardSectionElement) {
+		cardSectionObserver.observe(cardSectionElement, {
+			attributes: true,
+			attributeFilter: ['style']
+		});
+	}
 
-	// Add our custom handler
-	$('#lwSendGiftForm').on('submit', function(e) {
-		e.preventDefault();
-		e.stopImmediatePropagation(); // Stop other handlers
-		console.log('Custom submit handler triggered'); // Debug log
-		if (giftFormProcessing) {
-			return false;
+	// Mobile: Ensure modal scrolls properly on iOS when keyboard appears
+	if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+		$('#lwSendGiftDialog').on('shown.bs.modal', function() {
+			var $modalBody = $(this).find('.modal-body');
+			$modalBody.css({
+				'-webkit-overflow-scrolling': 'touch',
+				'overflow-y': 'auto'
+			});
+		});
+	}
+
+	// Mobile: Adjust modal position to account for bottom nav
+	if (window.innerWidth <= 768) {
+		$('#lwSendGiftDialog, #lwPreSendConfirmationDialog, #lwGiftAgreementDialog').on('shown.bs.modal', function() {
+			var $modal = $(this);
+			var $modalDialog = $modal.find('.modal-dialog');
+
+			// Check if bottom nav exists
+			var hasBottomNav = $('nav.fixed.bottom-0').length > 0;
+
+			if (hasBottomNav) {
+				// Ensure modal doesn't overlap with bottom nav
+				$modalDialog.css({
+					'margin-bottom': '0',
+					'padding-bottom': '0'
+				});
+
+				// Prevent body scroll when modal is open
+				$('body').css('overflow', 'hidden');
+			}
+		});
+
+		$('#lwSendGiftDialog, #lwPreSendConfirmationDialog, #lwGiftAgreementDialog').on('hidden.bs.modal', function() {
+			// Restore body scroll
+			$('body').css('overflow', '');
+		});
+
+		// Handle keyboard appearance on mobile
+		var originalHeight = window.innerHeight;
+		$(window).on('resize', function() {
+			if (window.innerWidth <= 768) {
+				var currentHeight = window.innerHeight;
+				var diff = originalHeight - currentHeight;
+
+				// Keyboard appeared (height decreased by more than 150px)
+				if (diff > 150) {
+					$('.modal-dialog').css('max-height', currentHeight + 'px');
+				} else {
+					// Keyboard disappeared
+					$('.modal-dialog').css('max-height', '');
+				}
+			}
+		});
+	}
+
+	// Pre-Send Confirmation Modal handlers
+	$('#lwPreSendConfirmCheck').on('change', function() {
+		var isChecked = $(this).is(':checked');
+		var $continueBtn = $('#lwContinuePreSendBtn');
+
+		if (isChecked) {
+			$continueBtn.prop('disabled', false);
+			$continueBtn.css({
+				'opacity': '1',
+				'cursor': 'pointer'
+			});
+		} else {
+			$continueBtn.prop('disabled', true);
+			$continueBtn.css({
+				'opacity': '0.5',
+				'cursor': 'not-allowed'
+			});
 		}
+	});
 
-		// Check if a gift is selected
-		var selectedGift = $('input[name="selected_gift"]:checked').val();
-		if (!selectedGift) {
-			$('#lwGiftPaymentErrorMessage').text('{{ __tr("Please select a gift") }}');
-			$('#lwGiftPaymentErrorText').slideDown();
-			return false;
-		}
+	$('#lwCancelPreSendBtn').on('click', function() {
+		$('#lwPreSendConfirmationDialog').modal('hide');
+	});
 
-		// Disable submit button
-		giftFormProcessing = true;
+	// Reset modal when hidden
+	$('#lwPreSendConfirmationDialog').on('hidden.bs.modal', function() {
+		$('#lwPreSendConfirmCheck').prop('checked', false);
+		$('#lwContinuePreSendBtn').prop('disabled', true).css({
+			'opacity': '0.5',
+			'cursor': 'not-allowed'
+		});
+	});
+
+	// Store payment processing function for use after confirmation
+	var processGiftPayment = function() {
+		console.log('Processing gift payment...'); // Debug log
 		var submitBtn = $('#lwSendGiftBtn');
 		var originalText = submitBtn.html();
 		submitBtn.html('{{ __tr("Processing...") }}').prop('disabled', true);
@@ -2082,7 +2257,10 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		// Create Payment Intent on backend first
 		var formData = {
 			selected_gift: $('input[name="selected_gift"]:checked').val(),
-			isPrivateGift: $('#isPrivateCheck').is(':checked') ? 'on' : 'off'
+			isPrivateGift: $('#isPrivateCheck').is(':checked') ? 'on' : 'off',
+			message_type: $('input[name="message_type"]:checked').val(),
+			icebreaker_id: $('#lwIcebreakerSelect').val(),
+			custom_note: $('#lwCustomNoteText').val()
 		};
 		console.log('Sending gift payment request...', formData); // Debug log
 		console.log('Card section visible?', $('#lwStripeCardSection').is(':visible')); // Debug log
@@ -2184,6 +2362,57 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				giftFormProcessing = false;
 			}
 		});
+	};
+
+	// Continue button handler - triggers actual payment after confirmation
+	$('#lwContinuePreSendBtn').on('click', function() {
+		// Hide confirmation modal
+		$('#lwPreSendConfirmationDialog').modal('hide');
+
+		// Reset checkbox for next time
+		setTimeout(function() {
+			$('#lwPreSendConfirmCheck').prop('checked', false);
+			$('#lwContinuePreSendBtn').prop('disabled', true).css({
+				'opacity': '0.5',
+				'cursor': 'not-allowed'
+			});
+		}, 500);
+
+		// Process the payment
+		processGiftPayment();
+	});
+
+	// Handle form submission with Stripe
+	var giftFormProcessing = false;
+
+	// Unbind any existing submit handlers added by the framework
+	$('#lwSendGiftForm').off('submit');
+
+	// Add our custom handler
+	$('#lwSendGiftForm').on('submit', function(e) {
+		e.preventDefault();
+		e.stopImmediatePropagation(); // Stop other handlers
+		console.log('Custom submit handler triggered'); // Debug log
+		if (giftFormProcessing) {
+			return false;
+		}
+
+		// Check if a gift is selected
+		var selectedGift = $('input[name="selected_gift"]:checked').val();
+		if (!selectedGift) {
+			$('#lwGiftPaymentErrorMessage').text('{{ __tr("Please select a gift") }}');
+			$('#lwGiftPaymentErrorText').slideDown();
+			return false;
+		}
+
+		// Show pre-send confirmation modal instead of processing immediately
+		giftFormProcessing = true;
+		$('#lwPreSendConfirmationDialog').modal('show');
+
+		// Reset processing flag after modal is shown
+		setTimeout(function() {
+			giftFormProcessing = false;
+		}, 500);
 
 		return false;
 	});
@@ -2247,6 +2476,242 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			/* Placeholder color */
 			#lwCustomNoteText::placeholder {
 				color: #C4B5FD !important;
+			}
+
+			/* Mobile-specific styles for gift modal */
+			@media (max-width: 768px) {
+				#lwSendGiftDialog .modal-dialog {
+					margin: 0 !important;
+					max-width: 100% !important;
+					height: calc(100vh - 64px) !important; /* Subtract bottom nav height */
+					max-height: calc(100vh - 64px) !important;
+				}
+
+				#lwSendGiftDialog .modal-content {
+					height: 100% !important;
+					max-height: 100% !important;
+					border-radius: 0 !important;
+					margin: 0 !important;
+				}
+
+				#lwSendGiftDialog .modal-header {
+					padding: 16px !important;
+					position: sticky;
+					top: 0;
+					z-index: 10;
+					background: white;
+				}
+
+				#lwSendGiftDialog .modal-body {
+					padding: 16px !important;
+					padding-bottom: 24px !important; /* Extra padding at bottom */
+				}
+
+				#lwSendGiftDialog .modal-footer {
+					padding: 12px 16px !important;
+					position: sticky;
+					bottom: 0;
+					background: white;
+					z-index: 10;
+					box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+				}
+
+				/* Ensure modal is positioned correctly */
+				#lwSendGiftDialog .modal {
+					padding: 0 !important;
+				}
+
+				/* Make sure modal backdrop doesn't cover bottom nav */
+				#lwSendGiftDialog.modal.show {
+					padding-bottom: 64px !important;
+				}
+			}
+
+				/* Gift cards in mobile - 2 columns */
+				#lwSendGiftDialog .col-6 {
+					padding-left: 6px !important;
+					padding-right: 6px !important;
+				}
+
+				#lwSendGiftDialog .lw-gift-card {
+					min-height: 140px !important;
+					padding: 12px 8px !important;
+				}
+
+				#lwSendGiftDialog .lw-gift-card img {
+					width: 45px !important;
+					height: 45px !important;
+				}
+
+				#lwSendGiftDialog .lw-gift-title {
+					font-size: 12px !important;
+				}
+
+				#lwSendGiftDialog .lw-gift-price {
+					font-size: 14px !important;
+				}
+
+				/* Modal buttons in mobile */
+				#lwSendGiftDialog .modal-footer .btn {
+					font-size: 14px !important;
+					padding: 10px 20px !important;
+				}
+
+				/* Message section in mobile */
+				#lwSendGiftDialog .mt-4 {
+					margin-top: 1rem !important;
+				}
+
+				/* Stripe card element in mobile */
+				#lwStripeCardElement {
+					padding: 10px !important;
+				}
+			}
+
+			/* Very small mobile devices */
+			@media (max-width: 375px) {
+				#lwSendGiftDialog .lw-gift-card {
+					min-height: 130px !important;
+					padding: 10px 6px !important;
+				}
+
+				#lwSendGiftDialog .lw-gift-card img {
+					width: 40px !important;
+					height: 40px !important;
+				}
+
+				#lwSendGiftDialog .lw-gift-title {
+					font-size: 11px !important;
+				}
+
+				#lwSendGiftDialog .lw-gift-price {
+					font-size: 13px !important;
+				}
+			}
+
+			/* Mobile styles for Pre-Send Confirmation Modal */
+			@media (max-width: 768px) {
+				#lwPreSendConfirmationDialog .modal-dialog {
+					margin: 15px auto !important;
+					margin-bottom: 80px !important; /* Account for bottom nav */
+					max-width: calc(100% - 30px) !important;
+				}
+
+				#lwPreSendConfirmationDialog .modal-content {
+					max-height: calc(100vh - 140px) !important; /* Account for bottom nav + margins */
+				}
+
+				#lwPreSendConfirmationDialog .modal-body {
+					padding: 16px 20px !important;
+					max-height: calc(100vh - 240px) !important;
+					overflow-y: auto !important;
+				}
+
+				#lwPreSendConfirmationDialog .modal-footer {
+					flex-direction: row !important;
+					gap: 8px;
+				}
+
+				#lwPreSendConfirmationDialog .modal-footer .btn {
+					font-size: 13px !important;
+					padding: 9px 16px !important;
+				}
+
+				#lwContinuePreSendBtn {
+					padding: 9px 20px !important;
+				}
+			}
+
+			/* Mobile styles for Gift Agreement Modal */
+			@media (max-width: 768px) {
+				#lwGiftAgreementDialog .modal-dialog {
+					margin: 15px auto !important;
+					margin-bottom: 80px !important; /* Account for bottom nav */
+					max-width: calc(100% - 30px) !important;
+				}
+
+				#lwGiftAgreementDialog .modal-content {
+					max-height: calc(100vh - 140px) !important; /* Account for bottom nav + margins */
+				}
+
+				#lwGiftAgreementDialog .modal-body {
+					padding: 16px 20px !important;
+					max-height: calc(100vh - 240px) !important;
+					overflow-y: auto !important;
+				}
+
+				#lwGiftAgreementDialog .modal-footer {
+					padding: 12px 20px 20px !important;
+				}
+
+				#lwGiftAgreementDialog .modal-footer .btn {
+					padding: 10px 32px !important;
+				}
+			}
+
+			/* Touch optimization for mobile */
+			@media (max-width: 768px) {
+				.lw-gift-card {
+					-webkit-tap-highlight-color: rgba(91, 62, 150, 0.1);
+					touch-action: manipulation;
+				}
+
+				.lw-icebreaker-card {
+					-webkit-tap-highlight-color: rgba(91, 62, 150, 0.1);
+					touch-action: manipulation;
+				}
+
+				/* Make sure modal backdrop doesn't interfere with scrolling */
+				.modal-open {
+					overflow: hidden !important;
+				}
+
+				.modal {
+					overflow-x: hidden;
+					overflow-y: auto;
+				}
+
+				/* Ensure bottom nav stays above modal backdrop */
+				nav.fixed.bottom-0 {
+					z-index: 100000 !important; /* Higher than modal backdrop (1040) */
+				}
+
+				/* Adjust modal z-index to be below bottom nav but above backdrop */
+				.modal-dialog {
+					z-index: 99998 !important;
+				}
+
+				/* Improve form inputs on mobile */
+				.modal input[type="text"],
+				.modal input[type="email"],
+				.modal textarea {
+					font-size: 16px !important; /* Prevents zoom on iOS */
+				}
+
+				/* Better spacing for radio buttons on mobile */
+				.custom-control {
+					margin-bottom: 12px !important;
+				}
+
+				.custom-control-label {
+					padding-left: 8px !important;
+				}
+			}
+
+			/* Landscape orientation fixes */
+			@media (max-width: 768px) and (orientation: landscape) {
+				#lwSendGiftDialog .modal-dialog {
+					height: calc(100vh - 64px) !important; /* Bottom nav height */
+					max-height: calc(100vh - 64px) !important;
+				}
+
+				#lwSendGiftDialog .modal-content {
+					max-height: 100% !important;
+				}
+
+				#lwSendGiftDialog .modal-body {
+					max-height: calc(100% - 140px) !important; /* Header + Footer approximate height */
+				}
 			}
 		`)
 		.appendTo('head');

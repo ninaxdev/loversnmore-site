@@ -401,6 +401,12 @@ Route::group([
                     'uses' => 'UserController@getIcebreakers',
                 ]);
 
+                // post Validate gift sending
+                Route::post('/{sendUserUId}/validate-gift', [
+                    'as' => 'user.write.validate_gift',
+                    'uses' => 'UserController@validateGiftSending',
+                ]);
+
                 // post report user
                 Route::post('/{sendUserUId}/report-user', [
                     'as' => 'user.write.report_user',

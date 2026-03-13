@@ -677,6 +677,22 @@ class UserController extends BaseController
     }
 
     /**
+     * Validate if user can send a gift.
+     *
+     * @param object Request $request
+     * @param string $sendUserUId
+     * @return json object
+     *---------------------------------------------------------------- */
+    public function validateGiftSending(Request $request, $sendUserUId)
+    {
+        $processReaction = $this->userEngine->processValidateGift($request->all(), $sendUserUId);
+
+        return $this->responseAction(
+            $this->processResponse($processReaction, [], [], true)
+        );
+    }
+
+    /**
      * Handle report user request.
      *
      * @param object ReportUserRequest $request
