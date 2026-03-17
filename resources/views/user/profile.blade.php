@@ -343,13 +343,18 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		</h2>
 				@if(!$isOwnProfile)
     <!-- Send Gift Button -->
-    <button
-        data-toggle="modal"
-        data-target="#lwSendGiftDialog"
-        class="flex items-center gap-2 px-6 py-3 bg-[#F4E9FF] text-[#4F1DA1] rounded-full font-medium shadow-md active:scale-95">
-        <i class="fa fa-gift"></i>
-        {{ __tr('Gift') }}
-    </button>	
+    <div class="flex flex-col items-center gap-1 mt-3">
+        <button
+            data-toggle="modal"
+            data-target="#lwSendGiftDialog"
+            class="flex items-center gap-2 px-7 py-3.5 bg-[#F4E9FF] text-[#4F1DA1] rounded-full font-medium shadow-lg active:scale-95 transition-all">
+            <i class="fa fa-gift text-lg"></i>
+            {{ __tr('Send Gift') }}
+        </button>
+        <p class="text-xs text-gray-500 text-center mt-1" style="font-family: 'Poppins', sans-serif;">
+            {{ __tr('Send a thoughtful gesture to say hello') }}
+        </p>
+    </div>
 @endif
 	</div>
 
@@ -747,7 +752,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
                                 <br> {{ __tr('Message') }}</a>
                             <!-- send gift button -->
                             <a href title="{{ __tr('Send Gift') }}" data-toggle="modal" data-target="#lwSendGiftDialog" class="btn-link btn"><i class="fa fa-gift fa-3x" aria-hidden="true"></i>
-                                <br> {{ __tr('Gift') }}
+                                <br> {{ __tr('Send Gift') }}
                             </a>
                             <!-- /send gift button -->
                         </div>
@@ -828,7 +833,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 
 				<!-- send gift button -->
 				<a href title="{{ __tr('Send Gift') }}" data-toggle="modal" data-target="#lwSendGiftDialog" class="btn-link btn"><i class="fa fa-gift fa-3x" aria-hidden="true"></i>
-					<br> {{ __tr('Gift') }}
+					<br> {{ __tr('Send Gift') }}
 				</a>
 				<!-- /send gift button -->
 			</div>
@@ -1413,7 +1418,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 						<div class="row" data-toggle="buttons">
 							@foreach($giftListData as $key => $gift)
 							<div class="col-6 col-md-3 mb-3">
-								<label class="lw-gift-card w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-center" id="lwSendGiftRadioBtn_{{ $gift['_uid'] }}" style="cursor: pointer; background-color: #F8F4FF; border: 2px solid #E9D8FD; border-radius: 16px; transition: all 0.3s ease; position: relative; min-height: 160px;">
+								<label class="lw-gift-card w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-center" id="lwSendGiftRadioBtn_{{ $gift['_uid'] }}" style="cursor: pointer; background: linear-gradient(135deg, #F8F4FF 0%, #F0E6FF 100%); border: 2px solid #E9D8FD; border-radius: 16px; transition: all 0.3s ease; position: relative; min-height: 200px;">
 									<input type="radio" value="{{ $gift['_uid'] }}" name="selected_gift" style="position: absolute; opacity: 0;" />
 									@if(stripos($gift['title'], 'dinner') !== false)
 										<div style="position: absolute; top: 6px; right: 6px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: white; font-size: 8px; font-weight: 700; padding: 2px 5px; border-radius: 6px; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 0.3px;">
@@ -1424,9 +1429,24 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 											✨ Special
 										</div>
 									@endif
-									<img class="lw-lazy-img mb-2" data-src="{{ imageOrNoImageAvailable($gift['gift_image_url']) }}" style="width: 60px; height: 60px; object-fit: contain;" />
-									<div class="lw-gift-title font-weight-semibold mb-1" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 14px;">
+									<img class="lw-lazy-img mb-3 lw-gift-illustration" data-src="{{ imageOrNoImageAvailable($gift['gift_image_url']) }}" style="width: 120px; height: 120px; object-fit: contain;" />
+									<div class="lw-gift-title font-weight-semibold mb-2" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 14px;">
 										{{ $gift['title'] ?? 'Gift' }}
+									</div>
+									<div class="lw-gift-descriptor mb-2" style="color: #6B7280; font-family: 'Poppins', sans-serif; font-size: 12px; font-style: italic;">
+										@if(stripos($gift['title'], 'coffee') !== false)
+											{{ __tr('A casual hello') }}
+										@elseif(stripos($gift['title'], 'cocktail') !== false)
+											{{ __tr('A playful toast') }}
+										@elseif(stripos($gift['title'], 'experience') !== false)
+											{{ __tr('Something fun to share') }}
+										@elseif(stripos($gift['title'], 'dinner') !== false)
+											{{ __tr('A real date gesture') }}
+										@elseif(stripos($gift['title'], 'surprise') !== false)
+											{{ __tr('A thoughtful note') }}
+										@else
+											{{ __tr('A sweet gesture') }}
+										@endif
 									</div>
 									<div class="lw-gift-price font-weight-bold" style="color: #5B3E96; font-family: 'Poppins', sans-serif; font-size: 16px;">{{ $gift['formattedPrice'] }}</div>
 								</label>
@@ -2428,8 +2448,25 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			}
 			.lw-gift-card-active {
 				border-color: #5B3E96 !important;
-				background-color: #F3E8FF !important;
-				box-shadow: 0 4px 12px rgba(91, 62, 150, 0.2);
+				background: linear-gradient(135deg, #F3E8FF 0%, #E9D8FD 100%) !important;
+				box-shadow: 0 4px 12px rgba(91, 62, 150, 0.2), 0 0 30px rgba(147, 51, 234, 0.3);
+				animation: pulse-glow 2s ease-in-out infinite;
+			}
+			@keyframes pulse-glow {
+				0%, 100% {
+					box-shadow: 0 4px 12px rgba(91, 62, 150, 0.2), 0 0 30px rgba(147, 51, 234, 0.3);
+				}
+				50% {
+					box-shadow: 0 4px 12px rgba(91, 62, 150, 0.3), 0 0 40px rgba(147, 51, 234, 0.5);
+				}
+			}
+			/* Glow/highlight behind gift illustration */
+			.lw-gift-illustration {
+				position: relative;
+				filter: drop-shadow(0 0 20px rgba(147, 51, 234, 0.15));
+			}
+			.lw-gift-card-active .lw-gift-illustration {
+				filter: drop-shadow(0 0 25px rgba(147, 51, 234, 0.4));
 			}
 			.lw-gift-card-active::after {
 				content: '✓';
@@ -2539,8 +2576,8 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				}
 
 				#lwSendGiftDialog .lw-gift-card img {
-					width: 45px !important;
-					height: 45px !important;
+					width: 60px !important;
+					height: 60px !important;
 				}
 
 				#lwSendGiftDialog .lw-gift-title {
@@ -2576,8 +2613,8 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				}
 
 				#lwSendGiftDialog .lw-gift-card img {
-					width: 40px !important;
-					height: 40px !important;
+					width: 55px !important;
+					height: 55px !important;
 				}
 
 				#lwSendGiftDialog .lw-gift-title {

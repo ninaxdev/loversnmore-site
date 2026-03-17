@@ -34,15 +34,15 @@
 }
 
 .lw-icebreaker-card-bg-1 {
-    background: linear-gradient(135deg, #E9D8FD 0%, #D6BCFA 100%);
+    background: linear-gradient(135deg, #efeaff 0%, #D9CCFF 100%);
 }
 
 .lw-icebreaker-card-bg-2 {
-    background: linear-gradient(135deg, #FED7E2 0%, #FBB6CE 100%);
+    background: linear-gradient(135deg, #feeff7 0%, #ECDFD7 100%);
 }
 
 .lw-icebreaker-card-bg-3 {
-    background: linear-gradient(135deg, #FEEBC8 0%, #FBD38D 100%);
+    background: linear-gradient(135deg, #fee9f7 0%, #FFD6E8 100%);
 }
 
 .lw-icebreaker-statement {
@@ -91,7 +91,16 @@
 }
 
 .lw-icebreaker-select-btn.selected {
-    background: linear-gradient(135deg, #C53E8D 0%, #D6589B 100%);
+    opacity: 0.9;
+}
+
+/* Pink button for card 3 */
+.lw-icebreaker-select-btn.btn-pink {
+    background: linear-gradient(135deg, #C084B7 0%, #B872A8 100%);
+}
+
+.lw-icebreaker-select-btn.btn-pink:hover {
+    box-shadow: 0 5px 15px rgba(192, 132, 183, 0.4);
 }
 
 .lw-pagination-dot {
@@ -152,6 +161,7 @@
             const statement = messageParts[0] || '';
             const question = messageParts[1] || icebreaker.message;
             const bgClass = bgClasses[index % bgClasses.length];
+            const btnClass = (index % 3 === 2) ? 'lw-icebreaker-select-btn btn-pink' : 'lw-icebreaker-select-btn';
 
             const $card = $(`
                 <div class="lw-icebreaker-card-item ${bgClass}" data-icebreaker-id="${icebreaker.id}" data-index="${index}">
@@ -160,7 +170,7 @@
                         <div class="lw-icebreaker-divider"></div>
                         <div class="lw-icebreaker-question">${question}</div>
                     </div>
-                    <button type="button" class="lw-icebreaker-select-btn" data-icebreaker-id="${icebreaker.id}">
+                    <button type="button" class="${btnClass}" data-icebreaker-id="${icebreaker.id}">
                         Select
                     </button>
                 </div>
