@@ -344,13 +344,17 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				@if(!$isOwnProfile)
     <!-- Send Gift Button -->
     <div class="flex flex-col items-center gap-1 mt-3">
-        <button
-            data-toggle="modal"
-            data-target="#lwSendGiftDialog"
-            class="flex items-center gap-2 px-7 py-3.5 bg-[#F4E9FF] text-[#4F1DA1] rounded-full font-medium shadow-lg active:scale-95 transition-all">
-            <i class="fa fa-gift text-lg"></i>
-            {{ __tr('Send Gift') }}
-        </button>
+        <div style="position: relative; display: inline-block;">
+            <!-- Radial glow behind button -->
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 150%; height: 150%; background: radial-gradient(circle, rgba(233, 216, 255, 0.15) 0%, rgba(246, 214, 240, 0.12) 50%, transparent 70%); filter: blur(25px); z-index: -1; pointer-events: none;"></div>
+            <button
+                data-toggle="modal"
+                data-target="#lwSendGiftDialog"
+                class="flex items-center gap-2 px-7 py-3.5 bg-[#F4E9FF] text-[#4F1DA1] rounded-full shadow-lg active:scale-95 transition-all" style="font-weight: 600; position: relative; z-index: 1;">
+                <i class="fa fa-gift" style="font-size: 1.25rem;"></i>
+                {{ __tr('Send Gift') }}
+            </button>
+        </div>
         <p class="text-xs text-gray-500 text-center mt-1" style="font-family: 'Poppins', sans-serif;">
             {{ __tr('Send a thoughtful gesture to say hello') }}
         </p>
@@ -1418,7 +1422,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 						<div class="row" data-toggle="buttons">
 							@foreach($giftListData as $key => $gift)
 							<div class="col-6 col-md-3 mb-3">
-								<label class="lw-gift-card w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-center" id="lwSendGiftRadioBtn_{{ $gift['_uid'] }}" style="cursor: pointer; background: linear-gradient(135deg, #F8F4FF 0%, #F0E6FF 100%); border: 2px solid #E9D8FD; border-radius: 16px; transition: all 0.3s ease; position: relative; min-height: 200px;">
+								<label class="lw-gift-card {{ stripos($gift['title'], 'dinner') !== false || stripos($gift['title'], 'surprise') !== false ? 'lw-gift-premium' : '' }} w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-center" id="lwSendGiftRadioBtn_{{ $gift['_uid'] }}" style="cursor: pointer; background: linear-gradient(to bottom, #F3EEFF 0%, #EDE6FF 100%); border: 2px solid #E9D8FD; border-radius: 16px; transition: all 0.3s ease; position: relative; min-height: 220px; box-shadow: 0 2px 8px rgba(91, 62, 150, 0.08);">
 									<input type="radio" value="{{ $gift['_uid'] }}" name="selected_gift" style="position: absolute; opacity: 0;" />
 									@if(stripos($gift['title'], 'dinner') !== false)
 										<div style="position: absolute; top: 6px; right: 6px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: white; font-size: 8px; font-weight: 700; padding: 2px 5px; border-radius: 6px; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 0.3px;">
@@ -1429,7 +1433,8 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 											✨ Special
 										</div>
 									@endif
-									<img class="lw-lazy-img mb-3 lw-gift-illustration" data-src="{{ imageOrNoImageAvailable($gift['gift_image_url']) }}" style="width: 120px; height: 120px; object-fit: contain;" />
+									<!-- Large floating illustration (60-70% of card height) -->
+									<img class="lw-lazy-img mb-3 lw-gift-illustration" data-src="{{ imageOrNoImageAvailable($gift['gift_image_url']) }}" style="width: auto; height: 140px; max-width: 100%; object-fit: contain;" />
 									<div class="lw-gift-title font-weight-semibold mb-2" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 14px;">
 										{{ $gift['title'] ?? 'Gift' }}
 									</div>
@@ -1448,10 +1453,22 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 											{{ __tr('A sweet gesture') }}
 										@endif
 									</div>
-									<div class="lw-gift-price font-weight-bold" style="color: #5B3E96; font-family: 'Poppins', sans-serif; font-size: 16px;">{{ $gift['formattedPrice'] }}</div>
+									<!-- De-emphasized price in grid -->
+									<div class="lw-gift-price" style="color: #9B8AAE; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500;">{{ $gift['formattedPrice'] }}</div>
 								</label>
 							</div>
 							@endforeach
+						</div>
+
+						<!-- Selected Gift Display (shown after selection) -->
+						<div id="lwSelectedGiftDisplay" class="mt-4 p-4 rounded-2xl" style="background: linear-gradient(135deg, #F3E8FF 0%, #E9D8FD 100%); border: 2px solid #5B3E96; display: none;">
+							<div class="text-center">
+								<p class="mb-2" style="color: #5B3E96; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">{{ __tr('Selected Gift') }}</p>
+								<div class="d-flex align-items-center justify-content-center gap-3">
+									<div style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600;" id="lwSelectedGiftTitle"></div>
+									<div style="color: #5B3E96; font-family: 'Poppins', sans-serif; font-size: 18px; font-weight: 700;" id="lwSelectedGiftPrice"></div>
+								</div>
+							</div>
 						</div>
 
 						<!-- select private / public -->
@@ -1906,6 +1923,8 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		$('#lwStripeCardSection').hide();
 		cardElement.clear();
 		$('#lwGiftPaymentErrorText').hide();
+		// Hide selected gift display
+		$('#lwSelectedGiftDisplay').hide();
 		//close dialog after success
 		$('#lwSendGiftDialog').modal('hide');
 	});
@@ -2035,6 +2054,9 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		// Reset to "No message" option
 		$('input[name="message_type"][value="none"]').prop('checked', true);
 
+		// Hide selected gift display
+		$('#lwSelectedGiftDisplay').hide();
+
 		// Hide all message sections immediately
 		$('#lwIcebreakerSelector').hide();
 		$('#lwCustomNoteContainer').hide();
@@ -2058,6 +2080,13 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		$clickedCard.addClass('lw-gift-card-active');
 		// Check the radio button
 		$clickedCard.find('input[type="radio"]').prop('checked', true);
+
+		// Update selected gift display with title and price
+		var giftTitle = $clickedCard.find('.lw-gift-title').text().trim();
+		var giftPrice = $clickedCard.find('.lw-gift-price').text().trim();
+		$('#lwSelectedGiftTitle').text(giftTitle);
+		$('#lwSelectedGiftPrice').text(giftPrice);
+		$('#lwSelectedGiftDisplay').slideDown(300);
 
 		// Validate gift selection before showing payment form
 		__DataRequest.post('{{ route('user.write.validate_gift', ['sendUserUId' => $userData['userUId']]) }}', {
@@ -2349,6 +2378,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 						$('.lw-gift-toggle-thumb').css('left', '4px');
 						$('#lwStripeCardSection').hide();
 						cardElement.clear();
+						$('#lwSelectedGiftDisplay').hide();
 
 						// Close modal
 						$('#lwSendGiftDialog').modal('hide');
@@ -2442,32 +2472,54 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	$('<style>')
 		.prop('type', 'text/css')
 		.html(`
+			/* Gift card hover effect */
+			.lw-gift-card {
+				box-shadow: 0 2px 8px rgba(91, 62, 150, 0.08);
+			}
 			.lw-gift-card:hover {
-				transform: scale(1.05);
+				transform: translateY(-2px);
 				box-shadow: 0 8px 20px rgba(91, 62, 150, 0.15);
 			}
+
+			/* Premium gifts highlighting (Dinner and Surprise) */
+			.lw-gift-premium {
+				background: linear-gradient(to bottom, #F8F4FF 0%, #F0E6FF 100%) !important;
+				box-shadow: 0 4px 12px rgba(91, 62, 150, 0.12) !important;
+				transform: scale(1.02);
+			}
+			.lw-gift-premium:hover {
+				box-shadow: 0 10px 24px rgba(91, 62, 150, 0.2) !important;
+				transform: scale(1.04) translateY(-2px);
+			}
+
+			/* Enhanced selected state with thicker border, deeper shadow, and scale */
 			.lw-gift-card-active {
+				border-width: 3px !important;
 				border-color: #5B3E96 !important;
-				background: linear-gradient(135deg, #F3E8FF 0%, #E9D8FD 100%) !important;
-				box-shadow: 0 4px 12px rgba(91, 62, 150, 0.2), 0 0 30px rgba(147, 51, 234, 0.3);
+				background: linear-gradient(to bottom, #F3E8FF 0%, #E9D8FD 100%) !important;
+				box-shadow: 0 6px 16px rgba(91, 62, 150, 0.25), 0 0 35px rgba(147, 51, 234, 0.35) !important;
+				transform: scale(1.03) !important;
 				animation: pulse-glow 2s ease-in-out infinite;
 			}
 			@keyframes pulse-glow {
 				0%, 100% {
-					box-shadow: 0 4px 12px rgba(91, 62, 150, 0.2), 0 0 30px rgba(147, 51, 234, 0.3);
+					box-shadow: 0 6px 16px rgba(91, 62, 150, 0.25), 0 0 35px rgba(147, 51, 234, 0.35);
 				}
 				50% {
-					box-shadow: 0 4px 12px rgba(91, 62, 150, 0.3), 0 0 40px rgba(147, 51, 234, 0.5);
+					box-shadow: 0 6px 16px rgba(91, 62, 150, 0.35), 0 0 45px rgba(147, 51, 234, 0.5);
 				}
 			}
+
 			/* Glow/highlight behind gift illustration */
 			.lw-gift-illustration {
 				position: relative;
 				filter: drop-shadow(0 0 20px rgba(147, 51, 234, 0.15));
 			}
 			.lw-gift-card-active .lw-gift-illustration {
-				filter: drop-shadow(0 0 25px rgba(147, 51, 234, 0.4));
+				filter: drop-shadow(0 0 28px rgba(147, 51, 234, 0.45));
 			}
+
+			/* Checkmark for selected card */
 			.lw-gift-card-active::after {
 				content: '✓';
 				position: absolute;
@@ -2475,14 +2527,15 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				right: 8px;
 				background-color: #5B3E96;
 				color: white;
-				width: 24px;
-				height: 24px;
+				width: 26px;
+				height: 26px;
 				border-radius: 50%;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				font-weight: bold;
-				font-size: 14px;
+				font-size: 15px;
+				box-shadow: 0 2px 8px rgba(91, 62, 150, 0.3);
 			}
 			#lwCloseSendGiftDialog:hover {
 				opacity: 0.8;
@@ -2571,13 +2624,13 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				}
 
 				#lwSendGiftDialog .lw-gift-card {
-					min-height: 140px !important;
+					min-height: 160px !important;
 					padding: 12px 8px !important;
 				}
 
 				#lwSendGiftDialog .lw-gift-card img {
-					width: 60px !important;
-					height: 60px !important;
+					width: auto !important;
+					height: 80px; max-width: 100% !important;
 				}
 
 				#lwSendGiftDialog .lw-gift-title {
@@ -2585,7 +2638,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				}
 
 				#lwSendGiftDialog .lw-gift-price {
-					font-size: 14px !important;
+					font-size: 11px !important;
 				}
 
 				/* Modal buttons in mobile */
@@ -2608,13 +2661,13 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			/* Very small mobile devices */
 			@media (max-width: 375px) {
 				#lwSendGiftDialog .lw-gift-card {
-					min-height: 130px !important;
+					min-height: 150px !important;
 					padding: 10px 6px !important;
 				}
 
 				#lwSendGiftDialog .lw-gift-card img {
-					width: 55px !important;
-					height: 55px !important;
+					width: auto !important;
+					height: 70px; max-width: 100% !important;
 				}
 
 				#lwSendGiftDialog .lw-gift-title {
@@ -2622,7 +2675,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				}
 
 				#lwSendGiftDialog .lw-gift-price {
-					font-size: 13px !important;
+					font-size: 10px !important;
 				}
 			}
 
