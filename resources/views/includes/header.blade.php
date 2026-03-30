@@ -63,7 +63,8 @@
 		'dist/css/main-design-system.css',
 		'dist/css/messenger-styles.css',
 		'dist/css/top-bar.css',
-		'dist/css/component-patterns.css'
+		'dist/css/component-patterns.css',
+		'dist/css/global-scrollbar.css'
 	], true) ?>
     <style>
         body:not(.lw-ajax-form-ready) form.lw-ajax-form:before {

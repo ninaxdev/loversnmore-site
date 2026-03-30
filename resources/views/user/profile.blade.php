@@ -334,6 +334,61 @@
 		color: #4F1DA1;
 		font-weight: 600;
 	}
+
+	/* Gift Flow 2-Step Navigation */
+	.lw-gift-step {
+		display: none;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.lw-gift-step-active {
+		display: block !important;
+		opacity: 1;
+		animation: fadeIn 0.3s ease;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Gift Agreement Checkbox */
+	#lwGiftAgreementCheckStep2:checked + label {
+		color: #15803d;
+	}
+
+	/* Custom Scrollbar for Gift Modal */
+	#lwSendGiftDialog .modal-body {
+		scrollbar-width: thin; /* Firefox */
+		scrollbar-color: #E9D8FD #F8F4FF; /* Firefox - thumb and track */
+	}
+
+	/* Webkit browsers (Chrome, Safari, Edge) */
+	#lwSendGiftDialog .modal-body::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	#lwSendGiftDialog .modal-body::-webkit-scrollbar-track {
+		background: #F8F4FF;
+		border-radius: 10px;
+	}
+
+	#lwSendGiftDialog .modal-body::-webkit-scrollbar-thumb {
+		background: #E9D8FD;
+		border-radius: 10px;
+		transition: background 0.2s ease;
+	}
+
+	#lwSendGiftDialog .modal-body::-webkit-scrollbar-thumb:hover {
+		background: #D8B4FE;
+	}
 </style>
 @lwPushEnd
 @lwPush('footer')
@@ -1411,6 +1466,11 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 					<h5 class="modal-title" id="userReportModalLabel">{{ __tr('Abuse Report to __username__', [
 																			'__username__' => $userData['fullName']
 																		]) }}</h5>
+				<div style="text-align: center; min-width: 80px; margin-right: 10px;">
+					<div id="lwGiftStepIndicator" style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; color: #5B3E96; background: #F4E9FF; padding: 4px 12px; border-radius: 12px; display: inline-block;">
+						Step 1 of 2
+					</div>
+				</div>
 					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">×</span>
 					</button>
@@ -1444,8 +1504,13 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				<div class="modal-header" style="border-bottom: 1px solid #F0F0F0; flex-shrink: 0;">
 										<div>
 						<h5 class="modal-title font-weight-bold mb-1" id="sendGiftModalLabel" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 20px;">{{ __tr('Send Gift') }}</h5>
-						<small class="text-muted" style="font-family: 'Poppins', sans-serif; font-size: 14px;">{{ __tr('Select a gift and pay securely with card') }}</small>
+						<small class="text-muted" style="font-family: 'Poppins', sans-serif; font-size: 14px;" id="lwGiftModalSubtitle">{{ __tr('Select a gift to continue') }}</small>
 					</div>
+				<div style="text-align: center; min-width: 80px; margin-right: 10px;">
+					<div id="lwGiftStepIndicator" style="font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; color: #5B3E96; background: #F4E9FF; padding: 4px 12px; border-radius: 12px; display: inline-block;">
+						Step 1 of 2
+					</div>
+				</div>
 					<button class="close" type="button" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">×</span>
 					</button>
@@ -1460,6 +1525,8 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				<form id="lwSendGiftForm" method="post" action="{{ route('user.write.send_gift', ['sendUserUId' => $userData['userUId']]) }}" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
 					@csrf
 					<div class="modal-body p-4" style="overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch;">
+						<!-- STEP 1: Gift Selection Only -->
+						<div id="lwGiftStep1" class="lw-gift-step lw-gift-step-active">
 						<!-- Gift Selection Grid -->
 						<div class="row" data-toggle="buttons">
 							@foreach($giftListData as $key => $gift)
@@ -1513,18 +1580,12 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 							</div>
 						</div>
 
-						<!-- select private / public -->
-						<div class="d-flex align-items-center justify-content-between py-3 px-4 mt-3" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; border-radius: 16px;">
-							<span class="font-weight-semibold" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 15px;">{{ __tr('Private Gift') }}</span>
-							<div class="relative">
-								<input type="checkbox" class="sr-only peer" id="isPrivateCheck" name="isPrivateGift">
-								<div class="lw-gift-toggle w-14 h-7 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all cursor-pointer" style="background-color: #D1D5DB; width: 56px; height: 28px; position: relative;" onclick="document.getElementById('isPrivateCheck').click()">
-									<div class="lw-gift-toggle-thumb" style="position: absolute; top: 2px; left: 4px; width: 24px; height: 24px; background-color: white; border-radius: 9999px; transition: all 0.3s ease;"></div>
-								</div>
-							</div>
-						</div>
-						<!-- /select private / public -->
+												</div>
+						<!-- /STEP 1 -->
 
+						<!-- STEP 2: Message + Agreement + Payment -->
+						<div id="lwGiftStep2" class="lw-gift-step" style="display: none;">
+						<!-- Private Gift toggle REMOVED - All gifts are private by default -->
 						<!-- Message Selection Section -->
 						<div class="mt-4 p-4 !bg-purple-50 !border !border-purple-200 rounded-2xl">
 							<h6 class="font-semibold mb-3 !text-purple-700 text-base flex items-center gap-2" style="font-family: 'Poppins', sans-serif;">
@@ -1578,17 +1639,44 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 						<!-- /Message Selection Section -->
 
 					<!-- Stripe Card Payment Section -->
-					<div class="mt-4" id="lwStripeCardSection" style="display: none;">
+				<!-- Gift Agreement Section -->
+				<div class="mt-4 p-4" style="background-color: #FEF3C7; border: 2px solid #FCD34D; border-radius: 16px;">
+					<h6 class="font-semibold mb-3" style="color: #92400E; font-family: 'Poppins', sans-serif; font-size: 15px;">
+						<i class="fas fa-info-circle mr-2"></i>{{ __tr('Before You Send') }}
+					</h6>
+					<p style="font-size: 14px; color: #78350F; line-height: 1.6; margin-bottom: 16px; font-family: 'Poppins', sans-serif;">
+						{{ __tr('Sending a gift is a thoughtful way to show interest, but please understand:') }}
+					</p>
+					<ul style="font-size: 13px; color: #78350F; line-height: 1.8; padding-left: 20px; margin-bottom: 20px; font-family: 'Poppins', sans-serif;">
+						<li>{{ __tr('A gift does not guarantee a response or match') }}</li>
+						<li>{{ __tr('All gifts are private between you and the recipient') }}</li>
+						<li>{{ __tr('Recipients can choose to thank you, chat, or politely decline') }}</li>
+						<li>{{ __tr('Gifts are non-refundable once sent') }}</li>
+					</ul>
+					<div class="custom-control custom-checkbox" style="margin-bottom: 0;">
+						<input type="checkbox" class="custom-control-input" id="lwGiftAgreementCheckStep2">
+						<label class="custom-control-label" for="lwGiftAgreementCheckStep2" style="font-size: 14px; color: #78350F; cursor: pointer; font-weight: 600; font-family: 'Poppins', sans-serif;">
+							{{ __tr('I understand and agree to these terms') }}
+						</label>
+					</div>
+				</div>
+				<!-- /Gift Agreement Section -->
+
+					<div class="mt-4" id="lwStripeCardSection">
 						<label class="font-weight-semibold mb-2" style="color: #1F1638; font-family: 'Poppins', sans-serif; font-size: 15px;">{{ __tr('Payment Details') }}</label>
 						<div id="lwStripeCardElement" style="padding: 12px; background-color: white; border: 2px solid #E9D8FD; border-radius: 12px; font-family: 'Poppins', sans-serif;"></div>
 						<div id="lwStripeCardErrors" role="alert" class="text-danger mt-2" style="font-size: 13px; font-family: 'Poppins', sans-serif;"></div>
 					</div>
 					<!-- /Stripe Card Payment Section -->
+						</div>
+						<!-- /STEP 2 -->
 					</div>
 					<!-- modal footer -->
 					<div class="modal-footer" style="border-top: 1px solid #F0F0F0; padding: 16px 24px; flex-shrink: 0;">
+						<button class="btn px-4 py-2" id="lwBackGiftStepBtn" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #5B3E96; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 9999px; transition: all 0.2s ease; display: none;"><i class="fas fa-arrow-left mr-2"></i>{{ __tr('Back') }}</button>
 						<button class="btn px-4 py-2" id="lwCloseSendGiftDialog" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; color: #5B3E96; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 9999px; transition: all 0.2s ease;">{{ __tr('Cancel') }}</button>
-						<button type="submit" class="btn px-5 py-2" id="lwSendGiftBtn" style="background-color: #5B3E96; color: white; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 9999px; border: none; transition: all 0.2s ease;">{{ __tr('Send Gift') }}</button>
+						<button type="button" class="btn px-5 py-2" id="lwNextGiftStepBtn" style="background-color: #5B3E96; color: white; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 9999px; border: none; transition: all 0.2s ease;">{{ __tr('Next') }}</button>
+						<button type="submit" class="btn px-5 py-2" id="lwSendGiftBtn" style="display: none; background-color: #5B3E96; color: white; font-family: 'Poppins', sans-serif; font-weight: 600; border-radius: 9999px; border: none; transition: all 0.2s ease;">{{ __tr('Send Gift') }}</button>
 					</div>
 					<!-- modal footer -->
 				</form>
@@ -1957,10 +2045,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		$("#lwSendGiftForm").trigger("reset");
 		// Remove active state from all gift cards
 		$('.lw-gift-card').removeClass('lw-gift-card-active');
-		// Reset private gift toggle
-		$('#isPrivateCheck').prop('checked', false);
-		$('.lw-gift-toggle').css('background-color', '#D1D5DB');
-		$('.lw-gift-toggle-thumb').css('left', '4px');
+		// Note: Private gift toggle removed - all gifts are private by default
 		// Hide and clear Stripe card section
 		$('#lwStripeCardSection').hide();
 		cardElement.clear();
@@ -1971,13 +2056,157 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		$('#lwSendGiftDialog').modal('hide');
 	});
 
+	// ==========================================
+	// GIFT FLOW - 2-STEP NAVIGATION SYSTEM
+	// ==========================================
+	
+	var currentGiftStep = 1;
+	var totalGiftSteps = 2;
+
+	// Show specific step
+	function showGiftStep(stepNumber) {
+		// Hide all steps
+		$('.lw-gift-step').removeClass('lw-gift-step-active');
+		
+		// Show requested step
+		$('#lwGiftStep' + stepNumber).addClass('lw-gift-step-active');
+		
+		// Update step indicator
+		$('#lwGiftStepIndicator').text('Step ' + stepNumber + ' of ' + totalGiftSteps);
+		
+		// Update modal subtitle
+		if (stepNumber === 1) {
+			$('#lwGiftModalSubtitle').text('{{ __tr("Select a gift to continue") }}');
+		} else if (stepNumber === 2) {
+			$('#lwGiftModalSubtitle').text('{{ __tr("Add a message and complete payment") }}');
+		}
+		
+		// Update button visibility
+		updateGiftNavigationButtons(stepNumber);
+		
+		// Mount Stripe element when showing Step 2
+		if (stepNumber === 2) {
+			// Ensure Stripe element is mounted
+			if (cardElement && !$('#lwStripeCardElement').hasClass('StripeElement')) {
+				cardElement.mount('#lwStripeCardElement');
+			}
+		}
+		
+		currentGiftStep = stepNumber;
+	}
+
+	// Update navigation buttons based on current step
+	function updateGiftNavigationButtons(stepNumber) {
+		if (stepNumber === 1) {
+			// Step 1: Show Next button, hide Back and Send buttons
+			$('#lwBackGiftStepBtn').hide();
+			$('#lwNextGiftStepBtn').show();
+			$('#lwSendGiftBtn').hide();
+			
+			// Enable/disable Next based on gift selection
+			var isGiftSelected = $('input[name="selected_gift"]:checked').length > 0;
+			$('#lwNextGiftStepBtn').prop('disabled', !isGiftSelected);
+		} else if (stepNumber === 2) {
+			// Step 2: Show Back and Send buttons, hide Next
+			$('#lwBackGiftStepBtn').show();
+			$('#lwNextGiftStepBtn').hide();
+			$('#lwSendGiftBtn').show();
+			
+			// Send button validation handled by existing code
+		}
+	}
+
+	// Validate Step 1
+	function validateGiftStep1() {
+		var isGiftSelected = $('input[name="selected_gift"]:checked').length > 0;
+		
+		if (!isGiftSelected) {
+			showAlert('{{ __tr("Please select a gift before continuing") }}', 'error');
+			return false;
+		}
+		
+		return true;
+	}
+
+	// Validate Step 2
+	function validateGiftStep2() {
+		// Check if agreement is accepted
+		var isAgreementAccepted = $('#lwGiftAgreementCheckStep2').is(':checked');
+		
+		if (!isAgreementAccepted) {
+			showAlert('{{ __tr("Please accept the terms to continue") }}', 'error');
+			$('#lwGiftAgreementCheckStep2').focus();
+			return false;
+		}
+		
+		// Check if icebreaker message type is selected but no icebreaker chosen
+		var messageType = $('input[name="message_type"]:checked').val();
+		if (messageType === 'icebreaker') {
+			var selectedIcebreaker = $('#lwIcebreakerSelect').val();
+			if (!selectedIcebreaker) {
+				showAlert('{{ __tr("Please select an icebreaker message") }}', 'error');
+				return false;
+			}
+		}
+		
+		// Stripe validation is handled by Stripe itself during form submission
+		return true;
+	}
+
+	// Next button click handler
+	$('#lwNextGiftStepBtn').on('click', function(e) {
+		e.preventDefault();
+		
+		if (currentGiftStep === 1 && validateGiftStep1()) {
+			showGiftStep(2);
+		}
+	});
+
+	// Back button click handler
+	$('#lwBackGiftStepBtn').on('click', function(e) {
+		e.preventDefault();
+		
+		if (currentGiftStep === 2) {
+			showGiftStep(1);
+		}
+	});
+
+	// Gift selection change handler - enable Next button
+	$('input[name="selected_gift"]').on('change', function() {
+		var isSelected = $('input[name="selected_gift"]:checked').length > 0;
+		$('#lwNextGiftStepBtn').prop('disabled', !isSelected);
+	});
+
+	// Agreement checkbox change handler
+	$('#lwGiftAgreementCheckStep2').on('change', function() {
+		// Agreement validation is checked on form submit
+	});
+
+	// Reset to Step 1 when modal is closed
+	$('#lwSendGiftDialog').on('hidden.bs.modal', function() {
+		showGiftStep(1);
+		// Reset agreement checkbox
+		$('#lwGiftAgreementCheckStep2').prop('checked', false);
+	});
+
+	// Initialize - show Step 1 on page load
+	$(document).ready(function() {
+		showGiftStep(1);
+	});
+
+	// ==========================================
+	// END OF 2-STEP NAVIGATION SYSTEM
+	// ==========================================
+
 	// Gift Agreement Modal Logic
 	var hasAcceptedGiftAgreement = {{ Auth::user()->gift_agreement_accepted_at ? 'true' : 'false' }};
 
 	// Store original click handler
 	var originalGiftButtonClick = null;
 
-	// Override gift button click to check agreement first
+	// Override gift button click to check agreement first - DISABLED
+	// Agreement is now inline in Step 2, no need for separate modal check
+	/*
 	$('[data-toggle="modal"][data-target="#lwSendGiftDialog"]').on('click', function(e) {
 		if (!hasAcceptedGiftAgreement) {
 			e.preventDefault();
@@ -1986,6 +2215,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			return false;
 		}
 	});
+	*/
 
 	// Enable/disable continue button based on checkbox
 	$('#lwGiftAgreementCheck').on('change', function() {
@@ -2123,6 +2353,12 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		// Check the radio button
 		$clickedCard.find('input[type="radio"]').prop('checked', true);
 
+		// Enable Next button on Step 1 when gift is selected
+		if (currentGiftStep === 1) {
+			$('#lwNextGiftStepBtn').prop('disabled', false);
+			console.log('Next button enabled'); // Debug log
+		}
+
 		// Update selected gift display with title and price
 		var giftTitle = $clickedCard.find('.lw-gift-title').text().trim();
 		var giftPrice = $clickedCard.find('.lw-gift-price').text().trim();
@@ -2158,7 +2394,9 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		});
 	});
 
-	// Private gift toggle handler
+	// Private gift toggle handler - REMOVED
+	// All gifts are now private by default (no toggle needed)
+	/*
 	$('#isPrivateCheck').on('change', function() {
 		var isChecked = $(this).is(':checked');
 		var toggle = $('.lw-gift-toggle');
@@ -2172,6 +2410,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			thumb.css('left', '4px');
 		}
 	});
+	*/
 
 	// Initialize Stripe for gift payments
 	if (typeof Stripe === 'undefined') {
@@ -2348,7 +2587,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		// Create Payment Intent on backend first
 		var formData = {
 			selected_gift: $('input[name="selected_gift"]:checked').val(),
-			isPrivateGift: $('#isPrivateCheck').is(':checked') ? 'on' : 'off',
+			isPrivateGift: 'on', // All gifts are private by default
 			message_type: $('input[name="message_type"]:checked').val(),
 			icebreaker_id: $('#lwIcebreakerSelect').val(),
 			custom_note: $('#lwCustomNoteText').val()
@@ -2415,10 +2654,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 						// Reset form
 						$('#lwSendGiftForm')[0].reset();
 						$('.lw-gift-card').removeClass('lw-gift-card-active');
-						$('#isPrivateCheck').prop('checked', false);
-						$('.lw-gift-toggle').css('background-color', '#D1D5DB');
-						$('.lw-gift-toggle-thumb').css('left', '4px');
-						$('#lwStripeCardSection').hide();
+						// Private toggle removed - all gifts are private by default						$('#lwStripeCardSection').hide();
 						cardElement.clear();
 						$('#lwSelectedGiftDisplay').hide();
 
@@ -2486,6 +2722,11 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		e.stopImmediatePropagation(); // Stop other handlers
 		console.log('Custom submit handler triggered'); // Debug log
 		if (giftFormProcessing) {
+			return false;
+		}
+
+		// Validate Step 2 before allowing submission
+		if (!validateGiftStep2()) {
 			return false;
 		}
 
