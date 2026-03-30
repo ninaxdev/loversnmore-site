@@ -281,3 +281,69 @@
         display: block;
     }
 }
+
+/* MOBILE UI FIXES - Cookie Banner and Clickability */
+
+.lw-cookie-policy-container {
+    z-index: 99998 !important;
+    pointer-events: auto !important;
+}
+
+@media (max-width: 768px) {
+    .lw-cookie-policy-container {
+        /* Position above bottom nav (h-16 = 64px) with 8px spacing */
+        bottom: 72px !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+    }
+}
+
+.lw-cookie-policy-container button {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Fix mobile tab clickability */
+.lw-mobile-tab {
+    position: relative !important;
+    z-index: 10 !important;
+    pointer-events: auto !important;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+    touch-action: manipulation !important;
+    cursor: pointer !important;
+}
+
+.lw-mobile-tab * {
+    pointer-events: none !important;
+}
+
+.lw-mobile-tab-nav-container {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.lw-mobile-tab-content {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Fix all interactive elements on mobile */
+@media (max-width: 768px) {
+    button, a, input, select, textarea {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+        touch-action: manipulation;
+    }
+
+    .modal-backdrop {
+        pointer-events: none !important;
+    }
+
+    .modal-backdrop.show {
+        pointer-events: auto !important;
+    }
+
+    /* Ensure bottom nav is always on top */
+    nav[class*="bottom-0"] {
+        z-index: 99999 !important;
+    }
+}

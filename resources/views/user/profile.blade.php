@@ -256,9 +256,51 @@
 		-webkit-appearance: none !important;
 		margin: 0 !important;
 	}
-	
+
 	.lw-remove-spinner {
 		-moz-appearance: textfield !important;
+	}
+
+	/* Fix mobile tab clickability */
+	.lw-mobile-tab {
+		position: relative !important;
+		z-index: 10 !important;
+		pointer-events: auto !important;
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+		touch-action: manipulation !important;
+	}
+
+	.lw-mobile-tab * {
+		pointer-events: none !important;
+	}
+
+	/* Fix tab navigation container */
+	.lw-mobile-tab-nav-container {
+		position: relative !important;
+		z-index: 10 !important;
+	}
+
+	/* Ensure tab content is not blocking */
+	.lw-mobile-tab-content {
+		position: relative !important;
+		z-index: 1 !important;
+	}
+
+	/* Fix all interactive buttons on mobile */
+	@media (max-width: 768px) {
+		button, a, input, select, textarea {
+			-webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+			touch-action: manipulation;
+		}
+
+		/* Prevent any overlays from blocking clicks */
+		.modal-backdrop {
+			pointer-events: none !important;
+		}
+
+		.modal-backdrop.show {
+			pointer-events: auto !important;
+		}
 	}
 
 	/* Mobile Photo Upload FilePond Styling */
@@ -380,7 +422,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	@endif
 
 	<!-- Tab Navigation -->
-	<div class="flex justify-center items-center gap-0 bg-[#F4E9FF] rounded-xl p-1 mx-4 mb-6">
+	<div class="lw-mobile-tab-nav-container flex justify-center items-center gap-0 bg-[#F4E9FF] rounded-xl p-1 mx-4 mb-6">
 		<button class="lw-mobile-tab flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border-0 rounded-lg font-medium text-sm text-[#4F1DA1] cursor-pointer transition-all shadow-sm" data-tab="about">
 			<i class="fas fa-star text-base"></i>
 			<span>{{ __tr('About') }}</span>
