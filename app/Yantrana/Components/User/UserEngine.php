@@ -1746,10 +1746,10 @@ class UserEngine extends BaseEngine
             ], $validation['message']);
         }
 
-        // Validation passed
+        // Validation passed (no success message needed - only show errors)
         return $this->engineReaction(1, [
             'can_send' => true
-        ], __tr('Gift validation passed.'));
+        ]);
     }
 
     /**
