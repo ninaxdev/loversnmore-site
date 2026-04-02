@@ -1600,16 +1600,10 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 										{{ __tr('No message') }}
 									</label>
 								</div>
-								<div class="custom-control custom-radio mb-2">
+								<div class="custom-control custom-radio">
 									<input type="radio" id="messageTypeIcebreaker" name="message_type" value="icebreaker" class="custom-control-input lw-message-radio">
 									<label class="custom-control-label text-sm !text-purple-700 !cursor-pointer" for="messageTypeIcebreaker" style="font-family: 'Poppins', sans-serif;">
 										{{ __tr('Choose an icebreaker') }}
-									</label>
-								</div>
-								<div class="custom-control custom-radio">
-									<input type="radio" id="messageTypeCustom" name="message_type" value="custom" class="custom-control-input lw-message-radio">
-									<label class="custom-control-label text-sm !text-purple-700 !cursor-pointer" for="messageTypeCustom" style="font-family: 'Poppins', sans-serif;">
-										{{ __tr('Write a custom note') }}
 									</label>
 								</div>
 							</div>
@@ -1618,16 +1612,6 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 							<div id="lwIcebreakerSelector" class="hidden">
 								<input type="hidden" id="lwIcebreakerSelect" name="icebreaker_id" value="">
 								<x-lw.icebreaker-carousel />
-							</div>
-
-							<!-- Custom Note Textarea (hidden by default) -->
-							<div id="lwCustomNoteContainer" class="hidden">
-								<textarea class="form-control w-full !border-2 !border-purple-200 rounded-xl text-sm !text-purple-700 px-3 py-2 !bg-white !resize-none focus:!border-purple-700 focus:!ring-2 focus:!ring-purple-100 focus:!outline-none placeholder:!text-purple-300" id="lwCustomNoteText" name="custom_note" rows="3" maxlength="200" placeholder="{{ __tr('Write a thoughtful message...') }}" style="font-family: 'Poppins', sans-serif;"></textarea>
-								<div class="text-right mt-1">
-									<small class="text-xs !text-gray-400" style="font-family: 'Poppins', sans-serif;">
-										<span id="lwCharCount" class="!text-purple-700 font-semibold">0</span>/200 {{ __tr('characters') }}
-									</small>
-								</div>
 							</div>
 
 							<!-- Message Preview -->
@@ -2288,38 +2272,16 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 
 		// Hide all message inputs with smooth animation
 		$('#lwIcebreakerSelector').slideUp(200);
-		$('#lwCustomNoteContainer').slideUp(200);
 		$('#lwMessagePreview').slideUp(200);
 
 		// Show appropriate input based on selection with smooth animation
 		setTimeout(function() {
 			if (selectedType === 'icebreaker') {
 				$('#lwIcebreakerSelector').slideDown(300);
-			} else if (selectedType === 'custom') {
-				$('#lwCustomNoteContainer').slideDown(300);
-				$('#lwCustomNoteText').focus();
 			}
 		}, 150);
 	});
 
-	// Handle custom note input
-	$('#lwCustomNoteText').on('input', function() {
-		var text = $(this).val();
-		var charCount = text.length;
-
-		// Update character count
-		$('#lwCharCount').text(charCount);
-
-		// Show/hide preview with animation
-		if (text.trim().length > 0) {
-			$('#lwMessagePreviewText').text(text);
-			if (!$('#lwMessagePreview').is(':visible')) {
-				$('#lwMessagePreview').slideDown(300);
-			}
-		} else {
-			$('#lwMessagePreview').slideUp(200);
-		}
-	});
 
 	// Reset message selection when modal is closed
 	$('#lwSendGiftDialog').on('hidden.bs.modal', function() {
@@ -2331,13 +2293,10 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 
 		// Hide all message sections immediately
 		$('#lwIcebreakerSelector').hide();
-		$('#lwCustomNoteContainer').hide();
 		$('#lwMessagePreview').hide();
 
 		// Reset form values
 		$('#lwIcebreakerSelect').val('');
-		$('#lwCustomNoteText').val('');
-		$('#lwCharCount').text('0');
 	});
 
 	// Gift card selection handler
@@ -2589,8 +2548,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			selected_gift: $('input[name="selected_gift"]:checked').val(),
 			isPrivateGift: 'on', // All gifts are private by default
 			message_type: $('input[name="message_type"]:checked').val(),
-			icebreaker_id: $('#lwIcebreakerSelect').val(),
-			custom_note: $('#lwCustomNoteText').val()
+			icebreaker_id: $('#lwIcebreakerSelect').val()
 		};
 		console.log('Sending gift payment request...', formData); // Debug log
 		console.log('Card section visible?', $('#lwStripeCardSection').is(':visible')); // Debug log
@@ -2839,16 +2797,11 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			.custom-control-label:hover {
 				color: #5B3E96 !important;
 			}
-			/* Select and textarea focus states */
-			#lwIcebreakerSelect:focus,
-			#lwCustomNoteText:focus {
+			/* Select focus states */
+			#lwIcebreakerSelect:focus {
 				border-color: #5B3E96 !important;
 				box-shadow: 0 0 0 0.2rem rgba(91, 62, 150, 0.15) !important;
 				outline: none !important;
-			}
-			/* Placeholder color */
-			#lwCustomNoteText::placeholder {
-				color: #C4B5FD !important;
 			}
 
 			/* Mobile-specific styles for gift modal */
