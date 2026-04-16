@@ -383,4 +383,65 @@ class StripeConnectService
             'is_new_account' => $accountResult['is_new'],
         ];
     }
+
+    /**
+     * Sweep any pending earnings to the user's Connect account.
+     * Called automatically when a user completes Stripe Connect onboarding.
+     *
+     * @param \App\Yantrana\Components\User\Models\User $user
+     * @return array
+     */
+    public function sweepPendingEarnings($user)
+    {
+        $pending = (float) $user->pending_earnings;
+
+        if ($pending <= 0) {
+            return ['success' => true, 'swept' => 0, 'message' => 'No pending earnings to sweep'];
+        }
+
+        // Minimum transfer Stripe allows is $0.50
+        if ($pending < 0.50) {
+            return ['success' => true, 'swept' => 0, 'message' => 'Pending amount below Stripe minimum transfer'];
+        }
+
+        $result = $this->transferToRecipient(
+            $user->stripe_connect_account_id,
+            $pending,
+            [
+                'type'        => 'pending_earnings_sweep',
+                'user_id'     => $user->_id,
+                'description' => 'Accumulated gift earnings from before Connect account setup',
+            ]
+        );
+
+        if ($result['success']) {
+            // Zero out pending and add to total_earnings
+            $user->pending_earnings = 0;
+            $user->increment('total_earnings', $pending);
+            $user->save();
+
+            \Log::info('Pending earnings swept to Connect account', [
+                'user_id'     => $user->_id,
+                'amount'      => $pending,
+                'transfer_id' => $result['transfer_id'],
+            ]);
+
+            return [
+                'success'     => true,
+                'swept'       => $pending,
+                'transfer_id' => $result['transfer_id'],
+            ];
+        }
+
+        \Log::error('Failed to sweep pending earnings', [
+            'user_id' => $user->_id,
+            'amount'  => $pending,
+            'error'   => $result['error'] ?? 'Unknown error',
+        ]);
+
+        return [
+            'success' => false,
+            'error'   => $result['error'] ?? 'Transfer failed',
+        ];
+    }
 }

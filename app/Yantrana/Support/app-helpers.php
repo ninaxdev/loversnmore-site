@@ -889,34 +889,7 @@ if (! function_exists('getNotificationList')) {
 //manage notification message translation
 if (! function_exists('formatNotificationMessage')) {
     function formatNotificationMessage($notify) {
-        $fullName = trim($notify->first_name . ' ' . ($notify->last_name ?? ''));
-      
-            if($notify->type == 1){// type 1 for visitor
-                return __tr('Profile visited by __fullName__', [
-                   '__fullName__' => $fullName
-                ]); //
-            }elseif($notify->type == 2){// type 2 for like profile
-                return __tr('Profile liked by __fullName__', [
-                   '__fullName__' => $fullName
-                ]); //
-            }elseif($notify->type == 3){// type 3 for new msg request
-                return __tr('Message request received from __fullName__', [
-                   '__fullName__' => $fullName
-                ]);
-            }
-            elseif($notify->type == 4){// type 4 for gift send
-                return __tr('Gift send by __fullName__', [
-                   '__fullName__' => $fullName
-                ]);
-            }
-            elseif($notify->type == 5){// type 5 msg request accepted
-                return __tr('Message request accepted by __fullName__', [
-                   '__fullName__' => $fullName
-                ]);
-            }
-            else {
-            return $notify->message;
-        }
+        return $notify->message;
     }
 }
 // This function is now outside of the loop, making it globally accessible

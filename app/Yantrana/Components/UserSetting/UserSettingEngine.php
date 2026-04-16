@@ -131,6 +131,19 @@ class UserSettingEngine extends BaseEngine implements UserSettingEngineInterface
             }
         }
 
+        // Convert string booleans for gift_preferences page
+        if ($pageType == 'gift_preferences') {
+            if (isset($inputData['receive_gifts_from_non_matches'])) {
+                $inputData['receive_gifts_from_non_matches'] = ($inputData['receive_gifts_from_non_matches'] == 'true') ? true : false;
+            }
+            // Convert empty string (Unlimited) to null for max_gifts_per_day
+            if (array_key_exists('max_gifts_per_day', $inputData)) {
+                $inputData['max_gifts_per_day'] = ($inputData['max_gifts_per_day'] !== '' && $inputData['max_gifts_per_day'] !== null)
+                    ? (int) $inputData['max_gifts_per_day']
+                    : null;
+            }
+        }
+
         // Check if input data exists
         if (! __isEmpty($inputData)) {
             foreach ($inputData as $inputKey => $inputValue) {

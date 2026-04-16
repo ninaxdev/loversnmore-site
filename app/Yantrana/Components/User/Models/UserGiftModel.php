@@ -46,4 +46,12 @@ class UserGiftModel extends BaseModel
     {
         return $this->belongsTo(GiftIcebreakerModel::class, 'icebreaker_id', 'id');
     }
+
+    /**
+     * Get the gift item details
+     */
+    public function item()
+    {
+        return $this->belongsTo(\App\Yantrana\Components\Item\Models\ItemModel::class, 'items__id', '_id');
+    }
 }

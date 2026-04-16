@@ -407,6 +407,40 @@ Route::group([
                     'uses' => 'UserController@validateGiftSending',
                 ]);
 
+                // Received gifts inbox
+                Route::get('/gifts/received', [
+                    'as' => 'user.read.received_gifts',
+                    'uses' => 'UserController@receivedGifts',
+                ]);
+
+                // Gift detail page (recipient view)
+                Route::get('/gift/{giftUId}', [
+                    'as' => 'user.read.gift_detail',
+                    'uses' => 'UserController@viewGiftDetail',
+                ]);
+
+                // Gift recipient actions
+                Route::post('/gift/{giftUId}/thank-you', [
+                    'as' => 'user.write.gift_thank_you',
+                    'uses' => 'UserController@giftThankYou',
+                ]);
+
+                Route::post('/gift/{giftUId}/start-chat', [
+                    'as' => 'user.write.gift_start_chat',
+                    'uses' => 'UserController@giftStartChat',
+                ]);
+
+                Route::post('/gift/{giftUId}/ignore', [
+                    'as' => 'user.write.gift_ignore',
+                    'uses' => 'UserController@giftIgnore',
+                ]);
+
+                // Notify recipient after frontend payment confirmation
+                Route::post('/gift/notify-sent/{paymentIntentId}', [
+                    'as' => 'user.write.gift_notify_sent',
+                    'uses' => 'UserController@giftNotifySent',
+                ]);
+
                 // post report user
                 Route::post('/{sendUserUId}/report-user', [
                     'as' => 'user.write.report_user',
@@ -489,6 +523,12 @@ Route::group([
                 Route::get('/membership', [
                     'as' => 'user.settings.membership',
                     'uses' => 'UserSettingController@getMembershipSettingsView',
+                ]);
+
+                // Gift preferences settings page
+                Route::get('/gift-preferences', [
+                    'as' => 'user.settings.gift_preferences',
+                    'uses' => 'UserSettingController@getGiftPreferencesSettingsView',
                 ]);
 
                 // View settings
@@ -761,6 +801,16 @@ Route::group([
                 Route::get('/notification-list', [
                     'as' => 'user.notification.read.list',
                     'uses' => 'NotificationController@getNotificationList',
+                ]);
+
+                Route::get('/simple-notification-list', [
+                    'as' => 'user.notification.read.simple_list',
+                    'uses' => 'NotificationController@getSimpleNotificationList',
+                ]);
+
+                Route::post('/mark-notification-read/{notificationUid}', [
+                    'as'   => 'user.notification.write.mark_read',
+                    'uses' => 'NotificationController@markNotificationRead',
                 ]);
 
                 // Post Read All Notification

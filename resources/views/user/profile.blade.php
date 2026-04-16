@@ -459,15 +459,22 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 @endif
 	</div>
 
-	<!-- Stripe Connect Onboarding Banner (Own Profile Only) -->
+	<!-- Stripe Connect Onboarding Banner (Own Profile Only - Mobile) -->
 	@if($isOwnProfile && !auth()->user()->stripe_onboarding_completed)
 	<div class="mx-4 mb-4 py-3 px-4 rounded-2xl" style="background-color: #FEF3C7; border: 1px solid #FCD34D;">
 		<div class="flex items-center justify-between gap-3">
 			<div class="flex items-center gap-3 flex-1">
 				<i class="fas fa-gift text-xl" style="color: #F59E0B;"></i>
-				<span class="text-sm font-medium" style="color: #92400E; font-family: 'Poppins', sans-serif;">
-					Enable gift payments to start earning
-				</span>
+				<div>
+					<span class="text-sm font-medium" style="color: #92400E; font-family: 'Poppins', sans-serif;">
+						Enable gift payments to start earning
+					</span>
+					@if(auth()->user()->pending_earnings > 0)
+					<p class="text-xs mt-0.5 mb-0 font-semibold" style="color: #B45309;">
+						💰 $<?= number_format(auth()->user()->pending_earnings, 2) ?> waiting for you
+					</p>
+					@endif
+				</div>
 			</div>
 			<a href="<?= route('user.stripe_connect.onboarding') ?>" class="px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap" style="background-color: #F59E0B; color: white; text-decoration: none;">
 				Enable Now
@@ -791,16 +798,22 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	<div class="mb-6 py-4 px-6 rounded-2xl" style="background-color: #FEF3C7; border: 1px solid #FCD34D;">
 		<div class="flex items-center justify-between gap-4">
 			<div class="flex items-center gap-4 flex-1">
-				<div class="flex items-center justify-center w-12 h-12 rounded-full" style="background-color: #FDE68A;">
+				<div class="flex items-center justify-center w-12 h-12 rounded-full flex-shrink-0" style="background-color: #FDE68A;">
 					<i class="fas fa-gift text-2xl" style="color: #F59E0B;"></i>
 				</div>
 				<div>
 					<h3 class="text-base font-semibold mb-1" style="color: #78350F; font-family: 'Poppins', sans-serif;">
 						Start Earning from Gifts
 					</h3>
+					@if(auth()->user()->pending_earnings > 0)
+					<p class="text-sm mb-1 font-semibold" style="color: #B45309; font-family: 'Poppins', sans-serif;">
+						💰 You have <strong>${<?= number_format(auth()->user()->pending_earnings, 2) ?>}</strong> in pending earnings — set up payouts to claim it!
+					</p>
+					@else
 					<p class="text-sm mb-0" style="color: #92400E; font-family: 'Poppins', sans-serif;">
 						Enable gift payments to receive 60% from every gift sent to you
 					</p>
+					@endif
 				</div>
 			</div>
 			<a href="<?= route('user.stripe_connect.onboarding') ?>" class="px-6 py-3 rounded-full text-sm font-semibold whitespace-nowrap transition-all hover:opacity-90" style="background-color: #F59E0B; color: white; text-decoration: none;">
@@ -2559,6 +2572,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 			console.log('Backend response:', response); // Debug log
 
 			if (response.reaction == 1 && response.data.client_secret) {
+				var lwPaymentIntentId = response.data.payment_intent_id || null;
 				console.log('Payment Intent created, confirming payment...'); // Debug log
 
 				// Check if card element is still mounted and visible
@@ -2609,6 +2623,11 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 						console.log('Payment successful!'); // Debug log
 						showSuccessMessage('{{ __tr("Gift sent successfully!") }}');
 
+						// Notify recipient immediately (webhook may not fire in dev)
+						if (lwPaymentIntentId) {
+							$.post('{{ url("/user/gift/notify-sent") }}/' + lwPaymentIntentId, { _token: '{{ csrf_token() }}' });
+						}
+
 						// Reset form
 						$('#lwSendGiftForm')[0].reset();
 						$('.lw-gift-card').removeClass('lw-gift-card-active');
@@ -2632,7 +2651,8 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 				}).catch(function(error) {
 					clearTimeout(failsafeTimeout); // Clear failsafe
 					console.error('Stripe confirmCardPayment error:', error); // Debug log
-					$('#lwGiftPaymentErrorMessage').text('{{ __tr("Payment confirmation failed. Please try again.") }}');
+					var errMsg = (error && error.message) ? error.message : '{{ __tr("Payment confirmation failed. Please try again.") }}';
+					$('#lwGiftPaymentErrorMessage').text(errMsg);
 					$('#lwGiftPaymentErrorText').slideDown();
 					submitBtn.html(originalText).prop('disabled', false);
 					giftFormProcessing = false;

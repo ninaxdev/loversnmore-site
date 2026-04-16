@@ -91,5 +91,17 @@ return [
                 'default' => '',
             ],
         ],
+        'gift_preferences' => [
+            'receive_gifts_from_non_matches' => [
+                'key'       => 'receive_gifts_from_non_matches',
+                'data_type' => 2,    // boolean
+                'default'   => true,
+            ],
+            'max_gifts_per_day' => [
+                'key'       => 'max_gifts_per_day',
+                'data_type' => 3,    // int (null = unlimited)
+                'default'   => null,
+            ],
+        ],
     ],
 ];

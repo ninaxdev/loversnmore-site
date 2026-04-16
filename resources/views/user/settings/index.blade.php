@@ -62,6 +62,19 @@
                     <i class="fas fa-chevron-right" style="color: #999;"></i>
                 </div>
             </a>
+
+            <!-- Gift Preferences -->
+            <a href="<?= route('user.settings.gift_preferences') ?>" class="lw-ajax-link-action lw-action-with-url block py-4 px-6 rounded-3xl transition-all duration-200 hover:shadow-lg" style="background-color: #F8F4FF; border: 1px solid #E9D8FD; text-decoration: none;">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background-color: #EDE9FE;">
+                            <i class="fas fa-gift text-xl" style="color: #7C3AED;"></i>
+                        </div>
+                        <span class="text-lg font-medium" style="color: #1F1638; font-family: 'Poppins', sans-serif;"><?= __tr('Gift Preferences') ?></span>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: #999;"></i>
+                </div>
+            </a>
         </div>
     </div>
 </div>

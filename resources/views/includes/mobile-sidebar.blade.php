@@ -154,6 +154,17 @@
             </a>
         </div>
 
+        <!-- My Gifts -->
+        <div class="nav-item {{ makeLinkActive('user.read.received_gifts') }}" style="margin-bottom: 0.25rem;">
+            <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"
+               href="{{ route('user.read.received_gifts') }}"
+               onclick="closeMobileSidebar()"
+               style="color: white !important; font-family: 'Poppins', sans-serif; font-weight: 500; transition: all 0.3s ease; border-radius: 8px; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.75rem; background: {{ makeLinkActive('user.read.received_gifts') ?  : 'transparent' }}; text-decoration: none;">
+                <i class="fas fa-gift" style="color: white !important; font-size: 18px; width: 20px;"></i>
+                <span style="font-size: 15px; color: white !important;">{{ __tr('My Gifts') }}</span>
+            </a>
+        </div>
+
         <!-- Blocked Users -->
         <div class="nav-item {{ makeLinkActive('user.read.block_user_list') }}" style="margin-bottom: 0.25rem;">
             <a class="lw-ajax-link-action lw-action-with-url flex items-center text-white transition-all duration-300 hover:bg-white hover:bg-opacity-10 rounded-lg"

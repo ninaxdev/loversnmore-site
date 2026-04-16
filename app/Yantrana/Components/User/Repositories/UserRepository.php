@@ -1244,6 +1244,11 @@ class UserRepository extends BaseRepository implements UserRepositoryBlueprint
             'platform_fee',
             'stripe_fee',
             'payment_metadata',
+            // Message fields (Phase 1-2)
+            'message_type',
+            'message_content',
+            'icebreaker_id',
+            'recipient_action',
         ];
 
         // Get Instance of user gift model
@@ -1283,6 +1288,21 @@ class UserRepository extends BaseRepository implements UserRepositoryBlueprint
         }
 
         return false;
+    }
+
+    /**
+     * Fetch gifts received by a user (succeeded payments only)
+     *
+     * @param  int  $userId
+     * @return \Illuminate\Database\Eloquent\Collection
+     *-----------------------------------------------------------------------*/
+    public function fetchReceivedGifts($userId)
+    {
+        return UserGiftModel::with(['fromUser', 'icebreaker', 'item'])
+            ->where('to_users__id', $userId)
+            ->whereIn('stripe_payment_status', ['succeeded', 'pending'])
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     /**

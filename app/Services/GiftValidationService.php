@@ -73,11 +73,19 @@ class GiftValidationService
         $areMatched = $this->rateLimitService->areUsersMatched($senderId, $recipientId);
 
         // Get recipient's settings using global helper function
-        $receiveFromNonMatches = getUserSettings('receive_gifts_from_non_matches', $recipientId);
+        // getUserSettings returns raw DB strings ('true'/'false'/null) so cast explicitly
+        $receiveFromNonMatchesRaw = getUserSettings('receive_gifts_from_non_matches', $recipientId);
         $maxGiftsPerDay = getUserSettings('max_gifts_per_day', $recipientId);
 
-        // Default to true if setting doesn't exist (allow gifts from non-matches by default)
-        $receiveFromNonMatches = $receiveFromNonMatches ?? true;
+        // Cast string 'false'/'true' to actual bool; default to true (allow) if not set
+        if ($receiveFromNonMatchesRaw === null) {
+            $receiveFromNonMatches = true;
+        } else {
+            $receiveFromNonMatches = filter_var($receiveFromNonMatchesRaw, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        // Cast max_gifts_per_day to int (null means unlimited)
+        $maxGiftsPerDay = ($maxGiftsPerDay !== null && $maxGiftsPerDay !== '') ? (int) $maxGiftsPerDay : null;
 
         // If not matched and recipient doesn't accept gifts from non-matches
         if (!$areMatched && !$receiveFromNonMatches) {

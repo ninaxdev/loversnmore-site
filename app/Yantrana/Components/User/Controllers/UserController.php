@@ -693,6 +693,95 @@ class UserController extends BaseController
     }
 
     /**
+     * Show received gifts list page.
+     *
+     * @return view
+     *---------------------------------------------------------------- */
+    public function receivedGifts()
+    {
+        $processReaction = $this->userEngine->prepareReceivedGifts();
+
+        return $this->loadPublicView('user.received-gifts', $processReaction['data']);
+    }
+
+    /**
+     * View gift detail page for recipient.
+     *
+     * @param string $giftUId
+     * @return view
+     *---------------------------------------------------------------- */
+    public function viewGiftDetail($giftUId)
+    {
+        $processReaction = $this->userEngine->processViewGift($giftUId);
+
+        if ($processReaction['reaction_code'] !== 1) {
+            return redirect()->route('user.profile')->with('error', __tr('Gift not found.'));
+        }
+
+        return $this->loadPublicView('user.gift-detail', $processReaction['data']);
+    }
+
+    /**
+     * Handle gift thank you action.
+     *
+     * @param string $giftUId
+     * @return json
+     *---------------------------------------------------------------- */
+    public function giftThankYou($giftUId)
+    {
+        $processReaction = $this->userEngine->processGiftThankYou($giftUId);
+
+        return $this->responseAction(
+            $this->processResponse($processReaction, [], [], true)
+        );
+    }
+
+    /**
+     * Handle gift start chat action.
+     *
+     * @param string $giftUId
+     * @return json
+     *---------------------------------------------------------------- */
+    public function giftStartChat($giftUId)
+    {
+        $processReaction = $this->userEngine->processGiftStartChat($giftUId);
+
+        return $this->responseAction(
+            $this->processResponse($processReaction, [], [], true)
+        );
+    }
+
+    /**
+     * Handle gift ignore action.
+     *
+     * @param string $giftUId
+     * @return json
+     *---------------------------------------------------------------- */
+    public function giftIgnore($giftUId)
+    {
+        $processReaction = $this->userEngine->processGiftIgnore($giftUId);
+
+        return $this->responseAction(
+            $this->processResponse($processReaction, [], [], true)
+        );
+    }
+
+    /**
+     * Notify recipient after frontend Stripe payment confirmation.
+     *
+     * @param string $paymentIntentId
+     * @return json
+     *---------------------------------------------------------------- */
+    public function giftNotifySent($paymentIntentId)
+    {
+        $processReaction = $this->userEngine->processGiftNotifySent($paymentIntentId, getUserUID());
+
+        return $this->responseAction(
+            $this->processResponse($processReaction, [], [], true)
+        );
+    }
+
+    /**
      * Handle report user request.
      *
      * @param object ReportUserRequest $request

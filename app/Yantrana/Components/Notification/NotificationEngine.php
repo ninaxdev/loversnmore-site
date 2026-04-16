@@ -53,32 +53,7 @@ class NotificationEngine extends BaseEngine
                 return (isset($key['is_read']) and $key['is_read'] == 1) ? __tr('Yes') : __tr('No');
             },
             'formattedMessage' => function ($key) {
-                if($key['type']==1){// type 1 for visitor
-                    return __tr('Profile visited by __fullName__', [
-                         '__fullName__' => $key['first_name'] . ' ' . $key['last_name']
-                    ]); //
-                }elseif($key['type']==2){// type 2 for like profile
-                    return __tr('Profile liked by __fullName__', [
-                         '__fullName__' => $key['first_name'] . ' ' . $key['last_name']
-                    ]); //
-                }elseif($key['type']==3){// type 3 for new msg request
-                    return __tr('Message request received from __fullName__', [
-                         '__fullName__' => $key['first_name'] . ' ' . $key['last_name']
-                    ]); //
-                }
-                elseif($key['type']==4){// type 4 for gift send
-                    return __tr('Gift send by __fullName__', [
-                         '__fullName__' => $key['first_name'] . ' ' . $key['last_name']
-                    ]);
-                }
-                elseif($key['type']==5){// type 4 for msg request accepetd
-                    return __tr('Message request accepted by __fullName__', [
-                        '__fullName__' => $key['first_name'] . ' ' . $key['last_name']
-                    ]);
-                }
-                else{
-                    return $key['message'];
-                }
+                return $key['message'];
             },
             'message',
         ];
@@ -132,34 +107,9 @@ class NotificationEngine extends BaseEngine
                 return (isset($key['is_read']) and $key['is_read'] == 1) ? 'Yes' : 'No';
             },
             'formattedMessage' => function ($key) {
-                if($key['type']==1){// type 1 for visitor
-                    return __tr('Profile visited by __fullName__', [
-                         '__fullName__' => $key['first_name'] . ' ' . $key['last_name']
-                    ]); //
-                }elseif($key['type']==2){// type 2 for like profile
-                    return __tr('Profile liked by __fullName__', [
-                         '__fullName__' => $key['first_name'] . ' ' . $key['last_name']
-                    ]); //
-                }elseif($key['type']==3){// type 3 for new msg request
-                    return __tr('Message request received from __fullName__', [
-                         '__fullName__' => $key['first_name'] . ' ' . $key['last_name']
-                    ]); //
-                }
-                elseif($key['type']==4){// type 4 for gift send
-                    return __tr('Gift send by __fullName__', [
-                         '__fullName__' => $key['first_name'] . ' ' . $key['last_name']
-                    ]);
-                }
-                elseif($key['type']==5){// type 4 for msg request accepetd
-                    return __tr('Message request accepted by __fullName__', [
-                        '__fullName__' => $key['first_name'] . ' ' . $key['last_name']
-                    ]);
-                }
-                else{
-                    return $key['message'];
-                }
+                return $key['message'];
             },
-           
+
             'message',
         ];
 
@@ -206,5 +156,33 @@ class NotificationEngine extends BaseEngine
     public function prepareNotificationData()
     {
         return $this->engineReaction(1, getNotificationList());
+    }
+
+    /**
+     * Prepare simple notification list (read + unread) for mobile alerts modal.
+     *
+     *-----------------------------------------------------------------------*/
+    public function prepareSimpleNotificationList()
+    {
+        $notifications = \App\Yantrana\Components\Notification\Models\NotificationModel
+            ::where('users__id', getUserID())
+            ->orderByDesc('created_at')
+            ->take(20)
+            ->get(['_uid', 'message', 'action', 'is_read', 'created_at']);
+
+        $list = $notifications->map(function ($n) {
+            return [
+                '_uid'      => $n->_uid,
+                'message'   => $n->message,
+                'actionUrl' => $n->action,
+                'is_read'   => $n->is_read,
+                'created_at'=> $n->created_at->diffForHumans(),
+            ];
+        })->values()->toArray();
+
+        return $this->engineReaction(1, [
+            'notificationData'  => $list,
+            'notificationCount' => $notifications->whereNull('is_read')->count(),
+        ]);
     }
 }

@@ -23,6 +23,7 @@ use App\Yantrana\Support\CommonTrait;
 use App\Yantrana\Support\Country\Repositories\CountryRepository;
 use App\Yantrana\Support\Utils;
 use App\Services\StripeGiftPaymentService;
+use App\Yantrana\Components\User\Models\UserGiftModel;
 use Auth;
 use Carbon\Carbon;
 use Hash;
@@ -1820,11 +1821,14 @@ class UserEngine extends BaseEngine
                 ]);
             }
         } else {
-            \Log::warning('Recipient cannot receive payment - Connect account not set up', [
-                'gift_id' => $giftRecord->_id,
-                'recipient_id' => $recipient->_id ?? null,
-                'has_connect_account' => !empty($recipient->stripe_connect_account_id),
-                'onboarding_completed' => $recipient->stripe_onboarding_completed ?? false,
+            // No Connect account — hold the recipient's share as pending earnings
+            // It will be swept automatically when they complete Stripe Connect onboarding
+            $recipient->increment('pending_earnings', $splits['recipient_amount']);
+
+            \Log::info('Gift payment held as pending earnings (no Connect account)', [
+                'gift_id'         => $giftRecord->_id,
+                'recipient_id'    => $recipient->_id ?? null,
+                'pending_amount'  => $splits['recipient_amount'],
             ]);
         }
 
@@ -1834,10 +1838,10 @@ class UserEngine extends BaseEngine
                 activityLog($sender->first_name . ' ' . $sender->last_name . ' sent gift to ' .
                            $recipient->first_name . ' ' . $recipient->last_name);
 
-                // Create notification
+                // Create notification - link to the gift detail page
                 $notificationData = [
                     'message' => 'Gift sent by ' . $sender->first_name . ' ' . $sender->last_name,
-                    'action' => route('user.profile_view', ['username' => $sender->username]),
+                    'action' => route('user.read.gift_detail', ['giftUId' => $giftRecord->_uid]),
                     'isRead' => null,
                     'userId' => $recipient->_id,
                     'type' => 4, // gift notification
@@ -1847,13 +1851,14 @@ class UserEngine extends BaseEngine
 
                 // Send push notification
                 PushBroadcast::notifyViaPusher('event.user.notification', [
-                    'type' => 'user-gift',
-                    'userUid' => $recipient->_uid,
-                    'subject' => __tr('Gift sent successfully'),
-                    'message' => __tr('Gift sent by') . ' ' . $sender->first_name . ' ' . $sender->last_name,
-                    'messageType' => 'success',
-                    'showNotification' => getUserSettings('show_gift_notification', $recipient->_id),
+                    'type'                => 'user-gift',
+                    'userUid'             => $recipient->_uid,
+                    'subject'             => __tr('You received a gift!'),
+                    'message'             => __tr('Gift sent by') . ' ' . $sender->first_name . ' ' . $sender->last_name,
+                    'messageType'         => 'success',
+                    'showNotification'    => getUserSettings('show_gift_notification', $recipient->_id),
                     'getNotificationList' => getNotificationList($recipient->_id),
+                    'actionUrl'           => route('user.read.gift_detail', ['giftUId' => $giftRecord->_uid]),
                 ]);
             }
 
@@ -1861,6 +1866,180 @@ class UserEngine extends BaseEngine
         }
 
         return ['success' => false, 'message' => 'Failed to update gift status'];
+    }
+
+    /**
+     * Process View Gift - Load gift detail for the recipient
+     *
+     * @param string $giftUId
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function processViewGift($giftUId)
+    {
+        $giftActionService = app(\App\Services\GiftActionService::class);
+        $result = $giftActionService->getGiftDetails($giftUId, getUserID());
+
+        if (!$result['success']) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('Gift not found.'));
+        }
+
+        $gift   = $result['gift'];
+        $sender = $gift->fromUser;
+
+        // Resolve message text
+        $messageText = null;
+        if ($gift->message_type === 'icebreaker' && $gift->icebreaker) {
+            $messageText = $gift->icebreaker->message;
+        } elseif ($gift->message_type === 'custom') {
+            $messageText = $gift->message_content;
+        }
+
+        // Build sender's profile picture URL
+        $senderProfilePicUrl = noThumbImageURL();
+        if ($sender && $sender->profile_picture) {
+            $profilePicPath = getPathByKey('profile_photo', ['{_uid}' => $sender->_uid]);
+            $senderProfilePicUrl = getMediaUrl($profilePicPath, $sender->profile_picture);
+        }
+
+        return $this->engineReaction(1, [
+            'gift'               => $gift,
+            'sender'             => $sender,
+            'messageText'        => $messageText,
+            'senderProfilePicUrl' => $senderProfilePicUrl,
+        ]);
+    }
+
+    /**
+     * Process Gift Thank You action
+     *
+     * @param string $giftUId
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function processGiftThankYou($giftUId)
+    {
+        $giftActionService = app(\App\Services\GiftActionService::class);
+        $result = $giftActionService->processThankYou($giftUId, getUserID());
+
+        if (!$result['success']) {
+            return $this->engineReaction(2, ['show_message' => true], __tr($result['message']));
+        }
+
+        return $this->engineReaction(1, [], __tr($result['message']));
+    }
+
+    /**
+     * Process Gift Start Chat action
+     *
+     * @param string $giftUId
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function processGiftStartChat($giftUId)
+    {
+        $giftActionService = app(\App\Services\GiftActionService::class);
+        $result = $giftActionService->processStartChat($giftUId, getUserID());
+
+        if (!$result['success']) {
+            return $this->engineReaction(2, ['show_message' => true], __tr($result['message']));
+        }
+
+        $chatUrl = null;
+        if (!empty($result['sender_uid'])) {
+            $chatUrl = route('user.read.individual_conversation', ['specificUserId' => $result['sender_uid']]);
+        }
+
+        return $this->engineReaction(1, [
+            'chat_url'  => $chatUrl,
+            'sender_id' => $result['sender_id'] ?? null,
+        ], __tr($result['message']));
+    }
+
+    /**
+     * Prepare received gifts list for the logged-in user
+     *
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function prepareReceivedGifts()
+    {
+        $gifts = $this->userRepository->fetchReceivedGifts(getUserID());
+
+        $giftsData = $gifts->map(function ($gift) {
+            $sender = $gift->fromUser;
+
+            // Build sender profile pic URL
+            $profilePicUrl = noThumbImageURL();
+            if ($sender && $sender->profile_picture) {
+                $profilePicPath = getPathByKey('profile_photo', ['{_uid}' => $sender->_uid]);
+                $profilePicUrl  = getMediaUrl($profilePicPath, $sender->profile_picture);
+            }
+
+            // Resolve message
+            $messageText = null;
+            if ($gift->message_type === 'icebreaker' && $gift->icebreaker) {
+                $messageText = $gift->icebreaker->message;
+            } elseif ($gift->message_type === 'custom') {
+                $messageText = $gift->message_content;
+            }
+
+            return [
+                'uid'            => $gift->_uid,
+                'giftName'       => $gift->item->title ?? __tr('Gift'),
+                'price'          => $gift->price,
+                'messageText'    => $messageText,
+                'recipientAction'=> $gift->recipient_action,
+                'createdAt'      => $gift->created_at,
+                'detailUrl'      => route('user.read.gift_detail', ['giftUId' => $gift->_uid]),
+                'sender'         => $sender ? [
+                    'name'          => $sender->first_name . ' ' . $sender->last_name,
+                    'username'      => $sender->username,
+                    'profilePicUrl' => imageOrNoImageAvailable($profilePicUrl),
+                    'profileUrl'    => route('user.profile_view', ['username' => $sender->username]),
+                ] : null,
+            ];
+        })->values()->toArray();
+
+        return $this->engineReaction(1, ['giftsData' => $giftsData]);
+    }
+
+    /**
+     * Process Gift Ignore action
+     *
+     * @param string $giftUId
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function processGiftIgnore($giftUId)
+    {
+        $giftActionService = app(\App\Services\GiftActionService::class);
+        $result = $giftActionService->processIgnore($giftUId, getUserID());
+
+        if (!$result['success']) {
+            return $this->engineReaction(2, ['show_message' => true], __tr($result['message']));
+        }
+
+        return $this->engineReaction(1, [], __tr($result['message']));
+    }
+
+    /**
+     * Notify gift recipient after frontend Stripe payment confirmation.
+     *
+     * @param string $paymentIntentId
+     * @param string $senderUid
+     * @return array
+     *-----------------------------------------------------------------------*/
+    public function processGiftNotifySent($paymentIntentId, $senderUid)
+    {
+        $gift = UserGiftModel::with(['fromUser', 'toUser'])
+            ->where('stripe_payment_intent_id', $paymentIntentId)
+            ->where('from_users__id', getUserID($senderUid))
+            ->first();
+
+        if (!$gift) {
+            return $this->engineReaction(2, ['show_message' => false], __tr('Gift not found.'));
+        }
+
+        $giftActionService = app(\App\Services\GiftActionService::class);
+        $giftActionService->sendNotificationToRecipient($gift);
+
+        return $this->engineReaction(1, [], __tr('Notification sent.'));
     }
 
     /**

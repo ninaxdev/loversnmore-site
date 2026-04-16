@@ -42,34 +42,38 @@
         
         <!-- Enhanced Notification Link -->
         <li class="nav-item dropdown no-arrow mx-1 d-none d-lg-block">
-            <a class="nav-link dropdown-toggle lw-ajax-link-action lw-notification-dropdown-toggle lw-nav-icon" href="<?= route('user.notification.write.read_all_notification') ?>" data-callback="onReadAllNotificationCallback" id="alertsDropdown" role="button" aria-haspopup="true" aria-expanded="false" data-method="post" title="<?= __tr('Notifications') ?>">
+            <a class="nav-link dropdown-toggle lw-notification-dropdown-toggle lw-nav-icon" href="#" id="alertsDropdown" role="button" aria-haspopup="true" aria-expanded="false" title="<?= __tr('Notifications') ?>">
                 <div class="lw-icon-wrapper">
                     <i class="fas fa-bell fa-fw"></i>
-                    <span class="lw-notification-badge" data-model="totalNotificationCount"><?= (getNotificationList()['notificationCount'] > 0) ? getNotificationList()['notificationCount'] : '' ?></span>
+                    <span class="lw-notification-badge" data-model="totalNotificationCount" x-show="totalNotificationCount > 0" x-cloak x-text="totalNotificationCount > 99 ? '99+' : totalNotificationCount"></span>
                 </div>
             </a>
             
             <!-- Enhanced Notification Dropdown -->
-            <div class="dropdown-list dropdown-menu dropdown-menu-right lw-notification-dropdown shadow animated--grow-in" aria-labelledby="alertsDropdown" id="dropdownAlerts">
-                <div class="lw-dropdown-header">
-                    <i class="fas fa-bell mr-2"></i><?= __tr('Notifications') ?>
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown" id="dropdownAlerts"
+                 style="width: 340px; border-radius: 16px; border: none; padding: 0; overflow: hidden;">
+
+                <!-- Header -->
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #f0f0f0; background: white;">
+                    <h6 style="margin: 0; font-weight: 700; font-size: 16px; color: #222;">
+                        <i class="fas fa-bell mr-2" style="color: #ec9cae;"></i><?= __tr('Alerts') ?>
+                    </h6>
+                    <button onclick="lwHeaderMarkAllRead()" id="lwHeaderMarkAllReadBtn"
+                            style="display:none; color: #ec9cae; border: 1px solid #ec9cae; background: transparent; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 999px; cursor: pointer;">
+                        <?= __tr('Mark all read') ?>
+                    </button>
                 </div>
-                <div id="lwNotificationContent" class="lw-notification-content"></div>
-                <script type="text/_template" id="lwNotificationListTemplate">
-                    <% if(!_.isEmpty(__tData.notificationList)) { %>
-						<% _.forEach(__tData.notificationList, function(notification) { %>
-							<a class="lw-notification-item lw-ajax-link-action lw-action-with-url" href="<%- notification['actionUrl'] %>">
-                                <div class="lw-notification-content">
-                                    <div class="lw-notification-message"><%- notification['message'] %></div>
-                                    <div class="lw-notification-time"><%- notification['created_at'] %></div>
-                                </div>
-							</a>
-						<% }); %>
-						<a class="lw-notification-footer lw-ajax-link-action lw-action-with-url" href="<?= route('user.notification.read.view') ?>" id="lwShowAllNotifyLink" data-show-if="showAllNotifyLink"><?= __tr('View All Notifications') ?></a>
-					<% } else { %>
-						<div class="lw-notification-empty"><?= __tr('No new notifications') ?></div>
-					<% } %>
-				</script>
+
+                <!-- Notification Items -->
+                <div id="lwNotificationContent" style="max-height: 360px; overflow-y: auto; background: #f9f9f9; padding: 10px 10px 0;"></div>
+
+                <!-- Footer -->
+                <div style="padding: 10px 16px; border-top: 1px solid #f0f0f0; background: white; text-align: center;">
+                    <a href="<?= route('user.notification.read.view') ?>"
+                       style="color: #ec9cae; font-size: 13px; font-weight: 600; text-decoration: none;">
+                        <i class="fas fa-list mr-1"></i><?= __tr('View All Notifications') ?>
+                    </a>
+                </div>
             </div>
         </li>
 
@@ -315,49 +319,63 @@
         }
     }
 
-    // Enhanced notification system
-    <?php $getNotificationList = getNotificationList() ?>;
-    var template = _.template($("#lwNotificationListTemplate").html());
-    $("#lwNotificationContent").html(template({
-        'notificationList': JSON.parse('<?= json_encode($getNotificationList['notificationData']) ?>'),
-    }));
+    // Load header notifications using same renderer as mobile modal
+    function lwLoadHeaderNotifications() {
+        $.ajax({
+            url: '<?= route('user.notification.read.simple_list') ?>',
+            type: 'GET',
+            dataType: 'json',
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(responseData) {
+                var list = [];
+                if (responseData && responseData.data && responseData.data.notificationData) {
+                    list = responseData.data.notificationData;
+                }
+                $('#lwNotificationContent').html(lwRenderNotifications(list));
+                var hasUnread = list.some(function(n) { return !n.is_read; });
+                document.getElementById('lwHeaderMarkAllReadBtn').style.display = hasUnread ? 'inline-block' : 'none';
+            }
+        });
+    }
+
+    // Mark all read from header dropdown
+    function lwHeaderMarkAllRead() {
+        $.ajax({
+            url: '<?= route("user.notification.write.read_all_notification") ?>',
+            type: 'POST',
+            data: { _token: '<?= csrf_token() ?>' },
+            success: function() {
+                lwLoadHeaderNotifications();
+                __DataRequest.updateModels({ 'totalNotificationCount': '' });
+            }
+        });
+    }
+
+    // Load on page ready
+    lwLoadHeaderNotifications();
 
     // Enhanced notification read callback
     function onReadAllNotificationCallback(responseData) {
         if (responseData.reaction == 1) {
-            __DataRequest.updateModels({
-                'totalNotificationCount': '',
-            });
-            
-            // Add success feedback
+            __DataRequest.updateModels({ 'totalNotificationCount': '' });
             $('.lw-notification-badge').fadeOut(300);
         }
     }
 
-    // Enhanced notification dropdown toggle
+    // Notification dropdown toggle — show/hide + reload on open
     $('body').on('click', '.lw-notification-dropdown-toggle', function (ev) {
         ev.preventDefault();
         var $dropdown = $(this).parents('.dropdown');
         var $menu = $(this).parent().find('.dropdown-menu');
-        
+
         $dropdown.toggleClass('show');
         $menu.toggleClass('show');
-        
-        // Add smooth animation and mobile positioning
+
         if ($menu.hasClass('show')) {
-            $menu.css({
-                'animation': 'slideDown 0.3s ease-out',
-                'transform-origin': 'top center'
-            });
-            
-            // Position for mobile
+            lwLoadHeaderNotifications();
+            $menu.css({ 'animation': 'slideDown 0.3s ease-out', 'transform-origin': 'top center' });
             if ($(window).width() <= 768) {
-                $menu.css({
-                    'position': 'fixed',
-                    'left': '50%',
-                    'transform': 'translateX(-50%)',
-                    'max-width': '95vw'
-                });
+                $menu.css({ 'position': 'fixed', 'left': '50%', 'transform': 'translateX(-50%)', 'max-width': '95vw' });
             }
         }
     });

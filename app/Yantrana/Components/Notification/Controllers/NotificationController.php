@@ -52,6 +52,35 @@ class NotificationController extends BaseController
     }
 
     /**
+     * Get simple notification list (for mobile alerts modal).
+     *
+     *-----------------------------------------------------------------------*/
+    public function getSimpleNotificationList()
+    {
+        return $this->responseAction(
+            $this->processResponse(
+                $this->notificationEngine->prepareSimpleNotificationList(), [], [], true
+            )
+        );
+    }
+
+    /**
+     * Mark a single notification as read.
+     *
+     *-----------------------------------------------------------------------*/
+    public function markNotificationRead($notificationUid)
+    {
+        \App\Yantrana\Components\Notification\Models\NotificationModel
+            ::where('_uid', $notificationUid)
+            ->where('users__id', getUserID())
+            ->update(['is_read' => 1]);
+
+        return $this->responseAction(
+            $this->processResponse($this->engineReaction(1), [], [], true)
+        );
+    }
+
+    /**
      * Handle read all notification request.
      *
      * @param object read notification $request

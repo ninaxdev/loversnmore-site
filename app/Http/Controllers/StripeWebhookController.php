@@ -181,15 +181,29 @@ class StripeWebhookController extends Controller
 
         if ($result['success']) {
             \Log::info('Connect account status updated', [
-                'user_id' => $user->_id,
+                'user_id'    => $user->_id,
                 'account_id' => $account->id,
-                'status' => $result['status'],
+                'status'     => $result['status'],
             ]);
+
+            // If user just completed onboarding, sweep any pending gift earnings
+            $freshUser = $result['user'];
+            if ($freshUser->stripe_onboarding_completed && $freshUser->pending_earnings > 0) {
+                $sweepResult = $this->stripeConnectService->sweepPendingEarnings($freshUser);
+
+                if ($sweepResult['success'] && $sweepResult['swept'] > 0) {
+                    \Log::info('Pending earnings swept after Connect onboarding', [
+                        'user_id'     => $freshUser->_id,
+                        'swept'       => $sweepResult['swept'],
+                        'transfer_id' => $sweepResult['transfer_id'],
+                    ]);
+                }
+            }
         } else {
             \Log::error('Failed to update Connect account status', [
-                'user_id' => $user->_id,
+                'user_id'    => $user->_id,
                 'account_id' => $account->id,
-                'error' => $result['message'] ?? 'Unknown error',
+                'error'      => $result['message'] ?? 'Unknown error',
             ]);
         }
     }

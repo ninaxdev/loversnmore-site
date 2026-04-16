@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Yantrana\Components\User\Models\UserGiftModel;
 use App\Yantrana\Components\User\Models\User;
 use App\Yantrana\Components\Messenger\Repositories\MessengerRepository;
+use App\Yantrana\Components\Messenger\Models\ChatModel;
+use YesSecurity;
 
 class GiftActionService
 {
@@ -93,36 +95,47 @@ class GiftActionService
         $gift->recipient_action = 'chatted';
         $gift->save();
 
-        // Create or get existing conversation
+        // Open a chat conversation between recipient and gift sender
         $senderId = $gift->from_users__id;
         $recipientId = $userId;
 
-        // Check if conversation already exists
-        $conversation = \DB::table('user_encounters')
-            ->where(function ($query) use ($senderId, $recipientId) {
-                $query->where('user_id', $senderId)
-                    ->where('to_user_id', $recipientId);
-            })
-            ->orWhere(function ($query) use ($senderId, $recipientId) {
-                $query->where('user_id', $recipientId)
-                    ->where('to_user_id', $senderId);
+        // Check if a chat request/accepted record already exists
+        $existingRequest = ChatModel::whereIn('type', [9, 10])
+            ->where('users__id', $recipientId)
+            ->where(function ($q) use ($senderId) {
+                $q->where('to_users__id', $senderId)
+                  ->orWhere('from_users__id', $senderId);
             })
             ->first();
 
-        if (!$conversation) {
-            // Create new conversation
-            $conversationUId = generateUid();
-            \DB::table('user_encounters')->insert([
-                '_id' => generateUid(),
-                '_uid' => $conversationUId,
-                'user_id' => $senderId,
-                'to_user_id' => $recipientId,
-                'status' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+        if (!$existingRequest) {
+            $integrityId = YesSecurity::generateUid();
+            ChatModel::insert([
+                [
+                    '_uid'           => YesSecurity::generateUid(),
+                    'status'         => 2,
+                    'message'        => 'Gift conversation started',
+                    'type'           => 10, // accepted — bypass request flow
+                    'from_users__id' => $senderId,
+                    'to_users__id'   => $recipientId,
+                    'users__id'      => $senderId,
+                    'integrity_id'   => $integrityId,
+                    'created_at'     => now(),
+                    'updated_at'     => now(),
+                ],
+                [
+                    '_uid'           => YesSecurity::generateUid(),
+                    'status'         => 2,
+                    'message'        => 'Gift conversation started',
+                    'type'           => 10,
+                    'from_users__id' => $senderId,
+                    'to_users__id'   => $recipientId,
+                    'users__id'      => $recipientId,
+                    'integrity_id'   => $integrityId,
+                    'created_at'     => now(),
+                    'updated_at'     => now(),
+                ],
             ]);
-
-            $conversation = (object) ['_uid' => $conversationUId];
         }
 
         // Send notification to sender
@@ -134,9 +147,10 @@ class GiftActionService
         }
 
         return [
-            'success' => true,
-            'message' => 'Chat started successfully!',
-            'conversation_uid' => $conversation->_uid
+            'success'          => true,
+            'message'          => 'Chat started successfully!',
+            'sender_uid'       => $sender->_uid ?? null,
+            'sender_id'        => $sender->_id ?? null,
         ];
     }
 
@@ -197,32 +211,64 @@ class GiftActionService
 
         $message = $messages[$action] ?? 'You have a notification.';
 
-        // Create notification record
-        \DB::table('notifications')->insert([
-            '_id' => generateUid(),
-            '_uid' => generateUid(),
-            'to_user_id' => $sender->_id,
-            'from_user_id' => $recipient->_id,
-            'type' => 12, // Gift action notification type
-            'message' => $message,
-            'status' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
+        // Create notification record using app helper
+        notificationLog([
+            'message'        => $message,
+            'action'         => route('user.profile_view', ['username' => $recipient->username]),
+            'isRead'         => null,
+            'userId'         => $sender->_id,
+            'type'           => 4, // Gift notification type
+            'from_users__id' => $recipient->_id,
         ]);
 
-        // Send push notification via Pusher (if available)
-        try {
-            if (config('broadcasting.connections.pusher.key')) {
-                event(new \App\Events\UserNotification([
-                    'userId' => $sender->_id,
-                    'message' => $message,
-                    'type' => 'gift_action'
-                ]));
-            }
-        } catch (\Exception $e) {
-            // Log error but don't fail the action
-            \Log::error('Failed to send push notification: ' . $e->getMessage());
+        // Send push notification via Pusher
+        \PushBroadcast::notifyViaPusher('event.user.notification', [
+            'type'                => 'user-gift',
+            'userUid'             => $sender->_uid,
+            'subject'             => __tr('Gift Notification'),
+            'message'             => $message,
+            'messageType'         => 'success',
+            'showNotification'    => getUserSettings('show_gift_notification', $sender->_id),
+            'getNotificationList' => getNotificationList($sender->_id),
+        ]);
+    }
+
+    /**
+     * Send notification to gift recipient (when gift is sent)
+     *
+     * @param UserGiftModel $gift
+     * @return void
+     */
+    public function sendNotificationToRecipient(UserGiftModel $gift)
+    {
+        $recipient = $gift->toUser ?? \App\Yantrana\Components\User\Models\User::find($gift->to_users__id);
+        $sender    = $gift->fromUser ?? \App\Yantrana\Components\User\Models\User::find($gift->from_users__id);
+
+        if (!$recipient || !$sender) {
+            return;
         }
+
+        $message = $sender->first_name . ' sent you a gift!';
+
+        notificationLog([
+            'message'        => $message,
+            'action'         => route('user.read.gift_detail', ['giftUId' => $gift->_uid]),
+            'isRead'         => null,
+            'userId'         => $recipient->_id,
+            'type'           => 4,
+            'from_users__id' => $sender->_id,
+        ]);
+
+        \PushBroadcast::notifyViaPusher('event.user.notification', [
+            'type'                => 'user-gift',
+            'userUid'             => $recipient->_uid,
+            'subject'             => __tr('You received a gift!'),
+            'message'             => $message,
+            'messageType'         => 'success',
+            'showNotification'    => getUserSettings('show_gift_notification', $recipient->_id),
+            'getNotificationList' => getNotificationList($recipient->_id),
+            'actionUrl'           => route('user.read.gift_detail', ['giftUId' => $gift->_uid]),
+        ]);
     }
 
     /**
@@ -234,7 +280,7 @@ class GiftActionService
      */
     public function getGiftDetails($giftUId, $userId)
     {
-        $gift = UserGiftModel::with(['fromUser', 'toUser'])
+        $gift = UserGiftModel::with(['fromUser', 'toUser', 'icebreaker', 'item'])
             ->where('_uid', $giftUId)
             ->where('to_users__id', $userId)
             ->first();

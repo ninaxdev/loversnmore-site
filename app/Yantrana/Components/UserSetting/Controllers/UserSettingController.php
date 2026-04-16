@@ -74,6 +74,23 @@ class UserSettingController extends BaseController
     }
 
     /**
+     * Show gift preferences settings view.
+     *
+     * @return view
+     *---------------------------------------------------------------- */
+    public function getGiftPreferencesSettingsView()
+    {
+        $processReaction = $this->userSettingEngine->prepareUserSettings('gift_preferences');
+
+        abort_if($processReaction['reaction_code'] == 18, 404, $processReaction['message']);
+
+        return $this->loadPublicView('user.settings.settings', array_merge(
+            $processReaction['data'],
+            ['pageType' => 'gift_preferences']
+        ));
+    }
+
+    /**
      * Show visitors settings view.
      *
      * @return view
