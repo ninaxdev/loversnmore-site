@@ -45,7 +45,7 @@
 
             <!-- Gift Icon & Title -->
             <div class="text-center mb-6">
-                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3" style="background: linear-gradient(135deg, #7C3AED, #EC4899);">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3" style="background: var(--lw-gradient-main);">
                     <i class="fas fa-gift text-3xl text-white"></i>
                 </div>
                 @if($gift->item)
@@ -72,15 +72,15 @@
 
                 <!-- Thank You -->
                 <button onclick="lwGiftAction('thank-you')"
-                    class="w-full py-3 rounded-full font-semibold text-white transition-all duration-200 hover:opacity-90 hover:scale-105"
-                    style="background: linear-gradient(135deg, #7C3AED, #6D28D9); font-family: 'Poppins', sans-serif; font-size: 16px; box-shadow: 0 4px 14px rgba(124,58,237,0.35); border: none; cursor: pointer;">
-                    <i class="fas fa-heart mr-2"></i><?= __tr('Thank You') ?>
+                    class="w-full py-3 rounded-full font-semibold transition-all duration-200 lw-thank-you-btn"
+                    style="background: transparent; border: 2px solid #ec9cae; color: #222222; font-family: 'Poppins', sans-serif; font-size: 16px; cursor: pointer;">
+                    <i class="fas fa-heart mr-2" style="color: #ec9cae;"></i><?= __tr('Thank You') ?>
                 </button>
 
                 <!-- Start Chat -->
                 <button onclick="lwGiftAction('start-chat')"
                     class="w-full py-3 rounded-full font-semibold text-white transition-all duration-200 hover:opacity-90 hover:scale-105"
-                    style="background: linear-gradient(135deg, #EC4899, #DB2777); font-family: 'Poppins', sans-serif; font-size: 16px; box-shadow: 0 4px 14px rgba(236,72,153,0.35); border: none; cursor: pointer;">
+                    style="background: var(--lw-gradient-main); font-family: 'Poppins', sans-serif; font-size: 16px; box-shadow: 0 4px 14px rgba(124,58,237,0.35); border: none; cursor: pointer;">
                     <i class="fas fa-comments mr-2"></i><?= __tr('Start Chat') ?>
                 </button>
 
@@ -100,7 +100,7 @@
                         <i class="fas fa-heart"></i> <?= __tr('You thanked them') ?>
                     </span>
                 @elseif($gift->recipient_action === 'chatted')
-                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium" style="background-color: #FCE7F3; color: #DB2777;">
+                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium" style="background-color: #EDE9FE; color: #7C3AED;">
                         <i class="fas fa-comments"></i> <?= __tr('Chat started') ?>
                     </span>
                 @elseif($gift->recipient_action === 'ignored')
@@ -116,6 +116,25 @@
 
     </div>
 </div>
+
+<style>
+.lw-thank-you-btn:hover {
+    background: #5B3E96 !important;
+    border-color: #5B3E96 !important;
+    color: #ffffff !important;
+}
+.lw-thank-you-btn:hover i {
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(91, 62, 150, 0.3);
+}
+.lw-thank-you-btn:active {
+    background: #5B3E96 !important;
+    border-color: #5B3E96 !important;
+    color: #ffffff !important;
+    transform: translateY(0);
+}
+</style>
 
 <script>
 var lwGiftUId = '<?= $gift->_uid ?>';

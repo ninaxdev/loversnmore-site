@@ -1,10 +1,10 @@
-<!-- Premium Plan Selection - 3 Tier Pricing -->
-<div class="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 py-6 px-4">
-    <div class="max-w-6xl mx-auto">
-        
+<!-- Premium Plan Selection -->
+<div class="min-h-screen py-10 px-4" style="background: #ffffff; font-family: 'Poppins', sans-serif;">
+    <div class="max-w-4xl mx-auto">
+
         <!-- Back Button -->
         <div class="mb-4">
-            <a href="{{ route('user.premium_plan.read.view') }}" class="inline-flex items-center text-white hover:text-white/80 transition-colors">
+            <a href="{{ route('user.premium_plan.read.view') }}" class="inline-flex items-center transition-colors" style="color: #6b7280;">
                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -14,35 +14,36 @@
 
         <!-- Header -->
         <div class="text-center mb-6">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2"><?= __tr('Membership') ?></h1>
-            <p class="text-white/90 text-base md:text-lg"><?= __tr('Choose a plan and get unlimited access') ?></p>
+            <h1 class="text-4xl font-bold mb-2" style="color: #1a0a3c;"><?= __tr('Membership') ?></h1>
+            <p style="color: #6b7280; font-size: 15px;"><?= __tr('Choose a plan and get unlimited access') ?></p>
         </div>
 
         <!-- Monthly/Yearly Toggle -->
         <div class="flex justify-center mb-8">
-            <div class="bg-white/20 backdrop-blur-sm rounded-full p-1 inline-flex">
-                <button type="button" id="monthlyBtn" class="px-6 py-2 rounded-full text-sm font-semibold transition-all duration-200 pricing-toggle active">
+            <div class="inline-flex rounded-full p-1" style="background: #f3f4f6;">
+                <button type="button" id="monthlyBtn" class="pricing-toggle active px-6 py-2 rounded-full text-sm font-semibold transition-all duration-200">
                     <?= __tr('Monthly') ?>
                 </button>
-                <button type="button" id="yearlyBtn" class="px-6 py-2 rounded-full text-sm font-semibold transition-all duration-200 pricing-toggle">
+                <button type="button" id="yearlyBtn" class="pricing-toggle px-6 py-2 rounded-full text-sm font-semibold transition-all duration-200">
                     <?= __tr('Yearly') ?>
                 </button>
             </div>
         </div>
 
         <!-- Pricing Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
-            
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+
             <!-- Basic Plan -->
             <div class="bg-white rounded-2xl p-6 shadow-xl border-4 border-pink-500 relative">
                 <div class="text-center mb-4">
                     <h2 class="text-2xl font-bold text-gray-900 mb-2"><?= __tr('Basic') ?></h2>
                     <div class="mb-3">
-                        <span class="price-display text-4xl font-bold text-pink-600" data-monthly="9.99" data-yearly="99">$99</span>
-                        <span class="period-display text-xl text-gray-600">/year</span>
+                        <span class="price-display text-4xl font-bold text-pink-600" data-monthly="9.99" data-yearly="99">$9.99</span>
+                        <span class="period-display text-xl text-gray-600">/month</span>
+
                     </div>
                 </div>
-                
+
                 <div class="space-y-2 mb-6 text-sm">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 text-pink-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -63,7 +64,7 @@
                         <span class="text-gray-700"><?= __tr('Priority in Search') ?></span>
                     </div>
                 </div>
-                
+
                 <button type="button" class="upgrade-btn w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-200 transform hover:scale-105">
                     <?= __tr('Upgrade Now') ?>
                 </button>
@@ -77,11 +78,11 @@
                 <div class="text-center mb-4">
                     <h2 class="text-2xl font-bold text-gray-900 mb-2"><?= __tr('Plus') ?></h2>
                     <div class="mb-3">
-                        <span class="price-display text-4xl font-bold text-purple-600" data-monthly="19.99" data-yearly="199">$199</span>
-                        <span class="period-display text-xl text-gray-600">/year</span>
+                        <span class="price-display text-4xl font-bold text-purple-600" data-monthly="19.99" data-yearly="199">$19.99</span>
+                        <span class="period-display text-xl text-gray-600">/month</span>
                     </div>
                 </div>
-                
+
                 <div class="space-y-2 mb-6 text-sm">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 text-purple-600 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +103,7 @@
                         <span class="text-gray-700"><?= __tr('Message users first') ?></span>
                     </div>
                 </div>
-                
+
                 <button type="button" class="upgrade-btn w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-3 px-6 rounded-full transition-all duration-200 transform hover:scale-105">
                     <?= __tr('Upgrade Now') ?>
                 </button>
@@ -113,11 +114,11 @@
                 <div class="text-center mb-4">
                     <h2 class="text-2xl font-bold text-gray-900 mb-2"><?= __tr('Elite') ?></h2>
                     <div class="mb-3">
-                        <span class="price-display text-4xl font-bold text-indigo-900" data-monthly="29.99" data-yearly="279">$279</span>
-                        <span class="period-display text-xl text-gray-600">/year</span>
+                        <span class="price-display text-4xl font-bold text-indigo-900" data-monthly="29.99" data-yearly="279">$29.99</span>
+                        <span class="period-display text-xl text-gray-600">/month</span>
                     </div>
                 </div>
-                
+
                 <div class="space-y-2 mb-6 text-sm">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 text-indigo-900 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,32 +138,30 @@
                         </svg>
                         <span class="text-gray-700"><?= __tr('Read receipts on messages') ?></span>
                     </div>
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-indigo-900 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                        </svg>
+                        <span class="text-gray-700"><?= __tr('Ad-free browsing experience') ?></span>
+                    </div>
                 </div>
-                
+
                 <button type="button" class="upgrade-btn w-full bg-gradient-to-r from-indigo-900 to-indigo-950 hover:from-indigo-950 hover:to-black text-white font-bold py-3 px-6 rounded-full transition-all duration-200 transform hover:scale-105">
-                    <?= __tr('Upgrade Now') ?>
+                    <?= __tr('Upgrade') ?>
                 </button>
             </div>
 
         </div>
 
-        <!-- Brand Footer -->
-        <div class="text-center">
-            <p class="text-white/80 text-sm mb-2"><?= __tr('Cancel anytime. Terms apply.') ?></p>
-            <div class="flex items-center justify-center">
-                <svg class="w-6 h-6 text-pink-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
-                </svg>
-                <span class="text-2xl font-bold text-white">loversnmore</span>
-            </div>
-        </div>
+        <!-- Footer note -->
+        <p class="text-center text-sm" style="color: #9ca3af;"><?= __tr('Cancel anytime. Terms apply.') ?></p>
 
     </div>
 </div>
 
 <!-- Coming Soon Modal -->
-<div id="comingSoonModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl transform transition-all">
+<div id="comingSoonModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.5);">
+    <div class="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
         <div class="text-center">
             <div class="mb-4 flex justify-center">
                 <svg class="w-16 h-16 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -181,69 +180,53 @@
 @lwPush('appScripts')
 <script>
     $(document).ready(function() {
-        let isYearly = false; // Default to monthly
-
-        // Initialize prices on page load
+        let isYearly = false;
         updateAllPrices();
 
-        // Toggle between monthly and yearly
         $('.pricing-toggle').on('click', function() {
             $('.pricing-toggle').removeClass('active');
             $(this).addClass('active');
-            
             isYearly = $(this).attr('id') === 'yearlyBtn';
             updateAllPrices();
         });
 
-        // Update all price displays
         function updateAllPrices() {
             $('.price-display').each(function() {
                 const $price = $(this);
                 const monthly = parseFloat($price.data('monthly'));
-                const yearly = parseFloat($price.data('yearly'));
-                
-                if (isYearly) {
-                    $price.text('$' + yearly);
-                } else {
-                    $price.text('$' + monthly.toFixed(2));
-                }
+                const yearly  = parseFloat($price.data('yearly'));
+                $price.text('$' + (isYearly ? yearly : monthly.toFixed(2)));
             });
-            
             $('.period-display').text(isYearly ? '/year' : '/month');
         }
 
-        // Upgrade button clicks - show coming soon modal
         $('.upgrade-btn').on('click', function() {
             $('#comingSoonModal').removeClass('hidden');
         });
 
-        // Close modal
         $('#closeModalBtn').on('click', function() {
             $('#comingSoonModal').addClass('hidden');
         });
 
-        // Close modal on backdrop click
         $('#comingSoonModal').on('click', function(e) {
-            if (e.target === this) {
-                $(this).addClass('hidden');
-            }
+            if (e.target === this) $(this).addClass('hidden');
         });
     });
 </script>
 
 <style>
     .pricing-toggle {
-        background-color: transparent;
-        color: white;
+        background: transparent;
+        color: #6b7280;
+        border: none;
+        cursor: pointer;
     }
-    
     .pricing-toggle.active {
-        background-color: rgb(79, 70, 229); /* indigo-600 for dark purple look */
-        color: white;
+        background: #1a0a3c;
+        color: #ffffff;
     }
-    
     .pricing-toggle:not(.active):hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        color: #1a0a3c;
     }
 </style>
 @lwPushEnd
