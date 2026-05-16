@@ -157,18 +157,13 @@
 
         // Create cards
         icebreakers.forEach(function(icebreaker, index) {
-            const messageParts = icebreaker.message.split('\n\n');
-            const statement = messageParts[0] || '';
-            const question = messageParts[1] || icebreaker.message;
             const bgClass = bgClasses[index % bgClasses.length];
             const btnClass = (index % 3 === 2) ? 'lw-icebreaker-select-btn btn-pink' : 'lw-icebreaker-select-btn';
 
             const $card = $(`
                 <div class="lw-icebreaker-card-item ${bgClass}" data-icebreaker-id="${icebreaker.id}" data-index="${index}">
                     <div>
-                        <div class="lw-icebreaker-statement">${statement}</div>
-                        <div class="lw-icebreaker-divider"></div>
-                        <div class="lw-icebreaker-question">${question}</div>
+                        <div class="lw-icebreaker-question">${icebreaker.message}</div>
                     </div>
                     <button type="button" class="${btnClass}" data-icebreaker-id="${icebreaker.id}">
                         Select

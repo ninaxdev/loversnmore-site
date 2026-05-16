@@ -1545,7 +1545,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 							@foreach($giftListData as $key => $gift)
 							<div class="col-6 col-md-3 mb-3">
 								<label class="lw-gift-card {{ stripos($gift['title'], 'dinner') !== false || stripos($gift['title'], 'surprise') !== false ? 'lw-gift-premium' : '' }} w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 text-center" id="lwSendGiftRadioBtn_{{ $gift['_uid'] }}" style="cursor: pointer; background: linear-gradient(to bottom, #F3EEFF 0%, #EDE6FF 100%); border: 2px solid #E9D8FD; border-radius: 16px; transition: all 0.3s ease; position: relative; min-height: 220px; box-shadow: 0 2px 8px rgba(91, 62, 150, 0.08);">
-									<input type="radio" value="{{ $gift['_uid'] }}" name="selected_gift" style="position: absolute; opacity: 0;" />
+									<input type="radio" value="{{ $gift['_uid'] }}" name="selected_gift" data-gift-item-id="{{ $gift['_id'] }}" style="position: absolute; opacity: 0;" />
 									@if(stripos($gift['title'], 'dinner') !== false)
 										<div style="position: absolute; top: 6px; right: 6px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: white; font-size: 8px; font-weight: 700; padding: 2px 5px; border-radius: 6px; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 0.3px;">
 											⭐ Popular
@@ -2259,21 +2259,24 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 	// Message Selection Logic
 	var icebreakers = [];
 
-	// Load icebreakers when modal is shown
-	$('#lwSendGiftDialog').on('shown.bs.modal', function() {
-		if (icebreakers.length === 0) {
-			loadIcebreakers();
-		}
-	});
-
-	// Function to load icebreakers from API
-	function loadIcebreakers() {
-		__DataRequest.get('{{ route('user.icebreakers.list') }}', {}, function(response) {
-			if (response.reaction == 1 && response.data.icebreakers) {
-				icebreakers = response.data.icebreakers;
-				// Initialize the carousel component with the icebreakers data
-				if (typeof window.initIcebreakerCarousel === 'function') {
-					window.initIcebreakerCarousel(icebreakers);
+	// Function to load icebreakers for a specific gift item
+	function loadIcebreakers(giftItemId) {
+		$.ajax({
+			url: '{{ route('user.icebreakers.list') }}',
+			type: 'GET',
+			data: giftItemId ? { gift_item_id: giftItemId } : {},
+			headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+			dataType: 'json',
+			success: function(response) {
+				if (response.reaction == 1 && response.data && response.data.icebreakers) {
+					icebreakers = response.data.icebreakers;
+					if (typeof window.initIcebreakerCarousel === 'function') {
+						window.initIcebreakerCarousel(icebreakers);
+					}
+					// Reset icebreaker selection when gift changes
+					$('#lwIcebreakerSelect').val('');
+					$('#lwMessagePreview').slideUp(200);
+					$('.lw-icebreaker-select-btn').removeClass('selected').text('Select');
 				}
 			}
 		});
@@ -2317,6 +2320,7 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		console.log('Gift card clicked'); // Debug log
 		var $clickedCard = $(this);
 		var selectedGiftId = $clickedCard.find('input[type="radio"]').val();
+		var giftItemId = $clickedCard.find('input[type="radio"]').data('gift-item-id');
 
 		// Remove active state from all cards
 		$('.lw-gift-card').removeClass('lw-gift-card-active');
@@ -2324,6 +2328,11 @@ $longitude = (__ifIsset($userProfileData['longitude'], $userProfileData['longitu
 		$clickedCard.addClass('lw-gift-card-active');
 		// Check the radio button
 		$clickedCard.find('input[type="radio"]').prop('checked', true);
+
+		// Load icebreakers for the selected gift
+		if (giftItemId) {
+			loadIcebreakers(giftItemId);
+		}
 
 		// Enable Next button on Step 1 when gift is selected
 		if (currentGiftStep === 1) {
