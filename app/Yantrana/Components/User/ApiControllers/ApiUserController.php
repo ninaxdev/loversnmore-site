@@ -396,6 +396,22 @@ class ApiUserController extends BaseController
     }
 
     /**
+     * Get icebreakers list for gift send flow.
+     * Accepts optional ?gift_item_id= to return gift-specific icebreakers
+     * first, with generic (null) ones appended as fallback.
+     *
+     * @return json object
+     *---------------------------------------------------------------- */
+    public function getIcebreakers(Request $request)
+    {
+        $giftItemId = $request->query('gift_item_id') ? (int) $request->query('gift_item_id') : null;
+
+        $processReaction = $this->userEngine->prepareIcebreakers($giftItemId);
+
+        return $this->processResponse($processReaction, [], [], true);
+    }
+
+    /**
      * Handle user like dislike request.
      *
      * @param object UserResetPasswordRequest $request

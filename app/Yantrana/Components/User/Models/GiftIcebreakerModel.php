@@ -36,4 +36,16 @@ class GiftIcebreakerModel extends BaseModel
     {
         return $query->where('status', 1);
     }
+
+    /**
+     * Scope to get icebreakers for a specific gift item,
+     * falling back to generic (gift_item_id = null) ones.
+     */
+    public function scopeForGift($query, $giftItemId)
+    {
+        return $query->where(function ($q) use ($giftItemId) {
+            $q->where('gift_item_id', $giftItemId)
+              ->orWhereNull('gift_item_id');
+        });
+    }
 }

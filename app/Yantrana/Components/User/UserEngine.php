@@ -1686,15 +1686,24 @@ class UserEngine extends BaseEngine
 
     /**
      * Prepare icebreakers list
+     * If giftItemId is provided, returns icebreakers for that gift first,
+     * then falls back to generic ones (gift_item_id = null).
      *
+     * @param int|null $giftItemId
      * @return array
      *-----------------------------------------------------------------------*/
-    public function prepareIcebreakers()
+    public function prepareIcebreakers($giftItemId = null)
     {
-        $icebreakers = \App\Yantrana\Components\User\Models\GiftIcebreakerModel::active()
-            ->select('id', 'message')
-            ->get()
-            ->toArray();
+        $query = \App\Yantrana\Components\User\Models\GiftIcebreakerModel::active()
+            ->select('id', 'message', 'gift_item_id');
+
+        if ($giftItemId) {
+            $query->forGift($giftItemId)
+                  // gift-specific ones first, then generic fallbacks
+                  ->orderByRaw('CASE WHEN gift_item_id = ? THEN 0 ELSE 1 END', [$giftItemId]);
+        }
+
+        $icebreakers = $query->get()->toArray();
 
         return $this->engineReaction(1, [
             'icebreakers' => $icebreakers

@@ -583,6 +583,12 @@ Route::group([
                 'uses' => 'ApiUserController@userSendGift',
             ]);
 
+            // get icebreakers list (optional ?gift_item_id= for gift-specific icebreakers)
+            Route::get('/gifts/icebreakers', [
+                'as' => 'api.user.gifts.icebreakers',
+                'uses' => 'ApiUserController@getIcebreakers',
+            ]);
+
             // User Like Dislike route
             Route::post('/{toUserUid}/{like}/user-like-dislike', [
                 'as' => 'api.user.write.like_dislike',

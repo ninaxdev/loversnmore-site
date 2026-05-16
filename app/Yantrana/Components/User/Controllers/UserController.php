@@ -664,12 +664,16 @@ class UserController extends BaseController
 
     /**
      * Get list of active icebreakers.
+     * Accepts optional ?gift_item_id= to return gift-specific icebreakers first,
+     * with generic fallbacks appended.
      *
      * @return json object
      *---------------------------------------------------------------- */
-    public function getIcebreakers()
+    public function getIcebreakers(Request $request)
     {
-        $processReaction = $this->userEngine->prepareIcebreakers();
+        $giftItemId = $request->query('gift_item_id') ? (int) $request->query('gift_item_id') : null;
+
+        $processReaction = $this->userEngine->prepareIcebreakers($giftItemId);
 
         return $this->responseAction(
             $this->processResponse($processReaction, [], [], true)
