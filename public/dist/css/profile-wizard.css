@@ -1,0 +1,426 @@
+/* ============================================================
+   Profile Setup Wizard — page-specific styles
+   Scoped under body.lw-wizard-page to avoid bleeding into
+   other pages that share the lw-login-register-page class.
+   ============================================================ */
+
+/* ── Kill the dark page-bg variable on body ── */
+body.lw-wizard-page {
+    background: linear-gradient(135deg, #c53e8d 0%, #8b5cf6 100%) !important;
+    min-height: 100vh;
+}
+
+/* ── Hide footer on wizard page ── */
+body.lw-wizard-page .sticky-footer {
+    display: none !important;
+}
+
+/* ── Page wrapper ── */
+.lw-wizard-page-bg {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ── Background blobs ── */
+.lw-wizard-blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+}
+.lw-wizard-blob-1 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(197, 62, 141, 0.3));
+    top: -120px;
+    right: -100px;
+}
+.lw-wizard-blob-2 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, rgba(197, 62, 141, 0.25), rgba(139, 92, 246, 0.25));
+    bottom: -80px;
+    left: -80px;
+}
+
+/* ── White card ── */
+.lw-wizard-card {
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(51, 25, 107, 0.18);
+    max-width: 680px;
+    width: 100%;
+    padding: 40px 48px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Logo & header ── */
+.lw-wizard-logo {
+    height: 64px;
+    max-width: 200px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 8px;
+}
+.lw-wizard-title {
+    font-family: 'Lexend', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #33196b;
+    text-align: center;
+    margin-bottom: 6px;
+}
+.lw-wizard-subtitle {
+    font-family: 'Lexend', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #645290;
+    text-align: center;
+    margin-bottom: 28px;
+}
+.lw-wizard-logout-link {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-family: 'Lexend', sans-serif;
+    font-size: 13px;
+    color: #645290;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.lw-wizard-logout-link:hover {
+    color: #33196b;
+}
+
+/* ── Step progress bar ── */
+.lw-wizard-steps {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+.lw-wizard-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 72px;
+}
+.lw-step-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid #ec9cae;
+    color: #645290;
+    background: #ffffff;
+    font-family: 'Lexend', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+.lw-wizard-step.active .lw-step-circle {
+    background: #5B3E96;
+    border-color: #5B3E96;
+    color: #ffffff;
+}
+.lw-wizard-step.completed .lw-step-circle {
+    background: #c53e8d;
+    border-color: #c53e8d;
+    color: #ffffff;
+}
+.lw-wizard-step span {
+    font-family: 'Lexend', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #645290;
+    text-align: center;
+    white-space: nowrap;
+}
+.lw-wizard-step.active span {
+    color: #5B3E96;
+    font-weight: 600;
+}
+.lw-wizard-step.completed span {
+    color: #c53e8d;
+}
+.lw-step-divider {
+    flex: 1;
+    height: 2px;
+    background: #f0dff7;
+    margin-top: 19px;
+    min-width: 40px;
+    transition: background 0.3s ease;
+}
+.lw-wizard-step.completed + .lw-step-divider {
+    background: #c53e8d;
+}
+
+/* ── Section headings inside steps ── */
+.lw-step-section-title {
+    font-family: 'Lexend', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #33196b;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.lw-step-section-title i {
+    color: #c53e8d;
+    font-size: 14px;
+}
+
+/* ── Input groups ── */
+.lw-wizard-input-group {
+    position: relative;
+    margin-bottom: 16px;
+}
+.lw-wizard-input-group label {
+    font-family: 'Lexend', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #645290;
+    margin-bottom: 6px;
+    display: block;
+}
+.lw-wizard-input-group .lw-input-icon {
+    position: absolute;
+    left: 20px;
+    bottom: 18px;
+    color: #c53e8d;
+    font-size: 15px;
+    pointer-events: none;
+}
+
+/* ── Base field style (text, select, etc.) ── */
+.lw-wizard-field {
+    width: 100%;
+    height: 56px;
+    border: 2px solid #c53e8d;
+    border-radius: 60px;
+    padding: 0 20px 0 46px;
+    font-family: 'Lexend', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #33196b;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+/* appearance: none only on non-date fields (date inputs need native picker) */
+.lw-wizard-field:not([type="date"]) {
+    appearance: none;
+    -webkit-appearance: none;
+}
+.lw-wizard-field:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(197, 62, 141, 0.1);
+}
+
+/* ── Date input: keep native calendar picker, just style the box ── */
+input[type="date"].lw-wizard-field {
+    cursor: pointer;
+    color-scheme: light;
+    padding-right: 12px;
+}
+/* custom.css globally inverts the picker icon to white — undo that here */
+input[type="date"].lw-wizard-field::-webkit-calendar-picker-indicator {
+    filter: none;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+/* ── Select: custom dropdown arrow ── */
+.lw-wizard-field.lw-wizard-select {
+    padding-right: 44px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23645290' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    cursor: pointer;
+}
+
+/* ── Upload section ── */
+.lw-upload-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-top: 8px;
+}
+.lw-upload-col-profile {
+    flex: 0 0 160px;
+}
+.lw-upload-col-cover {
+    flex: 1;
+}
+.lw-upload-label {
+    font-family: 'Lexend', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #645290;
+    margin-bottom: 8px;
+    display: block;
+}
+.lw-upload-hint {
+    font-family: 'Lexend', sans-serif;
+    font-size: 11px;
+    color: #a88bbf;
+    margin-top: 4px;
+}
+
+/* ── Divider between sections ── */
+.lw-wizard-section-divider {
+    border: none;
+    border-top: 1px solid #f0dff7;
+    margin: 24px 0;
+}
+
+/* ── Navigation buttons (SmartWizard overrides) ── */
+.sw-toolbar {
+    background: transparent !important;
+    border: none !important;
+    padding: 24px 0 0 !important;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+.sw-btn-prev,
+.sw-btn-next {
+    font-family: 'Lexend', sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    height: 52px !important;
+    min-width: 140px !important;
+    border-radius: 80px !important;
+    border: 2px solid #ec9cae !important;
+    transition: all 0.3s ease !important;
+    letter-spacing: 0.2px !important;
+}
+.sw-btn-prev {
+    background: transparent !important;
+    color: #645290 !important;
+}
+.sw-btn-prev:hover:not(:disabled) {
+    background: #5B3E96 !important;
+    border-color: #5B3E96 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(91, 62, 150, 0.25) !important;
+}
+.sw-btn-next {
+    background: transparent !important;
+    color: #33196b !important;
+    margin-left: auto !important;
+}
+.sw-btn-next:hover:not(:disabled) {
+    background: #5B3E96 !important;
+    border-color: #5B3E96 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(91, 62, 150, 0.25) !important;
+}
+.sw-btn-next:disabled,
+.sw-btn-prev:disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+}
+
+/* ── Hide SmartWizard default step nav ── */
+#smartwizard > ul.nav,
+.step-anchor {
+    display: none !important;
+}
+
+/* ── Location map ── */
+#address-map-container {
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 12px;
+    border: 2px solid #f0dff7;
+}
+
+/* ── Finish step ── */
+.lw-finish-icon {
+    font-size: 56px;
+    color: #c53e8d;
+    text-align: center;
+    margin-bottom: 12px;
+    display: block;
+}
+.lw-finish-title {
+    font-family: 'Lexend', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #33196b;
+    text-align: center;
+    margin-bottom: 8px;
+}
+.lw-finish-subtitle {
+    font-family: 'Lexend', sans-serif;
+    font-size: 15px;
+    color: #645290;
+    text-align: center;
+    margin-bottom: 32px;
+}
+.lw-finish-btn {
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    height: 56px;
+    border-radius: 80px;
+    border: 2px solid #ec9cae;
+    background: transparent;
+    font-family: 'Lexend', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #33196b;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    line-height: 52px;
+    text-decoration: none;
+}
+.lw-finish-btn:hover {
+    background: #5B3E96;
+    border-color: #5B3E96;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(91, 62, 150, 0.3);
+    text-decoration: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 576px) {
+    .lw-wizard-card {
+        padding: 28px 20px;
+        border-radius: 16px;
+    }
+    .lw-wizard-logo { height: 52px; }
+    .lw-wizard-title { font-size: 18px; }
+    .lw-step-circle { width: 30px; height: 30px; font-size: 13px; }
+    .lw-step-divider { min-width: 20px; }
+    .lw-wizard-step span { font-size: 10px; }
+    .lw-wizard-field { height: 48px; font-size: 14px; }
+    .sw-btn-prev,
+    .sw-btn-next {
+        min-width: 110px !important;
+        height: 46px !important;
+        font-size: 14px !important;
+    }
+    .lw-upload-row { flex-direction: column; }
+    .lw-upload-col-profile { flex: unset; width: 160px; margin: 0 auto; }
+    .lw-finish-title { font-size: 22px; }
+}
