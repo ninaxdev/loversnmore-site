@@ -25,6 +25,10 @@
     <a href="<?= route('user.premium_plan.read.view') ?>" class="btn btn-sm lw-ajax-link-action lw-action-with-url lw-premium-btn" title="<?= __tr('Be Premium User') ?>">
         <i class="fas fa-crown mr-2"></i><?= __tr('Go Premium') ?>
     </a>
+    @else
+    <a href="<?= route('user.premium_plan.read.select_plan') ?>" class="btn btn-sm lw-ajax-link-action lw-action-with-url lw-premium-btn" title="<?= __tr('Change Plan') ?>">
+        <i class="fas fa-exchange-alt mr-2"></i><?= __tr('Change Plan') ?>
+    </a>
     @endif
 
     <!-- Right Navigation Items -->

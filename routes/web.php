@@ -874,6 +874,36 @@ Route::group([
                     'as' => 'user.premium_plan.read.success_view',
                     'uses' => 'PremiumPlanController@getPremiumPlanSuccessView',
                 ]);
+
+                // Stripe Checkout
+                Route::post('/checkout', [
+                    'as'   => 'user.premium_plan.checkout',
+                    'uses' => 'PremiumPlanController@checkout',
+                ]);
+                Route::get('/checkout/success', [
+                    'as'   => 'user.premium_plan.checkout.success',
+                    'uses' => 'PremiumPlanController@checkoutSuccess',
+                ]);
+
+                // Subscription management
+                Route::post('/cancel', [
+                    'as'   => 'user.premium_plan.cancel',
+                    'uses' => 'PremiumPlanController@cancelSubscription',
+                ]);
+                Route::post('/resume', [
+                    'as'   => 'user.premium_plan.resume',
+                    'uses' => 'PremiumPlanController@resumeSubscription',
+                ]);
+                Route::post('/portal', [
+                    'as'   => 'user.premium_plan.portal',
+                    'uses' => 'PremiumPlanController@customerPortal',
+                ]);
+
+                // Invoices
+                Route::get('/invoices', [
+                    'as'   => 'user.premium_plan.invoices',
+                    'uses' => 'PremiumPlanController@getInvoicesView',
+                ]);
             });
 
 

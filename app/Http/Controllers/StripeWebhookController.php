@@ -7,18 +7,24 @@ use Stripe\Stripe;
 use Stripe\Webhook;
 use Stripe\Exception\SignatureVerificationException;
 use App\Yantrana\Components\User\UserEngine;
+use App\Yantrana\Components\User\PremiumPlanEngine;
 use App\Services\StripeConnectService;
 use App\Yantrana\Components\User\Models\User;
+use App\Yantrana\Components\User\Models\UserSubscription;
+use App\Yantrana\Components\User\Models\Plan;
+use Carbon\Carbon;
 
 class StripeWebhookController extends Controller
 {
     protected $userEngine;
     protected $stripeConnectService;
+    protected $premiumPlanEngine;
 
-    public function __construct(UserEngine $userEngine, StripeConnectService $stripeConnectService)
+    public function __construct(UserEngine $userEngine, StripeConnectService $stripeConnectService, PremiumPlanEngine $premiumPlanEngine)
     {
         $this->userEngine = $userEngine;
         $this->stripeConnectService = $stripeConnectService;
+        $this->premiumPlanEngine = $premiumPlanEngine;
     }
 
     /**
@@ -66,6 +72,27 @@ class StripeWebhookController extends Controller
 
             case 'payment_intent.canceled':
                 $this->handlePaymentIntentCanceled($event->data->object);
+                break;
+
+            // Subscription events
+            case 'checkout.session.completed':
+                $this->handleCheckoutSessionCompleted($event->data->object);
+                break;
+
+            case 'invoice.paid':
+                $this->handleInvoicePaid($event->data->object);
+                break;
+
+            case 'invoice.payment_failed':
+                $this->handleInvoicePaymentFailed($event->data->object);
+                break;
+
+            case 'customer.subscription.deleted':
+                $this->handleSubscriptionDeleted($event->data->object);
+                break;
+
+            case 'customer.subscription.updated':
+                $this->handleSubscriptionUpdated($event->data->object);
                 break;
 
             // Stripe Connect account events
@@ -272,6 +299,166 @@ class StripeWebhookController extends Controller
             'capability' => $capability->id,
             'status' => $capability->status,
         ]);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Subscription webhook handlers
+    // ─────────────────────────────────────────────────────────────
+
+    protected function handleCheckoutSessionCompleted($session)
+    {
+        // Only handle subscription mode — gift payments use payment_intent.succeeded
+        if ($session->mode !== 'subscription') return;
+
+        $userId = $session->metadata->user_id ?? null;
+        $planId = $session->metadata->plan_id ?? null;
+
+        $user = User::where('_id', $userId)->first();
+        $plan = Plan::where('_id', $planId)->first();
+
+        if (!$user || !$plan) {
+            \Log::error('Checkout completed: user or plan not found', compact('userId', 'planId'));
+            return;
+        }
+
+        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+        $sub = \Stripe\Subscription::retrieve($session->subscription);
+
+        // Cancel any pre-existing active Stripe subscription to avoid double billing
+        $existingSub = UserSubscription::where('users__id', $user->_id)
+            ->where('status', 1)
+            ->whereNotNull('stripe_subscription_id')
+            ->first();
+
+        if ($existingSub && $existingSub->stripe_subscription_id !== $sub->id) {
+            try {
+                \Stripe\Subscription::cancel($existingSub->stripe_subscription_id);
+            } catch (\Exception $e) {
+                \Log::warning('Could not cancel old subscription', ['error' => $e->getMessage()]);
+            }
+        }
+
+        // Deactivate all existing subscription rows for this user
+        UserSubscription::where('users__id', $user->_id)
+            ->where('status', 1)
+            ->update(['status' => 0, 'updated_at' => now()]);
+
+        // Insert new subscription row
+        UserSubscription::create([
+            '_uid'                           => (string) \Illuminate\Support\Str::uuid(),
+            'status'                         => 1,
+            'users__id'                      => $user->_id,
+            'plan_id'                        => $plan->key . '_' . $plan->interval,
+            'plan_key'                       => $plan->key,
+            'plan_interval'                  => $plan->interval,
+            'plan_price'                     => $plan->price,
+            'stripe_subscription_id'         => $sub->id,
+            'stripe_price_id'                => $plan->stripe_price_id,
+            'expiry_at'                      => Carbon::createFromTimestamp($this->getSubPeriodEnd($sub)),
+            'cancel_at_period_end'           => false,
+            'credit_wallet_transactions__id' => null,
+        ]);
+
+        if (!$user->stripe_customer_id) {
+            $user->stripe_customer_id = $session->customer;
+            $user->save();
+        }
+
+        // Clear premium cache
+        $this->clearPremiumCache($user->_id);
+
+        \Log::info('Subscription created via checkout', ['user_id' => $user->_id, 'plan' => $plan->name]);
+    }
+
+    protected function handleInvoicePaid($invoice)
+    {
+        if (!$invoice->subscription) return;
+
+        $userSub = UserSubscription::where('stripe_subscription_id', $invoice->subscription)
+            ->where('status', 1)
+            ->first();
+
+        if (!$userSub) return;
+
+        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+        $stripeSub = \Stripe\Subscription::retrieve($invoice->subscription);
+
+        // Apply pending downgrade at renewal
+        if ($userSub->pending_plan_id) {
+            $pendingPlan = Plan::where('_id', $userSub->pending_plan_id)->first();
+            if ($pendingPlan && $pendingPlan->stripe_price_id) {
+                \Stripe\Subscription::update($invoice->subscription, [
+                    'items' => [[
+                        'id'    => $stripeSub->items->data[0]->id,
+                        'price' => $pendingPlan->stripe_price_id,
+                    ]],
+                    'proration_behavior' => 'none',
+                ]);
+                $userSub->update([
+                    'plan_key'        => $pendingPlan->key,
+                    'plan_interval'   => $pendingPlan->interval,
+                    'plan_price'      => $pendingPlan->price,
+                    'stripe_price_id' => $pendingPlan->stripe_price_id,
+                    'pending_plan_id' => null,
+                ]);
+                $userSub->refresh();
+            }
+        }
+
+        // Extend expiry on every renewal
+        $userSub->update([
+            'expiry_at' => Carbon::createFromTimestamp($this->getSubPeriodEnd($stripeSub)),
+        ]);
+
+        // Invoices are fetched on-demand from Stripe — no local invoice storage
+    }
+
+    protected function handleInvoicePaymentFailed($invoice)
+    {
+        \Log::warning('Subscription invoice payment failed', [
+            'invoice_id'      => $invoice->id,
+            'subscription_id' => $invoice->subscription,
+            'amount'          => ($invoice->amount_due ?? 0) / 100,
+        ]);
+        // Stripe retries automatically; subscription.deleted fires after all retries exhausted
+    }
+
+    protected function handleSubscriptionDeleted($subscription)
+    {
+        $userSub = UserSubscription::where('stripe_subscription_id', $subscription->id)->first();
+
+        if ($userSub) {
+            $userSub->update(['status' => 0]);
+            $this->clearPremiumCache($userSub->users__id);
+        }
+
+        \Log::info('Subscription deleted', ['stripe_sub_id' => $subscription->id]);
+    }
+
+    protected function handleSubscriptionUpdated($subscription)
+    {
+        $userSub = UserSubscription::where('stripe_subscription_id', $subscription->id)->first();
+
+        if ($userSub) {
+            $userSub->update([
+                'cancel_at_period_end' => $subscription->cancel_at_period_end,
+                'expiry_at'            => Carbon::createFromTimestamp($this->getSubPeriodEnd($subscription)),
+            ]);
+        }
+    }
+
+    private function getSubPeriodEnd(\Stripe\Subscription $sub): int
+    {
+        $ts = $sub->current_period_end
+            ?? ($sub->items->data[0]->current_period_end ?? null);
+
+        return (int) $ts;
+    }
+
+    private function clearPremiumCache($userId)
+    {
+        $currentTime = now()->format('Y-m-d H:i');
+        \Cache::forget("user_subscription_of_{$userId}_user_id_at_{$currentTime}");
     }
 }
 

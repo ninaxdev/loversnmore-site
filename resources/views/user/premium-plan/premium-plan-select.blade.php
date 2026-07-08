@@ -1,3 +1,12 @@
+@php
+    $currentPlanKey      = ($premiumPlanData['isPremiumUser'] ?? false)
+        ? ($premiumPlanData['userSubscriptionData']['plan_key'] ?? null)
+        : null;
+    $currentPlanInterval = $currentPlanKey
+        ? ($premiumPlanData['userSubscriptionData']['plan_interval'] ?? null)
+        : null;
+@endphp
+
 <!-- Premium Plan Selection -->
 <div class="min-h-screen py-10 px-4" style="background: #ffffff; font-family: 'Poppins', sans-serif;">
     <div class="max-w-4xl mx-auto">
@@ -65,9 +74,14 @@
                     </div>
                 </div>
 
-                <button type="button" class="upgrade-btn w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-200 transform hover:scale-105">
-                    <?= __tr('Upgrade Now') ?>
-                </button>
+                <form method="POST" action="{{ route('user.premium_plan.checkout') }}">
+                    @csrf
+                    <input type="hidden" name="plan_key" value="basic">
+                    <input type="hidden" name="interval" class="interval-input" value="month">
+                    <button type="submit" data-plan-key="basic" class="plan-btn upgrade-btn w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-200 transform hover:scale-105">
+                        <?= __tr('Upgrade Now') ?>
+                    </button>
+                </form>
             </div>
 
             <!-- Plus Plan -->
@@ -104,9 +118,14 @@
                     </div>
                 </div>
 
-                <button type="button" class="upgrade-btn w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-3 px-6 rounded-full transition-all duration-200 transform hover:scale-105">
-                    <?= __tr('Upgrade Now') ?>
-                </button>
+                <form method="POST" action="{{ route('user.premium_plan.checkout') }}">
+                    @csrf
+                    <input type="hidden" name="plan_key" value="plus">
+                    <input type="hidden" name="interval" class="interval-input" value="month">
+                    <button type="submit" data-plan-key="plus" class="plan-btn upgrade-btn w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-3 px-6 rounded-full transition-all duration-200 transform hover:scale-105">
+                        <?= __tr('Upgrade Now') ?>
+                    </button>
+                </form>
             </div>
 
             <!-- Elite Plan -->
@@ -146,9 +165,14 @@
                     </div>
                 </div>
 
-                <button type="button" class="upgrade-btn w-full bg-gradient-to-r from-indigo-900 to-indigo-950 hover:from-indigo-950 hover:to-black text-white font-bold py-3 px-6 rounded-full transition-all duration-200 transform hover:scale-105">
-                    <?= __tr('Upgrade') ?>
-                </button>
+                <form method="POST" action="{{ route('user.premium_plan.checkout') }}">
+                    @csrf
+                    <input type="hidden" name="plan_key" value="elite">
+                    <input type="hidden" name="interval" class="interval-input" value="month">
+                    <button type="submit" data-plan-key="elite" class="plan-btn upgrade-btn w-full bg-gradient-to-r from-indigo-900 to-indigo-950 hover:from-indigo-950 hover:to-black text-white font-bold py-3 px-6 rounded-full transition-all duration-200 transform hover:scale-105">
+                        <?= __tr('Upgrade Now') ?>
+                    </button>
+                </form>
             </div>
 
         </div>
@@ -159,26 +183,11 @@
     </div>
 </div>
 
-<!-- Coming Soon Modal -->
-<div id="comingSoonModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.5);">
-    <div class="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl">
-        <div class="text-center">
-            <div class="mb-4 flex justify-center">
-                <svg class="w-16 h-16 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-3"><?= __tr('Coming Soon!') ?></h3>
-            <p class="text-gray-600 mb-6"><?= __tr('Premium subscriptions will be available soon. Stay tuned for updates!') ?></p>
-            <button type="button" id="closeModalBtn" class="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-200">
-                <?= __tr('Got it') ?>
-            </button>
-        </div>
-    </div>
-</div>
-
 @lwPush('appScripts')
 <script>
+    var currentPlanKey      = '{{ $currentPlanKey }}';
+    var currentPlanInterval = '{{ $currentPlanInterval }}';
+
     $(document).ready(function() {
         let isYearly = false;
         updateAllPrices();
@@ -198,19 +207,29 @@
                 $price.text('$' + (isYearly ? yearly : monthly.toFixed(2)));
             });
             $('.period-display').text(isYearly ? '/year' : '/month');
+            $('.interval-input').val(isYearly ? 'year' : 'month');
+            updatePlanButtons();
         }
 
-        $('.upgrade-btn').on('click', function() {
-            $('#comingSoonModal').removeClass('hidden');
-        });
-
-        $('#closeModalBtn').on('click', function() {
-            $('#comingSoonModal').addClass('hidden');
-        });
-
-        $('#comingSoonModal').on('click', function(e) {
-            if (e.target === this) $(this).addClass('hidden');
-        });
+        function updatePlanButtons() {
+            const interval = isYearly ? 'year' : 'month';
+            $('.plan-btn').each(function() {
+                const key       = $(this).data('plan-key');
+                const isCurrent = currentPlanKey && key === currentPlanKey && interval === currentPlanInterval;
+                if (isCurrent) {
+                    $(this).prop('disabled', true)
+                           .removeClass('upgrade-btn hover:scale-105')
+                           .addClass('cursor-not-allowed opacity-60')
+                           .text('{{ __tr('Current Plan') }}');
+                    $(this).closest('form').find('input[name="interval"]').val(interval);
+                } else {
+                    $(this).prop('disabled', false)
+                           .addClass('upgrade-btn hover:scale-105')
+                           .removeClass('cursor-not-allowed opacity-60')
+                           .text('{{ __tr('Upgrade Now') }}');
+                }
+            });
+        }
     });
 </script>
 

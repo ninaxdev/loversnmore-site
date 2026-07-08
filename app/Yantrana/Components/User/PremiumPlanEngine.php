@@ -9,8 +9,10 @@ namespace App\Yantrana\Components\User;
 
 use App\Yantrana\Base\BaseEngine;
 use App\Yantrana\Components\User\Repositories\{UserRepository};
+use App\Yantrana\Components\User\Models\Plan;
 use App\Yantrana\Support\CommonTrait;
 use Carbon\Carbon;
+use Stripe\Stripe as StripeClient;
 
 class PremiumPlanEngine extends BaseEngine
 {
@@ -66,25 +68,47 @@ class PremiumPlanEngine extends BaseEngine
         $userSubscription = $this->userRepository->fetchUserSubscription();
 
         $userSubscriptionData = [];
-        if (! __isEmpty($userSubscription) and ! __isEmpty($premiumPlans) and ! __isEmpty($premiumPlanData)) {
-            $planData = $premiumPlanData[$userSubscription->plan_id];
+        if (! __isEmpty($userSubscription)) {
             $expiryAt = isset($userSubscription->expiry_at) ? formatDate($userSubscription->expiry_at, 'l jS F Y H:i:s') : 'N/A';
 
-            $userSubscriptionData = [
-                '_id' => $userSubscription->_id,
-                '_uid' => $userSubscription->_uid,
-                'created_at' => formatDate($userSubscription->created_at, 'l jS F Y H:i:s'),
-                'users__id' => $userSubscription->users__id,
-                'expiry_at' => $expiryAt,
-                'credit_wallet_transactions__id' => $userSubscription->credit_wallet_transactions__id,
-                'debitedCredits' => $userSubscription->credits,
-                'plan_id' => $userSubscription->plan_id,
-                'planTitle' => $planData['title'],
-                'planPrice' => $planData['price'],
-                'long_expiry' => false,
-            ];
-            // check if it has long expiry date
-            if($userSubscription->expiry_at > Carbon::now()->addYears(10)) {
+            // Stripe subscription — build from new columns
+            if (!empty($userSubscription->plan_key)) {
+                $userSubscriptionData = [
+                    '_id'                            => $userSubscription->_id,
+                    '_uid'                           => $userSubscription->_uid,
+                    'created_at'                     => formatDate($userSubscription->created_at, 'l jS F Y H:i:s'),
+                    'users__id'                      => $userSubscription->users__id,
+                    'expiry_at'                      => $expiryAt,
+                    'credit_wallet_transactions__id' => $userSubscription->credit_wallet_transactions__id,
+                    'debitedCredits'                 => 0,
+                    'plan_id'                        => $userSubscription->plan_id,
+                    'plan_key'                       => $userSubscription->plan_key,
+                    'plan_interval'                  => $userSubscription->plan_interval,
+                    'planTitle'                      => ucfirst($userSubscription->plan_key),
+                    'planPrice'                      => $userSubscription->plan_price,
+                    'long_expiry'                    => false,
+                ];
+            } elseif (! __isEmpty($premiumPlans) and ! __isEmpty($premiumPlanData) and isset($premiumPlanData[$userSubscription->plan_id])) {
+                // Legacy credit-based subscription
+                $planData = $premiumPlanData[$userSubscription->plan_id];
+                $userSubscriptionData = [
+                    '_id'                            => $userSubscription->_id,
+                    '_uid'                           => $userSubscription->_uid,
+                    'created_at'                     => formatDate($userSubscription->created_at, 'l jS F Y H:i:s'),
+                    'users__id'                      => $userSubscription->users__id,
+                    'expiry_at'                      => $expiryAt,
+                    'credit_wallet_transactions__id' => $userSubscription->credit_wallet_transactions__id,
+                    'debitedCredits'                 => $userSubscription->credits,
+                    'plan_id'                        => $userSubscription->plan_id,
+                    'plan_key'                       => null,
+                    'plan_interval'                  => null,
+                    'planTitle'                      => $planData['title'],
+                    'planPrice'                      => $planData['price'],
+                    'long_expiry'                    => false,
+                ];
+            }
+
+            if (!empty($userSubscriptionData) && $userSubscription->expiry_at > Carbon::now()->addYears(10)) {
                 $userSubscriptionData['is_long_expiry'] = true;
             }
         }
@@ -97,6 +121,247 @@ class PremiumPlanEngine extends BaseEngine
                 'premiumFeature' => $premiumFeatureData,
             ],
         ]);
+    }
+
+    /**
+     * Get or create a Stripe customer for the given user.
+     */
+    public function getOrCreateStripeCustomer($user): string
+    {
+        StripeClient::setApiKey(config('services.stripe.secret'));
+
+        if ($user->stripe_customer_id) {
+            return $user->stripe_customer_id;
+        }
+
+        $customer = \Stripe\Customer::create([
+            'email'    => $user->email,
+            'name'     => trim($user->first_name . ' ' . $user->last_name),
+            'metadata' => ['user_id' => $user->_id],
+        ]);
+
+        $user->stripe_customer_id = $customer->id;
+        $user->save();
+
+        return $customer->id;
+    }
+
+    /**
+     * Initiate Stripe Checkout session for a new subscription.
+     */
+    public function processStripeCheckout($planKey, $interval)
+    {
+        StripeClient::setApiKey(config('services.stripe.secret'));
+
+        $user = auth()->user();
+        $plan = Plan::active()->where('key', $planKey)->where('interval', $interval)->first();
+
+        if (!$plan || !$plan->stripe_price_id) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('Plan not available.'));
+        }
+
+        // If user already has an active Stripe subscription — change plan instead
+        $activeSub = $this->userRepository->fetchUserSubscription();
+        if ($activeSub && !empty($activeSub->stripe_subscription_id)) {
+            return $this->processChangePlan($activeSub, $plan);
+        }
+
+        $customerId = $this->getOrCreateStripeCustomer($user);
+
+        $session = \Stripe\Checkout\Session::create([
+            'customer'             => $customerId,
+            'payment_method_types' => ['card'],
+            'mode'                 => 'subscription',
+            'line_items'           => [['price' => $plan->stripe_price_id, 'quantity' => 1]],
+            'success_url'          => route('user.premium_plan.checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url'           => route('user.premium_plan.read.select_plan'),
+            'metadata'             => [
+                'user_id' => $user->_id,
+                'plan_id' => $plan->_id,
+            ],
+        ]);
+
+        return $this->engineReaction(1, ['checkout_url' => $session->url]);
+    }
+
+    /**
+     * Upgrade (immediate + proration) or downgrade (scheduled at renewal).
+     */
+    public function processChangePlan($activeSub, $newPlan)
+    {
+        StripeClient::setApiKey(config('services.stripe.secret'));
+
+        $isUpgrade = $newPlan->price > (float) $activeSub->plan_price;
+        $stripeSub = \Stripe\Subscription::retrieve($activeSub->stripe_subscription_id);
+
+        if ($isUpgrade) {
+            $updatedSub = \Stripe\Subscription::update($activeSub->stripe_subscription_id, [
+                'items' => [[
+                    'id'    => $stripeSub->items->data[0]->id,
+                    'price' => $newPlan->stripe_price_id,
+                ]],
+                'proration_behavior' => 'always_invoice',
+                'expand'             => ['latest_invoice'],
+            ]);
+
+            \DB::table('user_subscriptions')->where('_id', $activeSub->_id)->update([
+                'plan_key'        => $newPlan->key,
+                'plan_interval'   => $newPlan->interval,
+                'plan_price'      => $newPlan->price,
+                'stripe_price_id' => $newPlan->stripe_price_id,
+                'expiry_at'       => Carbon::createFromTimestamp($this->getSubPeriodEnd($updatedSub)),
+                'pending_plan_id' => null,
+                'updated_at'      => now(),
+            ]);
+
+            return $this->engineReaction(1, ['show_message' => true], __tr('Plan upgraded successfully.'));
+        }
+
+        // Downgrade — schedule for next renewal
+        \DB::table('user_subscriptions')->where('_id', $activeSub->_id)->update([
+            'pending_plan_id' => $newPlan->_id,
+            'updated_at'      => now(),
+        ]);
+
+        return $this->engineReaction(1, ['show_message' => true],
+            __tr('Plan will change to ') . $newPlan->name . __tr(' at next renewal.'));
+    }
+
+    /**
+     * Cancel subscription at period end (user retains access until expiry).
+     */
+    public function processCancelSubscription()
+    {
+        StripeClient::setApiKey(config('services.stripe.secret'));
+
+        $activeSub = $this->userRepository->fetchUserSubscription();
+
+        if (!$activeSub || empty($activeSub->stripe_subscription_id)) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('No active subscription found.'));
+        }
+
+        \Stripe\Subscription::update($activeSub->stripe_subscription_id, [
+            'cancel_at_period_end' => true,
+        ]);
+
+        \DB::table('user_subscriptions')->where('_id', $activeSub->_id)->update([
+            'cancel_at_period_end' => true,
+            'canceled_at'          => now(),
+            'updated_at'           => now(),
+        ]);
+
+        return $this->engineReaction(1, ['show_message' => true],
+            __tr('Subscription cancelled. You have access until ') . formatDate($activeSub->expiry_at, 'd M Y') . '.');
+    }
+
+    /**
+     * Resume a cancelled subscription (still within the billing period).
+     */
+    public function processResumeSubscription()
+    {
+        StripeClient::setApiKey(config('services.stripe.secret'));
+
+        $activeSub = $this->userRepository->fetchUserSubscription();
+
+        if (!$activeSub || empty($activeSub->stripe_subscription_id)) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('No subscription found.'));
+        }
+
+        \Stripe\Subscription::update($activeSub->stripe_subscription_id, [
+            'cancel_at_period_end' => false,
+        ]);
+
+        \DB::table('user_subscriptions')->where('_id', $activeSub->_id)->update([
+            'cancel_at_period_end' => false,
+            'canceled_at'          => null,
+            'updated_at'           => now(),
+        ]);
+
+        return $this->engineReaction(1, ['show_message' => true], __tr('Subscription resumed.'));
+    }
+
+    /**
+     * Prepare subscription data for the membership settings page.
+     */
+    public function prepareSubscriptionData()
+    {
+        $sub  = $this->userRepository->fetchUserSubscription();
+        $user = auth()->user();
+
+        $subscriptionData = null;
+        if ($sub && $sub->plan_key) {
+            $subscriptionData = [
+                'planName'              => ucfirst($sub->plan_key),
+                'planInterval'          => $sub->plan_interval,
+                'planPrice'             => $sub->plan_price,
+                'expiryAt'              => $sub->expiry_at
+                                            ? formatDate($sub->expiry_at, 'd M Y')
+                                            : null,
+                'cancelAtPeriodEnd'     => (bool) ($sub->cancel_at_period_end ?? false),
+                'hasStripeSubscription' => !empty($sub->stripe_subscription_id),
+            ];
+        }
+
+        return $this->engineReaction(1, [
+            'isPremiumUser'     => isPremiumUser(),
+            'subscription'      => $subscriptionData,
+            'hasStripeCustomer' => (bool) $user->stripe_customer_id,
+        ]);
+    }
+
+    /**
+     * Open Stripe Customer Portal for card/billing management.
+     */
+    public function processCustomerPortal()
+    {
+        StripeClient::setApiKey(config('services.stripe.secret'));
+
+        $user = auth()->user();
+
+        if (!$user->stripe_customer_id) {
+            return $this->engineReaction(2, ['show_message' => true], __tr('No billing account found.'));
+        }
+
+        $session = \Stripe\BillingPortal\Session::create([
+            'customer'   => $user->stripe_customer_id,
+            'return_url' => route('user.settings.membership'),
+        ]);
+
+        return $this->engineReaction(1, ['portal_url' => $session->url]);
+    }
+
+    /**
+     * Fetch invoices for the logged-in user directly from Stripe.
+     */
+    public function prepareStripeInvoices()
+    {
+        StripeClient::setApiKey(config('services.stripe.secret'));
+
+        $user = auth()->user();
+
+        if (!$user->stripe_customer_id) {
+            return $this->engineReaction(1, ['invoices' => []]);
+        }
+
+        $stripeInvoices = \Stripe\Invoice::all([
+            'customer' => $user->stripe_customer_id,
+            'limit'    => 24,
+        ]);
+
+        $invoices = collect($stripeInvoices->data)->map(function ($inv) {
+            return [
+                'id'          => $inv->id,
+                'number'      => $inv->number,
+                'amount'      => number_format($inv->amount_paid / 100, 2),
+                'currency'    => strtoupper($inv->currency),
+                'status'      => $inv->status,
+                'date'        => Carbon::createFromTimestamp($inv->created)->format('d M Y'),
+                'pdf_url'     => $inv->invoice_pdf,
+                'hosted_url'  => $inv->hosted_invoice_url,
+            ];
+        })->toArray();
+
+        return $this->engineReaction(1, ['invoices' => $invoices]);
     }
 
     /**
@@ -197,5 +462,18 @@ class PremiumPlanEngine extends BaseEngine
 
         //response
         return $this->engineReaction($buyPremiumPlanRequest);
+    }
+
+    /**
+     * Read current_period_end from a Stripe Subscription object.
+     * Some SDK versions expose it on the item rather than the subscription root.
+     */
+    private function getSubPeriodEnd(\Stripe\Subscription $sub): int
+    {
+        // Try subscription root first, then fall back to first item
+        $ts = $sub->current_period_end
+            ?? ($sub->items->data[0]->current_period_end ?? null);
+
+        return (int) $ts;
     }
 }

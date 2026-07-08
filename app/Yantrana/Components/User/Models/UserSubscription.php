@@ -18,6 +18,8 @@ class UserSubscription extends BaseModel
      *
      * @var array
      */
+    protected $guarded = [];
+
     protected $casts = [
         '_id' => 'integer',
         'status' => 'integer',

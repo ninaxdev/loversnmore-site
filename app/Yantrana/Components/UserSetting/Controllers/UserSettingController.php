@@ -13,6 +13,7 @@ use App\Yantrana\Components\UserSetting\Requests\UserProfileSettingAddRequest;
 use App\Yantrana\Components\UserSetting\Requests\UserProfileWizardRequest;
 use App\Yantrana\Components\UserSetting\Requests\UserSettingRequest;
 use App\Yantrana\Components\UserSetting\UserSettingEngine;
+use App\Yantrana\Components\User\PremiumPlanEngine;
 use App\Yantrana\Support\CommonUnsecuredPostRequest;
 
 class UserSettingController extends BaseController
@@ -23,14 +24,21 @@ class UserSettingController extends BaseController
     protected $userSettingEngine;
 
     /**
+     * @var  PremiumPlanEngine
+     */
+    protected $premiumPlanEngine;
+
+    /**
      * Constructor
      *
-     * @param  UserSettingEngine  $userSettingEngine - UserSetting Engine
+     * @param  UserSettingEngine  $userSettingEngine
+     * @param  PremiumPlanEngine  $premiumPlanEngine
      * @return  void
      *-----------------------------------------------------------------------*/
-    public function __construct(UserSettingEngine $userSettingEngine)
+    public function __construct(UserSettingEngine $userSettingEngine, PremiumPlanEngine $premiumPlanEngine)
     {
         $this->userSettingEngine = $userSettingEngine;
+        $this->premiumPlanEngine = $premiumPlanEngine;
     }
 
     /**
@@ -113,7 +121,8 @@ class UserSettingController extends BaseController
      *---------------------------------------------------------------- */
     public function getMembershipSettingsView()
     {
-        return $this->loadPublicView('user.settings.membership');
+        $processReaction = $this->premiumPlanEngine->prepareSubscriptionData();
+        return $this->loadPublicView('user.settings.membership', $processReaction['data']);
     }
 
     /**

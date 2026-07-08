@@ -88,4 +88,62 @@ class PremiumPlanController extends BaseController
     {
         return $this->loadPublicView('user.premium-plan.premium-plan-success');
     }
+
+    // ─────────────────────────────────────────────────────────────
+    // Stripe Checkout & Subscription Management
+    // ─────────────────────────────────────────────────────────────
+
+    public function checkout(\Illuminate\Http\Request $request)
+    {
+        $processReaction = $this->premiumPlanEngine->processStripeCheckout(
+            $request->input('plan_key'),
+            $request->input('interval')
+        );
+
+        if ($processReaction['reaction_code'] == 1 && isset($processReaction['data']['checkout_url'])) {
+            return redirect($processReaction['data']['checkout_url']);
+        }
+
+        // Upgrade/downgrade handled inline — redirect to membership page
+        if ($processReaction['reaction_code'] == 1) {
+            return redirect()->route('user.settings.membership')
+                ->with('success', $processReaction['message']);
+        }
+
+        return back()->with('error', $processReaction['message']);
+    }
+
+    public function checkoutSuccess(\Illuminate\Http\Request $request)
+    {
+        return $this->loadPublicView('user.premium-plan.premium-plan-success');
+    }
+
+    public function cancelSubscription()
+    {
+        $processReaction = $this->premiumPlanEngine->processCancelSubscription();
+        $key = $processReaction['reaction_code'] == 1 ? 'success' : 'error';
+        return redirect()->route('user.settings.membership')->with($key, $processReaction['message']);
+    }
+
+    public function resumeSubscription()
+    {
+        $processReaction = $this->premiumPlanEngine->processResumeSubscription();
+        $key = $processReaction['reaction_code'] == 1 ? 'success' : 'error';
+        return redirect()->route('user.settings.membership')->with($key, $processReaction['message']);
+    }
+
+    public function customerPortal()
+    {
+        $processReaction = $this->premiumPlanEngine->processCustomerPortal();
+        if ($processReaction['reaction_code'] == 1 && isset($processReaction['data']['portal_url'])) {
+            return redirect($processReaction['data']['portal_url']);
+        }
+        return back()->with('error', $processReaction['message']);
+    }
+
+    public function getInvoicesView()
+    {
+        $processReaction = $this->premiumPlanEngine->prepareStripeInvoices();
+        return $this->loadPublicView('user.premium-plan.invoices', $processReaction['data']);
+    }
 }

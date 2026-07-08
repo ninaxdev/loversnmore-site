@@ -66,7 +66,7 @@
                         <!-- Username -->
                         <div class="lw-form-group">
                             <div class="lw-input-container lw-input-with-icon">
-                                <span class="lw-input-icon">@</span>
+                                <span class="lw-input-icon"><i class="fa fa-at"></i></span>
                                 <input type="text" class="lw-form-input lw-form-input-with-icon" name="username" placeholder="<?= __tr('Username') ?>" required minlength="5">
                             </div>
                         </div>

@@ -87,6 +87,7 @@ class UserRepository extends BaseRepository implements UserRepositoryBlueprint
                 ])
             )
             ->where('user_subscriptions.users__id', getUserID())
+            ->where('user_subscriptions.status', 1)
             ->where('user_subscriptions.expiry_at', '>=', $currentDateTime)
             ->latest()
             ->first();
@@ -1436,6 +1437,7 @@ class UserRepository extends BaseRepository implements UserRepositoryBlueprint
         $currentTime = Carbon::now();
         return viaFlashCache("user_subscription_of_{$userId}_user_id_at_{$currentTime}", function() use($userId, $currentTime) {
             return UserSubscription::where('users__id', $userId)
+            ->where('status', 1)
             ->where('expiry_at', '>=', $currentTime)
             ->latest()
             ->first();
