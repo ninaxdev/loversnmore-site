@@ -32,7 +32,7 @@
     @endif
 
     <!-- Right Navigation Items -->
-    <ul class="navbar-nav ml-auto" x-data="{ totalUnreadMsgCount: <?= $allUnreadMsgCount  ?> }">
+    <ul class="navbar-nav ml-auto" x-data="{ totalUnreadMsgCount: <?= $allUnreadMsgCount  ?>, totalNotificationCount: '<?= (getNotificationList()['notificationCount'] > 0) ? getNotificationList()['notificationCount'] : '' ?>' }">
         
         <!-- Enhanced Messenger Link -->
         <li class="nav-item d-none d-lg-block">

@@ -21,6 +21,17 @@
             </a>
         </div>
 
+        @if(session('error'))
+            <div class="mb-4 p-4 rounded-2xl" style="background-color: #FEE2E2; border: 1px solid #FCA5A5; color: #991B1B;">
+                {{ session('error') }}
+            </div>
+        @endif
+        @if(session('success'))
+            <div class="mb-4 p-4 rounded-2xl" style="background-color: #D1FAE5; border: 1px solid #6EE7B7; color: #065F46;">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <!-- Header -->
         <div class="text-center mb-6">
             <h1 class="text-4xl font-bold mb-2" style="color: #1a0a3c;"><?= __tr('Membership') ?></h1>
