@@ -16,9 +16,19 @@ class BasicAuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // Skip basic auth for beta waitlist routes and Stripe webhooks
-        if ($request->is('beta') || $request->is('beta/*') || $request->is('stripe/webhook')) {
-            return $next($request);
+        // Skip basic auth for public-facing routes:
+        //   /            → redirects to /join
+        //   /join, /join/*  → the Houston waitlist landing + form + success + assets
+        //   /beta, /beta/*  → legacy waitlist URLs (301 redirect to /join)
+        //   /legal/*      → Terms of Service + Privacy Policy pages
+        //   /stripe/webhook → Stripe callbacks (must be publicly reachable)
+        $publicPaths = [
+            '/', 'join', 'join/*', 'beta', 'beta/*', 'legal/*', 'stripe/webhook',
+        ];
+        foreach ($publicPaths as $path) {
+            if ($request->is($path)) {
+                return $next($request);
+            }
         }
 
         // Skip basic auth if disabled via environment variable

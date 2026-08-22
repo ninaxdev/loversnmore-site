@@ -45,6 +45,6 @@
 <p>These Terms are governed by the laws of the State of Texas, United States, without regard to conflict of laws principles.</p>
 
 <h2>12. Contact</h2>
-<p>Questions about these Terms? Contact us at <a href="mailto:hello@loversnmore.com">hello@loversnmore.com</a>.</p>
+<p>Questions about these Terms? Contact us at <a href="mailto:admin@loversnmore.com">admin@loversnmore.com</a>.</p>
 
 @endcomponent

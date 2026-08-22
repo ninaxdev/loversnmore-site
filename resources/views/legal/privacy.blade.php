@@ -42,7 +42,7 @@
   <li>Delete your information from our systems.</li>
   <li>Opt out of marketing emails at any time.</li>
 </ul>
-<p>To exercise any of these rights, email us at <a href="mailto:privacy@loversnmore.com">privacy@loversnmore.com</a>.</p>
+<p>To exercise any of these rights, email us at <a href="mailto:admin@loversnmore.com">admin@loversnmore.com</a>.</p>
 
 <h2>6. Cookies and tracking</h2>
 <p>The waitlist landing page uses only strictly necessary cookies (for security tokens and session management). We do not use third-party advertising cookies or cross-site tracking on this page.</p>
@@ -60,6 +60,6 @@
 <p>We may update this Privacy Policy from time to time. When we do, we will revise the "Last updated" date above. Significant changes will be communicated by email where reasonably possible.</p>
 
 <h2>11. Contact us</h2>
-<p>Questions about this policy or your data? Reach us at <a href="mailto:privacy@loversnmore.com">privacy@loversnmore.com</a>.</p>
+<p>Questions about this policy or your data? Reach us at <a href="mailto:admin@loversnmore.com">admin@loversnmore.com</a>.</p>
 
 @endcomponent
