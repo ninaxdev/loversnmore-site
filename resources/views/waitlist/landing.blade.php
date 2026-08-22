@@ -9,14 +9,19 @@
 <meta name="description" content="Join the LoversNmore waitlist for Houston. A new way to meet friends, date intentionally, and explore your city together. Coming soon.">
 <meta name="theme-color" content="#4c1be0">
 
-<!-- Open Graph / Facebook / WhatsApp / iMessage -->
+<!-- Open Graph / Facebook / WhatsApp / iMessage / Discord -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="LoversNmore">
+<meta property="og:locale" content="en_US">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:title" content="LoversNmore — Coming to Houston">
 <meta property="og:description" content="Connections that go beyond. Join the waitlist for Houston.">
 <meta property="og:image" content="{{ asset('dist/img/waitlist/og-image.png') }}">
+<meta property="og:image:secure_url" content="{{ asset('dist/img/waitlist/og-image.png') }}">
+<meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="LoversNmore — coming to Houston. Less &quot;wyd?&quot;, more real connections.">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
