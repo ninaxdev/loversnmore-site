@@ -26,9 +26,6 @@ class WaitlistEngine extends BaseEngine
 
     /**
      * Constructor.
-     *
-     * @param WaitlistRepository $waitlistRepository - Waitlist Repository
-     * @param BaseMailer $baseMailer - Base Mailer
      *-----------------------------------------------------------------------*/
     public function __construct(
         WaitlistRepository $waitlistRepository,
@@ -41,84 +38,131 @@ class WaitlistEngine extends BaseEngine
     /**
      * Process waitlist signup
      *
-     * @param Request $request
+     * Accepts fields from Nina's landing form:
+     *   first_name, email, city
+     *
+     * Also accepts legacy `full_name` for backwards compatibility.
+     *
+     * @param  Request  $request
      * @return array
      *---------------------------------------------------------------- */
     public function processSignup($request)
     {
-        $email = $request->input('email');
-        $city = $request->input('city', '');
-        $fullName = $request->input('full_name', '');
+        $email     = trim(strtolower($request->input('email')));
+        $firstName = trim($request->input('first_name', $request->input('full_name', '')));
+        $city      = trim($request->input('city', ''));
 
         // Check if email already exists in waitlist
         if ($this->waitlistRepository->fetchByEmail($email)) {
             return $this->engineReaction(2, [
-                'message' => __tr('This email is already on the waitlist.')
+                'message' => __tr('This email is already on the waitlist.'),
             ]);
         }
 
-        // Check if email already exists in users table
-        $userExists = \DB::table('users')->where('email', $email)->exists();
-        if ($userExists) {
+        // Check if email already registered as a user
+        if (\DB::table('users')->where('email', $email)->exists()) {
             return $this->engineReaction(2, [
-                'message' => __tr('This email is already registered.')
+                'message' => __tr('This email is already registered.'),
             ]);
         }
 
-        // Prepare signup data
+        // Prepare and store the signup
         $signupData = [
-            'full_name' => $fullName,
-            'email' => $email,
-            'city' => $city,
-            'interest' => [], // Will be added when we have interest checkboxes
+            'full_name' => $firstName,
+            'email'     => $email,
+            'city'      => $city,
+            'interest'  => [],
         ];
 
-        // Store the signup
         $signup = $this->waitlistRepository->storeSignup($signupData);
 
         if (!$signup) {
             return $this->engineReaction(2, [
-                'message' => __tr('Failed to join waitlist. Please try again.')
+                'message' => __tr('Failed to join waitlist. Please try again.'),
             ]);
         }
 
-        // Send admin notification email
+        // Fire off both emails (failures logged but do not block success)
+        $this->sendUserConfirmation($signup);
         $this->sendAdminNotification($signup);
 
         return $this->engineReaction(1, [
-            'message' => __tr('Successfully joined the waitlist! We will notify you when we launch.'),
-            'signup' => $signup
+            'message' => __tr("You're on the list! Check your inbox for a confirmation email."),
+            'signup'  => $signup,
         ]);
     }
 
     /**
-     * Send admin notification about new signup
+     * Send confirmation email to the person who just signed up
      *
-     * @param WaitlistSignup $signup
+     * @param  \App\Yantrana\Components\Waitlist\Models\WaitlistSignup  $signup
+     * @return void
+     *---------------------------------------------------------------- */
+    protected function sendUserConfirmation($signup)
+    {
+        try {
+            $this->baseMailer->notifyToUser(
+                "You're on the LoversNmore waitlist!",
+                'waitlist.signup-confirmation',
+                [
+                    'firstName' => $signup->full_name ?: 'there',
+                    'city'      => $signup->city,
+                    'name'      => $signup->full_name ?: $signup->email,
+                ],
+                $signup->email
+            );
+        } catch (\Exception $e) {
+            \Log::error('Waitlist confirmation email failed: ' . $e->getMessage(), [
+                'signup_id' => $signup->_id ?? null,
+                'email'     => $signup->email,
+            ]);
+        }
+    }
+
+    /**
+     * Send admin notification about new signup.
+     *
+     * Recipient resolution:
+     *   1. .env WAITLIST_ADMIN_EMAIL (via config/mail.php) — preferred, easy to change
+     *   2. Falls back to admin store setting `business_email` if env is unset
+     *   3. If neither is configured, the notification is skipped (with a log entry).
+     *
+     * @param  \App\Yantrana\Components\Waitlist\Models\WaitlistSignup  $signup
      * @return void
      *---------------------------------------------------------------- */
     protected function sendAdminNotification($signup)
     {
-        try {
-            $adminEmail = getStoreSettings('contact_email') ?: config('mail.from.address');
+        $adminEmail = config('mail.waitlist_admin_email') ?: getStoreSettings('business_email');
 
-            if ($adminEmail) {
-                $this->baseMailer->notifyAdmin(
-                    'waitlist.new-signup-admin',
-                    [
-                        'fullName' => $signup->full_name,
-                        'email' => $signup->email,
-                        'city' => $signup->city,
-                        'priorityScore' => $signup->priority_score,
-                        'signupDate' => $signup->created_at->format('M d, Y H:i'),
-                    ],
-                    __tr('New Beta Waitlist Signup'),
-                    $adminEmail
-                );
-            }
+        if (empty($adminEmail)) {
+            \Log::warning('Waitlist admin notification skipped: no recipient configured', [
+                'signup_id' => $signup->_id ?? null,
+            ]);
+            return;
+        }
+
+        try {
+            // Use notifyToUser to send to an explicit recipient (functionally identical
+            // to notifyAdmin — both render through emails.index — but lets us route to
+            // an env-configured address instead of the DB store setting).
+            $this->baseMailer->notifyToUser(
+                __tr('New Beta Waitlist Signup'),
+                'waitlist.new-signup-admin',
+                [
+                    'fullName'      => $signup->full_name,
+                    'email'         => $signup->email,
+                    'city'          => $signup->city,
+                    'priorityScore' => $signup->priority_score,
+                    'signupDate'    => optional($signup->created_at)->format('M d, Y H:i'),
+                    'name'          => 'Admin',
+                ],
+                $adminEmail
+            );
         } catch (\Exception $e) {
-            // Log error but don't fail the signup
-            \Log::error('Failed to send admin notification for waitlist signup: ' . $e->getMessage());
+            \Log::error('Waitlist admin notification failed: ' . $e->getMessage(), [
+                'signup_id' => $signup->_id ?? null,
+                'recipient' => $adminEmail,
+            ]);
         }
     }
 

@@ -98,7 +98,7 @@
 	<table align="center" cellpadding="0" cellspacing="0" class="container-for-gmail-android" width="100%" style="border-collapse: collapse !important; font-family: Helvetica, Arial, sans-serif; min-width: 600px;">
 		<tbody>
 			<tr style="font-family: Helvetica, Arial, sans-serif;">
-				<td align="left" valign="top" width="100%" style="background: #000; border-collapse: collapse; color: #777777; font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; text-align: center;">
+				<td align="left" valign="top" width="100%" style="background: #4c1be0; background-image: linear-gradient(135deg, #4c1be0 0%, #f81f72 100%); border-collapse: collapse; color: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; text-align: center;">
 					<center style="font-family: Helvetica, Arial, sans-serif;">
 						<table cellspacing="0" cellpadding="0" width="100%" style="border-bottom:1px solid #ddd; border-collapse: collapse !important; font-family: Helvetica, Arial, sans-serif;">
 							<tbody>
@@ -108,8 +108,8 @@
 											<table cellpadding="0" cellspacing="0" width="600" class="w320" style="border-collapse: collapse !important; font-family: Helvetica, Arial, sans-serif;">
 												<tbody>
 													<tr style="font-family: Helvetica, Arial, sans-serif;">
-														<td class="pull-left mobile-header-padding-left" style="border-collapse: collapse; color: #777777; font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; padding-left: 10px; text-align: left; vertical-align: middle; width: 290px;">
-															<h1 style="color: #ffffff; padding-top: 12px; font-family: Helvetica, Arial, sans-serif;"><?= getStoreSettings('name') ?></h1>
+														<td class="pull-left mobile-header-padding-left" style="border-collapse: collapse; color: #ffffff; font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; padding-left: 10px; text-align: center; vertical-align: middle; width: 100%;">
+															<h1 style="color: #ffffff; padding-top: 12px; font-family: Helvetica, Arial, sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 0.3px; margin: 0; text-align: center;"><?= getStoreSettings('name') ?></h1>
 														</td>
 														<td class="pull-right mobile-header-padding-right" style="border-collapse: collapse; color: #4d4d4d; font-family: Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; padding-left: 10px; text-align: right; width: 290px;">
 														</td>

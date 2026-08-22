@@ -8,7 +8,6 @@
 
 namespace App\Yantrana\Components\Waitlist\Controllers;
 
-use Illuminate\Http\Request;
 use App\Yantrana\Base\BaseController;
 use App\Yantrana\Components\Waitlist\WaitlistEngine;
 use App\Yantrana\Components\Waitlist\Requests\WaitlistSignupRequest;
@@ -22,8 +21,6 @@ class WaitlistController extends BaseController
 
     /**
      * Constructor.
-     *
-     * @param WaitlistEngine $waitlistEngine - Waitlist Engine
      *-----------------------------------------------------------------------*/
     public function __construct(WaitlistEngine $waitlistEngine)
     {
@@ -32,8 +29,6 @@ class WaitlistController extends BaseController
 
     /**
      * Show landing page.
-     *
-     * @return view
      *---------------------------------------------------------------- */
     public function showLandingPage()
     {
@@ -41,25 +36,39 @@ class WaitlistController extends BaseController
     }
 
     /**
+     * Show success page after signup.
+     *---------------------------------------------------------------- */
+    public function showSuccessPage()
+    {
+        // If user hits /beta/success directly without a signup, redirect to landing
+        if (!session()->has('waitlist_signup_email')) {
+            return redirect()->route('waitlist.landing');
+        }
+
+        return $this->loadView('waitlist.success', [
+            'signupEmail'     => session('waitlist_signup_email'),
+            'signupFirstName' => session('waitlist_signup_first_name'),
+        ]);
+    }
+
+    /**
      * Process waitlist signup.
-     *
-     * @param WaitlistSignupRequest $request
-     * @return redirect
      *---------------------------------------------------------------- */
     public function processSignup(WaitlistSignupRequest $request)
     {
         $processReaction = $this->waitlistEngine->processSignup($request);
 
-        // Check reaction code
         if ($processReaction['reaction_code'] === 1) {
-            // Success - redirect back with success message
-            return redirect()->route('waitlist.landing')
-                ->with('success', $processReaction['data']['message']);
-        } else {
-            // Error - redirect back with error message
-            return redirect()->route('waitlist.landing')
-                ->withErrors([$processReaction['data']['message']])
-                ->withInput();
+            return redirect()
+                ->route('waitlist.success')
+                ->with('waitlist_signup_email',      $request->input('email'))
+                ->with('waitlist_signup_first_name', $request->input('first_name', ''));
         }
+
+        return redirect()
+            ->route('waitlist.landing')
+            ->withErrors([$processReaction['data']['message']])
+            ->withInput()
+            ->withFragment('waitlist');
     }
 }

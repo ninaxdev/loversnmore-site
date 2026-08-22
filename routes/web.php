@@ -23,6 +23,15 @@ Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::c
 
 /*
 |--------------------------------------------------------------------------
+| Root redirect: send everyone hitting `/` to the Houston waitlist landing.
+| Pre-launch — the waitlist IS the site. Change back once the app is live.
+| 302 (temporary) so browsers don't hard-cache the redirect.
+|--------------------------------------------------------------------------
+*/
+Route::redirect('/', '/join', 302);
+
+/*
+|--------------------------------------------------------------------------
 | Lw-Dating Routes
 |--------------------------------------------------------------------------
 */
@@ -53,20 +62,35 @@ Route::group([
         'uses' => 'Home\Controllers\HomeController@previewPage',
     ]);
 
-    // Beta Waitlist Routes - Publicly accessible (no auth required)
-    // Beta Waitlist Landing Page
-    Route::get('/beta', [
+    // Waitlist Routes - Publicly accessible (no auth required)
+    // Waitlist Landing Page
+    Route::get('/join', [
         'namespace' => 'Waitlist\Controllers',
         'as' => 'waitlist.landing',
         'uses' => 'Waitlist\Controllers\WaitlistController@showLandingPage',
     ]);
 
-    // Beta Waitlist Signup
-    Route::post('/beta/signup', [
+    // Waitlist Signup
+    Route::post('/join/signup', [
         'namespace' => 'Waitlist\Controllers',
         'as' => 'waitlist.signup.process',
         'uses' => 'Waitlist\Controllers\WaitlistController@processSignup',
     ])->middleware('throttle:5,1'); // Rate limit: 5 attempts per minute
+
+    // Waitlist Success page (shown after successful signup)
+    Route::get('/join/success', [
+        'namespace' => 'Waitlist\Controllers',
+        'as' => 'waitlist.success',
+        'uses' => 'Waitlist\Controllers\WaitlistController@showSuccessPage',
+    ]);
+
+    // Legacy /beta URLs → 301 redirect to /join (preserves any old shares/backlinks)
+    Route::redirect('/beta',         '/join',         301);
+    Route::redirect('/beta/success', '/join/success', 301);
+
+    // Legal pages (Terms of Service + Privacy Policy)
+    Route::view('/legal/terms',   'legal.terms')->name('legal.terms');
+    Route::view('/legal/privacy', 'legal.privacy')->name('legal.privacy');
 
     /*
     User Components Public Section Related Routes
@@ -75,11 +99,11 @@ Route::group([
         Route::group([
             'namespace' => 'User\Controllers',
         ], function () {
-            // Get auth choice page as home
-            Route::get('/', [
-                'as' => 'landing_page',
-                'uses' => 'UserController@authChoice',
-            ]);
+            // Pre-launch: root redirects to the Houston waitlist.
+            // Revert to `UserController@authChoice` once the app is live.
+            Route::get('/', function () {
+                return redirect('/join', 302);
+            })->name('landing_page');
         });
 
         // Process search from landing page
