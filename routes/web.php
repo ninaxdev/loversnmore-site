@@ -23,12 +23,12 @@ Route::post('/stripe/webhook', [\App\Http\Controllers\StripeWebhookController::c
 
 /*
 |--------------------------------------------------------------------------
-| Root redirect: send everyone hitting `/` to the Houston waitlist landing.
-| Pre-launch — the waitlist IS the site. Change back once the app is live.
+| Root redirect: send everyone hitting `/` to the Icebreakers landing.
+| Pre-launch — Icebreakers is the public experience we're driving traffic to.
 | 302 (temporary) so browsers don't hard-cache the redirect.
 |--------------------------------------------------------------------------
 */
-Route::redirect('/', '/join', 302);
+Route::redirect('/', '/icebreakers', 302);
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +88,25 @@ Route::group([
     Route::redirect('/beta',         '/join',         301);
     Route::redirect('/beta/success', '/join/success', 301);
 
+    // Icebreakers — public conversation-card feature (browse decks + play)
+    Route::group([
+        'namespace' => 'Icebreaker\Controllers',
+        'prefix'    => 'icebreakers',
+    ], function () {
+        Route::get('/', [
+            'as'   => 'icebreakers.index',
+            'uses' => 'IcebreakerController@index',
+        ]);
+        Route::get('/{slug}', [
+            'as'   => 'icebreakers.show',
+            'uses' => 'IcebreakerController@show',
+        ]);
+        Route::get('/{slug}/play', [
+            'as'   => 'icebreakers.play',
+            'uses' => 'IcebreakerController@play',
+        ]);
+    });
+
     // Legal pages (Terms of Service + Privacy Policy)
     Route::view('/legal/terms',   'legal.terms')->name('legal.terms');
     Route::view('/legal/privacy', 'legal.privacy')->name('legal.privacy');
@@ -99,10 +118,10 @@ Route::group([
         Route::group([
             'namespace' => 'User\Controllers',
         ], function () {
-            // Pre-launch: root redirects to the Houston waitlist.
+            // Pre-launch: root redirects to the Icebreakers landing.
             // Revert to `UserController@authChoice` once the app is live.
             Route::get('/', function () {
-                return redirect('/join', 302);
+                return redirect('/icebreakers', 302);
             })->name('landing_page');
         });
 
@@ -1323,6 +1342,64 @@ Route::group([
                 Route::get('/', [
                     'as' => 'manage.dashboard',
                     'uses' => 'DashboardController@loadDashboardView',
+                ]);
+            });
+
+            /*
+            Icebreaker Admin Routes — deck + question CRUD
+            ------------------------------------------------------------------- */
+            Route::group([
+                'namespace' => 'Icebreaker\Controllers',
+                'prefix'    => 'manage/icebreakers',
+            ], function () {
+                // Deck CRUD
+                Route::get('/decks', [
+                    'as' => 'manage.icebreakers.decks.index',
+                    'uses' => 'IcebreakerAdminController@index',
+                ]);
+                Route::get('/decks/create', [
+                    'as' => 'manage.icebreakers.decks.create',
+                    'uses' => 'IcebreakerAdminController@create',
+                ]);
+                Route::post('/decks', [
+                    'as' => 'manage.icebreakers.decks.store',
+                    'uses' => 'IcebreakerAdminController@store',
+                ]);
+                Route::get('/decks/{deck}/edit', [
+                    'as' => 'manage.icebreakers.decks.edit',
+                    'uses' => 'IcebreakerAdminController@edit',
+                ]);
+                Route::put('/decks/{deck}', [
+                    'as' => 'manage.icebreakers.decks.update',
+                    'uses' => 'IcebreakerAdminController@update',
+                ]);
+                Route::delete('/decks/{deck}', [
+                    'as' => 'manage.icebreakers.decks.destroy',
+                    'uses' => 'IcebreakerAdminController@destroy',
+                ]);
+
+                // Question CRUD (AJAX from the deck editor)
+                Route::post('/decks/{deck}/questions', [
+                    'as' => 'manage.icebreakers.questions.store',
+                    'uses' => 'IcebreakerAdminController@storeQuestion',
+                ]);
+                Route::put('/questions/{question}', [
+                    'as' => 'manage.icebreakers.questions.update',
+                    'uses' => 'IcebreakerAdminController@updateQuestion',
+                ]);
+                Route::delete('/questions/{question}', [
+                    'as' => 'manage.icebreakers.questions.destroy',
+                    'uses' => 'IcebreakerAdminController@destroyQuestion',
+                ]);
+
+                // Bulk paste import + drag-drop reorder
+                Route::post('/decks/{deck}/questions/bulk', [
+                    'as' => 'manage.icebreakers.questions.bulk',
+                    'uses' => 'IcebreakerAdminController@bulkImportQuestions',
+                ]);
+                Route::post('/decks/{deck}/questions/reorder', [
+                    'as' => 'manage.icebreakers.questions.reorder',
+                    'uses' => 'IcebreakerAdminController@reorderQuestions',
                 ]);
             });
 

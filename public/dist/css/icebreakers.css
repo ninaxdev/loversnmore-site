@@ -1,0 +1,708 @@
+/* ================================================================
+   LoversNmore Icebreakers — public styles
+   Extracted from the approved prototype. Deep purple + white +
+   soft lavender + pink accent. Single-theme (light).
+   ================================================================ */
+:root {
+  --ground:        #ffffff;
+  --ground-soft:   #faf7ff;
+  --card-face:     #ffffff;
+
+  --ink:           #1a0e34;
+  --ink-soft:      #4a3b6a;
+  --muted:         #8b849e;
+  --hairline:      #ede6f7;
+
+  --purple:        #6b3fd6;
+  --purple-2:      #5928c4;
+  --purple-deep:   #4a1eaa;
+  --purple-tint:   #efe8ff;
+
+  --lavender:      #d8c7f3;
+  --lavender-soft: #ede4fa;
+  --lavender-ink:  #3d1e91;
+
+  --pink:          #ff4778;
+  --pink-tint:     #ffe0ea;
+  --pink-2:        #e63566;
+
+  --radius:        26px;
+  --radius-tight:  12px;
+
+  --shadow-card:   0 2px 4px rgba(74, 30, 170, 0.08), 0 12px 30px rgba(74, 30, 170, 0.14);
+  --shadow-lift:   0 6px 14px rgba(74, 30, 170, 0.12), 0 28px 60px rgba(74, 30, 170, 0.28);
+  --shadow-btn:    0 6px 18px rgba(107, 63, 214, 0.35);
+}
+
+.ib-body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+.ib-body * { box-sizing: border-box; }
+.ib-body button {
+  font-family: inherit;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+.ib-body button:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.ib-body [hidden] { display: none !important; }
+
+/* --- Top bar ------------------------------------------------------ */
+.ib-topbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 24px;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}
+.ib-hamburger {
+  display: inline-grid;
+  gap: 4px;
+  padding: 6px;
+}
+.ib-hamburger span {
+  display: block;
+  width: 20px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--ink);
+}
+.ib-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: center;
+  text-decoration: none;
+}
+.ib-brand-mark {
+  width: 26px;
+  height: 26px;
+  color: var(--purple);
+}
+.ib-brand-word {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  color: var(--purple);
+}
+.ib-topbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.ib-icon-btn {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--ink);
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.ib-icon-btn:hover { background: var(--purple-tint); }
+.ib-icon-btn svg { width: 20px; height: 20px; }
+.ib-icon-btn.pink svg { color: var(--pink); }
+.ib-back-btn {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--ink);
+  text-decoration: none;
+}
+.ib-back-btn:hover { background: var(--purple-tint); }
+.ib-back-btn svg { width: 22px; height: 22px; }
+
+/* --- Deck Selection ---------------------------------------------- */
+.ib-view-select {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+.ib-select-hero { padding: 16px 0 24px; }
+.ib-select-title {
+  font-size: 40px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin: 0 0 4px;
+  color: var(--ink);
+  line-height: 1;
+}
+.ib-select-sub {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0;
+  font-weight: 500;
+}
+
+.ib-category-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 0 20px;
+  scrollbar-width: none;
+}
+.ib-category-pills::-webkit-scrollbar { display: none; }
+.ib-cat-pill {
+  flex-shrink: 0;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--ground-soft);
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--hairline);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  text-decoration: none;
+  display: inline-block;
+}
+.ib-cat-pill:hover { background: var(--purple-tint); color: var(--purple-2); }
+.ib-cat-pill.is-active {
+  background: var(--purple);
+  color: white;
+  border-color: var(--purple);
+  box-shadow: var(--shadow-btn);
+}
+
+.ib-deck-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px 18px;
+  padding-top: 8px;
+}
+.ib-deck-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.ib-deck-stack {
+  position: relative;
+  aspect-ratio: 3.2 / 4.2;
+  perspective: 1000px;
+  padding: 0;
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
+  display: block;
+  cursor: pointer;
+}
+a.ib-deck-stack { text-decoration: none; }
+.ib-deck-stack:hover { transform: translateY(-6px); }
+.ib-deck-stack:hover .ib-st-layer[data-i="0"] { transform: translate(0, -4px); }
+
+.ib-st-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
+  will-change: transform;
+  box-shadow: var(--shadow-card);
+}
+.ib-st-layer[data-i="2"] { transform: translate(-14px, 8px) rotate(-8deg); z-index: 1; }
+.ib-st-layer[data-i="1"] { transform: translate(12px, 5px)  rotate(6deg);  z-index: 2; }
+.ib-st-layer[data-i="0"] {
+  z-index: 3;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.ib-deck-item[data-variant="solid"] .ib-st-layer {
+  background: linear-gradient(160deg, #7a49e6 0%, #5928c4 100%);
+}
+.ib-deck-item[data-variant="soft"] .ib-st-layer {
+  background: linear-gradient(160deg, #e2d3f7 0%, #d1bef0 100%);
+}
+.ib-deck-item[data-variant="solid"] .ib-st-layer[data-i="1"],
+.ib-deck-item[data-variant="solid"] .ib-st-layer[data-i="2"] { opacity: 0.9; }
+.ib-deck-item[data-variant="soft"] .ib-st-layer[data-i="1"],
+.ib-deck-item[data-variant="soft"] .ib-st-layer[data-i="2"] { opacity: 0.95; }
+
+.ib-cover-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 18px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+.ib-cover-inner img.ib-cover-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.ib-cover-heart { width: 62px; height: 62px; color: white; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12)); position: relative; z-index: 1; }
+.ib-cover-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  line-height: 1.05;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+.ib-deck-item[data-variant="solid"] .ib-cover-name { color: white; }
+.ib-deck-item[data-variant="soft"] .ib-cover-name { color: var(--lavender-ink); }
+.ib-cover-underline {
+  width: 32px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--pink);
+  margin-top: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.ib-deck-caption { padding-top: 6px; }
+.ib-deck-caption-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 2px;
+  letter-spacing: -0.2px;
+}
+.ib-deck-caption-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.ib-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* --- Deck Detail ------------------------------------------------- */
+.ib-view-detail {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 8px 24px 40px;
+  text-align: center;
+}
+.ib-detail-stage { padding: 24px 0 32px; perspective: 1000px; }
+.ib-detail-stack {
+  position: relative;
+  width: 240px;
+  aspect-ratio: 3.2 / 4.2;
+  margin: 0 auto;
+}
+.ib-detail-stack .ib-st-layer[data-i="2"] { transform: translate(-22px, 12px) rotate(-10deg); }
+.ib-detail-stack .ib-st-layer[data-i="1"] { transform: translate(20px, 8px)  rotate(8deg); }
+.ib-detail-stack .ib-st-layer[data-i="0"] { transform: translate(0, 0); }
+.ib-detail-stack .ib-cover-heart { width: 82px; height: 82px; }
+.ib-detail-stack .ib-cover-name  { font-size: 26px; }
+.ib-detail-stack .ib-cover-inner { gap: 14px; }
+.ib-detail-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2.4px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 6px;
+  position: relative;
+  z-index: 1;
+}
+.ib-deck-item[data-variant="soft"] .ib-detail-kicker { color: var(--lavender-ink); opacity: 0.7; }
+
+.ib-detail-title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: var(--ink);
+  margin: 8px 0 6px;
+  line-height: 1.1;
+}
+.ib-detail-sub {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0 auto 28px;
+  max-width: 32ch;
+  line-height: 1.45;
+}
+.ib-detail-facts {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 0 0 32px;
+}
+.ib-detail-fact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+}
+.ib-detail-fact svg { width: 22px; height: 22px; color: var(--pink); }
+.ib-detail-fact-label { font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+.ib-detail-fact strong { font-size: 15px; font-weight: 700; color: var(--ink); }
+
+.ib-start-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 999px;
+  background: var(--purple);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: var(--shadow-btn);
+  transition: background 0.15s, transform 0.15s;
+  text-decoration: none;
+}
+.ib-start-btn:hover { background: var(--purple-2); transform: translateY(-1px); color: white; }
+.ib-start-btn svg { width: 18px; height: 18px; }
+
+.ib-empty-detail {
+  padding: 40px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* --- Card Play --------------------------------------------------- */
+.ib-view-play {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 4px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+}
+.ib-play-scope { flex: 1; display: flex; flex-direction: column; }
+
+.ib-card-stage {
+  position: relative;
+  flex: 1;
+  aspect-ratio: 3 / 4.3;
+  max-width: 360px;
+  width: 100%;
+  margin: 32px auto 0;
+  perspective: 1500px;
+  transform-style: preserve-3d;
+}
+
+.ib-behind-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, #7a49e6 0%, #5928c4 100%);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s;
+}
+.ib-behind-layer[data-i="3"] { transform: translate(-22px, 14px) rotate(-10deg); z-index: 1; }
+.ib-behind-layer[data-i="2"] { transform: translate(18px, 10px)  rotate(8deg);   z-index: 2; }
+.ib-behind-layer[data-i="1"] { transform: translate(-8px, 4px)   rotate(-3deg);  z-index: 3; }
+.ib-behind-layer[data-i="0"] { transform: translate(6px, 2px)    rotate(2deg);   z-index: 4; }
+.ib-play-scope[data-variant="soft"] .ib-behind-layer {
+  background: linear-gradient(160deg, #d1bef0 0%, #b89fe5 100%);
+}
+
+.ib-play-card {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  touch-action: pan-y;
+}
+.ib-play-card[data-role="current"] { z-index: 10; cursor: grab; }
+.ib-play-card[data-role="next"] {
+  z-index: 8;
+  pointer-events: none;
+  cursor: default;
+  transform: translateY(3px) scale(0.98);
+}
+.ib-play-card.is-flipped[data-role="current"] { transform: rotateY(180deg); }
+.ib-play-card.leaving-left {
+  transform: translateX(-140%) rotate(-24deg) !important;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ib-play-card.leaving-right {
+  transform: translateX(140%) rotate(24deg) !important;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ib-play-card.dragging { transition: none; cursor: grabbing; }
+.ib-play-card.is-hidden { display: none; }
+
+.ib-card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: var(--shadow-lift);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.ib-face-front {
+  background: var(--card-face);
+  color: var(--ink);
+  padding: 32px 28px 24px;
+  align-items: center;
+  text-align: center;
+}
+.ib-cat-pill-tag {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--pink-tint);
+  color: var(--pink-2);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.ib-cat-pill-tag.variant-purple {
+  background: var(--purple-tint);
+  color: var(--purple-2);
+}
+.ib-card-question {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-size: clamp(22px, 5.2vw, 26px);
+  line-height: 1.28;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+  text-wrap: balance;
+  padding: 0 4px;
+}
+.ib-card-heart-btn {
+  margin-top: 22px;
+  width: 34px;
+  height: 34px;
+  color: var(--pink);
+  align-self: center;
+}
+.ib-card-heart-btn svg { width: 100%; height: 100%; }
+
+.ib-face-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(160deg, #7a49e6 0%, #5928c4 100%);
+  color: white;
+  padding: 32px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+}
+.ib-back-heart { width: 88px; height: 88px; color: white; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15)); }
+.ib-back-brand { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
+.ib-back-tag   { font-size: 11px; font-weight: 700; letter-spacing: 2px; opacity: 0.75; }
+.ib-back-underline { width: 32px; height: 3px; border-radius: 3px; background: var(--pink); }
+
+.ib-counter {
+  text-align: center;
+  margin-top: 26px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.3px;
+}
+.ib-counter em { color: var(--muted); font-style: normal; font-weight: 500; }
+
+.ib-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 26px;
+  margin-top: 20px;
+  padding-top: 6px;
+}
+.ib-ctrl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.ib-ctrl-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.ib-ctrl-circle svg { width: 22px; height: 22px; }
+.ib-ctrl.pass .ib-ctrl-circle {
+  background: white;
+  color: var(--ink);
+  border: 1.5px solid var(--hairline);
+  box-shadow: 0 4px 12px rgba(74, 30, 170, 0.08);
+}
+.ib-ctrl.pass .ib-ctrl-circle:hover { border-color: var(--ink); background: var(--ground-soft); }
+.ib-ctrl.next .ib-ctrl-circle {
+  background: var(--purple);
+  color: white;
+  width: 68px;
+  height: 68px;
+  box-shadow: var(--shadow-btn);
+}
+.ib-ctrl.next .ib-ctrl-circle:hover { background: var(--purple-2); transform: translateY(-2px); }
+.ib-ctrl.next .ib-ctrl-circle svg { width: 26px; height: 26px; }
+.ib-ctrl.save .ib-ctrl-circle {
+  background: white;
+  color: var(--pink);
+  border: 1.5px solid var(--pink-tint);
+  box-shadow: 0 4px 12px rgba(255, 71, 120, 0.15);
+}
+.ib-ctrl.save .ib-ctrl-circle:hover { border-color: var(--pink); background: var(--pink-tint); }
+.ib-ctrl.save.is-saved .ib-ctrl-circle { background: var(--pink); color: white; border-color: var(--pink); }
+.ib-ctrl-label { font-size: 12px; font-weight: 700; color: var(--ink); letter-spacing: 0.2px; }
+.ib-ctrl.next .ib-ctrl-label { color: var(--purple); }
+
+.ib-swipe-hint {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* --- End screen -------------------------------------------------- */
+.ib-view-end {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 60px 24px;
+  text-align: center;
+}
+.ib-end-heart {
+  width: 74px; height: 74px;
+  color: var(--pink);
+  margin: 0 auto 20px;
+  animation: ib-float 3.5s ease-in-out infinite;
+}
+@keyframes ib-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.ib-end-title {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  margin: 0 0 10px;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.ib-end-sub {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 34px;
+  max-width: 34ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+.ib-end-actions { display: flex; flex-direction: column; gap: 10px; }
+.ib-end-actions .ib-start-btn { width: 100%; }
+.ib-end-secondary {
+  display: inline-flex;
+  justify-content: center;
+  padding: 14px 20px;
+  border-radius: 999px;
+  color: var(--purple);
+  font-size: 15px;
+  font-weight: 700;
+  border: 1.5px solid var(--purple-tint);
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.ib-end-secondary:hover { background: var(--purple-tint); }
+
+/* --- Responsive tweaks ------------------------------------------- */
+@media (max-width: 360px) {
+  .ib-select-title { font-size: 34px; }
+  .ib-cover-name { font-size: 17px; }
+  .ib-cover-heart { width: 52px; height: 52px; }
+  .ib-card-question { font-size: 20px; }
+  .ib-ctrl.next .ib-ctrl-circle { width: 60px; height: 60px; }
+}
+
+/* --- Desktop / tablet layout ------------------------------------- */
+/* The design was authored mobile-first per Nina's reference, but on PC
+   screens the 480px column looked lost. These rules scale the layout up
+   proportionally on wider viewports — more deck covers visible, bigger
+   type, atmospheric background — without changing the brand feel. */
+
+@media (min-width: 720px) {
+  /* Soft atmospheric background so empty space feels designed, not empty */
+  .ib-body {
+    background-image:
+      radial-gradient(circle at 10% 15%, rgba(107, 63, 214, 0.07) 0%, transparent 42%),
+      radial-gradient(circle at 90% 85%, rgba(255, 71, 120, 0.06) 0%, transparent 42%);
+    background-attachment: fixed;
+  }
+
+  .ib-topbar { max-width: 1100px; padding: 24px 40px; }
+  .ib-brand-mark { width: 30px; height: 30px; }
+  .ib-brand-word { font-size: 22px; }
+
+  /* Deck selection — grid grows, type grows, more breathing room */
+  .ib-view-select { max-width: 1100px; padding: 0 40px 80px; }
+  .ib-select-hero { padding: 24px 0 32px; }
+  .ib-select-title { font-size: 56px; letter-spacing: -1.4px; }
+  .ib-select-sub   { font-size: 17px; }
+  .ib-category-pills { padding: 10px 0 28px; }
+  .ib-cat-pill { padding: 10px 22px; font-size: 14px; }
+  .ib-deck-grid { grid-template-columns: repeat(3, 1fr); gap: 36px 28px; max-width: 980px; }
+  .ib-cover-heart { width: 72px; height: 72px; }
+  .ib-cover-name { font-size: 22px; }
+  .ib-deck-caption-name { font-size: 17px; }
+  .ib-deck-caption-sub  { font-size: 14px; }
+
+  /* Deck detail — center it as a focused composition, not stretched */
+  .ib-view-detail { max-width: 560px; padding: 16px 40px 60px; }
+  .ib-detail-stack { width: 280px; }
+  .ib-detail-stack .ib-cover-heart { width: 92px; height: 92px; }
+  .ib-detail-stack .ib-cover-name { font-size: 30px; }
+  .ib-detail-title { font-size: 36px; }
+  .ib-detail-sub { font-size: 16px; }
+
+  /* Play view — card holds centered, no stretch, bigger controls */
+  .ib-view-play { max-width: 540px; padding: 8px 40px 60px; }
+  .ib-card-stage { max-width: 400px; margin-top: 40px; }
+  .ib-card-question { font-size: 28px; }
+  .ib-ctrl.next .ib-ctrl-circle { width: 74px; height: 74px; }
+  .ib-ctrl-circle svg { width: 24px; height: 24px; }
+  .ib-ctrl.next .ib-ctrl-circle svg { width: 28px; height: 28px; }
+}
+
+@media (min-width: 1100px) {
+  /* 4-column grid on wide desktops — you see the whole collection on one row */
+  .ib-deck-grid { grid-template-columns: repeat(4, 1fr); max-width: 1100px; }
+  .ib-select-title { font-size: 64px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ib-body * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

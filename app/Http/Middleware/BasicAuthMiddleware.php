@@ -23,7 +23,9 @@ class BasicAuthMiddleware
         //   /legal/*      → Terms of Service + Privacy Policy pages
         //   /stripe/webhook → Stripe callbacks (must be publicly reachable)
         $publicPaths = [
-            '/', 'join', 'join/*', 'beta', 'beta/*', 'legal/*', 'stripe/webhook',
+            '/', 'join', 'join/*', 'beta', 'beta/*', 'legal/*',
+            'icebreakers', 'icebreakers/*',
+            'stripe/webhook',
         ];
         foreach ($publicPaths as $path) {
             if ($request->is($path)) {

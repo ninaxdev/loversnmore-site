@@ -41,6 +41,15 @@ $currentRouteName = Route::getCurrentRoute()->getName();
             <span><?= __tr('Stickers') ?></span>
         </a>
     </li>
+    @php
+        $ibActive = str_starts_with($currentRouteName ?? '', 'manage.icebreakers.') ? 'active' : '';
+    @endphp
+    <li class="nav-item {{ $ibActive }}">
+        <a class="nav-link lw-ajax-link-action lw-action-with-url" href="<?= route('manage.icebreakers.decks.index') ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 8px;">
+            <i class="fas fa-layer-group" style="color: {{ $ibActive ? '#e91e63' : 'white' }}; width: 18px;"></i>
+            <span><?= __tr('Icebreakers') ?></span>
+        </a>
+    </li>
     <li class="nav-item <?= makeLinkActive('manage.credit_package.read.list', $currentRouteName) ?>">
         <a class="nav-link lw-ajax-link-action lw-action-with-url" href="<?= route('manage.credit_package.read.list') ?>" style="color: rgba(255,255,255,0.9); font-family: var(--lw-font-family); font-weight: 500; transition: all 0.3s ease; border-radius: 8px; margin: 0 8px;">
             <i class="fas fa-box" style="color: <?= makeLinkActive('manage.credit_package.read.list', $currentRouteName) ? '#e91e63' : 'white' ?>; width: 18px;"></i>
