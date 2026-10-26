@@ -29,9 +29,12 @@
   --radius:        26px;
   --radius-tight:  12px;
 
-  --shadow-card:   0 2px 4px rgba(74, 30, 170, 0.08), 0 12px 30px rgba(74, 30, 170, 0.14);
-  --shadow-lift:   0 6px 14px rgba(74, 30, 170, 0.12), 0 28px 60px rgba(74, 30, 170, 0.28);
-  --shadow-btn:    0 6px 18px rgba(107, 63, 214, 0.35);
+  /* Softer, more diffused shadows — matches the "feminine, elegant" direction
+     Nina asked for. Lower opacity + longer blur = feels like paper, not UI. */
+  --shadow-card:   0 1px 2px rgba(74, 30, 170, 0.04), 0 14px 40px rgba(74, 30, 170, 0.08);
+  --shadow-lift:   0 2px 6px rgba(74, 30, 170, 0.06), 0 30px 70px rgba(74, 30, 170, 0.18);
+  --shadow-btn:    0 6px 18px rgba(107, 63, 214, 0.28);
+  --shadow-stack-back: 0 4px 12px rgba(74, 30, 170, 0.06);
 }
 
 .ib-body {
@@ -40,7 +43,25 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  position: relative;
 }
+/* Whimsical background — faint scattered hearts + a soft gradient wash.
+   Hearts are inline SVG as a data URI so there's zero extra request. */
+.ib-body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 8% 6%, rgba(107, 63, 214, 0.045) 0%, transparent 38%),
+    radial-gradient(circle at 92% 94%, rgba(255, 71, 120, 0.04) 0%, transparent 38%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'><g fill='%236b3fd6' fill-opacity='0.045'><path d='M30 48 C30 36, 42 30, 48 42 C54 30, 66 36, 66 48 C66 60, 48 72, 48 72 C48 72, 30 60, 30 48 Z'/><path d='M240 100 C240 92, 248 88, 252 96 C256 88, 264 92, 264 100 C264 108, 252 116, 252 116 C252 116, 240 108, 240 100 Z'/><path d='M60 220 C60 210, 72 206, 78 216 C84 206, 96 210, 96 220 C96 230, 78 242, 78 242 C78 242, 60 230, 60 220 Z'/><path d='M270 260 C270 252, 278 248, 282 256 C286 248, 294 252, 294 260 C294 268, 282 276, 282 276 C282 276, 270 268, 270 260 Z'/><path d='M170 50 C170 44, 176 42, 180 48 C184 42, 190 44, 190 50 C190 56, 180 64, 180 64 C180 64, 170 56, 170 50 Z'/></g></svg>");
+  background-repeat: no-repeat, no-repeat, repeat;
+  background-size: auto, auto, 320px 320px;
+  background-attachment: fixed;
+}
+.ib-body > * { position: relative; z-index: 1; }
 .ib-body * { box-sizing: border-box; }
 .ib-body button {
   font-family: inherit;
@@ -223,27 +244,58 @@ a.ib-deck-stack { text-decoration: none; }
   overflow: hidden;
 }
 
-.ib-deck-item[data-variant="solid"] .ib-st-layer {
-  background: linear-gradient(160deg, #7a49e6 0%, #5928c4 100%);
-}
-.ib-deck-item[data-variant="soft"] .ib-st-layer {
-  background: linear-gradient(160deg, #e2d3f7 0%, #d1bef0 100%);
-}
-.ib-deck-item[data-variant="solid"] .ib-st-layer[data-i="1"],
-.ib-deck-item[data-variant="solid"] .ib-st-layer[data-i="2"] { opacity: 0.9; }
-.ib-deck-item[data-variant="soft"] .ib-st-layer[data-i="1"],
-.ib-deck-item[data-variant="soft"] .ib-st-layer[data-i="2"] { opacity: 0.95; }
+/* ========================================================
+   Deck variants — 4 cover styles that work as a set.
+   Each variant sets its own cover background, text colors,
+   and accent — using the shared brand palette so they
+   feel like siblings, not a theme park.
+   ======================================================== */
 
+/* 1. SOLID — the hero deck. Deep brand purple cover, white type. */
+.ib-deck-item[data-variant="solid"] .ib-st-layer {
+  background: linear-gradient(160deg, #4a1eaa 0%, #2d0d7a 100%);
+}
+.ib-deck-item[data-variant="solid"] .ib-st-layer[data-i="1"] { background: linear-gradient(160deg, #7a49e6 0%, #5928c4 100%); opacity: 0.6; }
+.ib-deck-item[data-variant="solid"] .ib-st-layer[data-i="2"] { background: linear-gradient(160deg, #ffb3ce 0%, #e4a0bd 100%); opacity: 0.65; }
+
+/* 2. SOFT — gentle lavender. Purple ink on light background. */
+.ib-deck-item[data-variant="soft"] .ib-st-layer {
+  background: linear-gradient(160deg, #e2d3f7 0%, #cfb8ef 100%);
+}
+.ib-deck-item[data-variant="soft"] .ib-st-layer[data-i="1"] { background: #ddc9f3; opacity: 0.95; }
+.ib-deck-item[data-variant="soft"] .ib-st-layer[data-i="2"] { background: #cfb8ef; opacity: 0.9; }
+
+/* 3. WHITE-PURPLE — airy. White cover with purple heart. */
+.ib-deck-item[data-variant="white-purple"] .ib-st-layer {
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(74,30,170,0.05), 0 14px 36px rgba(74,30,170,0.08);
+}
+.ib-deck-item[data-variant="white-purple"] .ib-st-layer[data-i="1"] { background: #f1eaff; opacity: 1; }
+.ib-deck-item[data-variant="white-purple"] .ib-st-layer[data-i="2"] { background: #e2d3f7; opacity: 0.9; }
+
+/* 4. WHITE-PINK — playful. White cover with pink heart + hairline. */
+.ib-deck-item[data-variant="white-pink"] .ib-st-layer {
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(248,31,114,0.05), 0 14px 36px rgba(248,31,114,0.09);
+}
+.ib-deck-item[data-variant="white-pink"] .ib-st-layer[data-i="1"] { background: #ffe4ee; opacity: 1; }
+.ib-deck-item[data-variant="white-pink"] .ib-st-layer[data-i="2"] { background: #ffcbdf; opacity: 0.9; }
+
+/* ========================================================
+   Cover inner layout — new structure per Nina's reference:
+   top eyebrow / heart / name / tagline / underline / wordmark
+   ======================================================== */
 .ib-cover-inner {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 20px 18px;
+  justify-content: space-between;
+  padding: 18px 16px 14px;
   text-align: center;
   width: 100%;
   height: 100%;
+  gap: 6px;
 }
 .ib-cover-inner img.ib-cover-photo {
   position: absolute;
@@ -253,27 +305,95 @@ a.ib-deck-stack { text-decoration: none; }
   object-fit: cover;
   z-index: 0;
 }
-.ib-cover-heart { width: 62px; height: 62px; color: white; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.12)); position: relative; z-index: 1; }
+
+/* Top eyebrow — "ICEBREAKERS" small uppercase */
+.ib-cover-top-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+  opacity: 0.85;
+}
+
+/* Middle cluster — heart + name + tagline + underline, grouped tightly */
+.ib-cover-middle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  justify-content: center;
+}
+.ib-cover-heart {
+  width: 44px;
+  height: 44px;
+  position: relative;
+  z-index: 1;
+}
 .ib-cover-name {
   font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.4px;
   line-height: 1.05;
   margin: 0;
-  position: relative;
-  z-index: 1;
 }
-.ib-deck-item[data-variant="solid"] .ib-cover-name { color: white; }
-.ib-deck-item[data-variant="soft"] .ib-cover-name { color: var(--lavender-ink); }
+.ib-cover-tagline {
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.35;
+  margin: 0;
+  opacity: 0.78;
+  max-width: 20ch;
+}
 .ib-cover-underline {
-  width: 32px;
-  height: 3px;
-  border-radius: 3px;
+  width: 26px;
+  height: 2px;
+  border-radius: 2px;
   background: var(--pink);
   margin-top: 2px;
+}
+
+/* Bottom wordmark — "LOVERSNMORE" small uppercase */
+.ib-cover-brand {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 2.6px;
+  text-transform: uppercase;
+  margin: 0;
   position: relative;
   z-index: 1;
+  opacity: 0.75;
 }
+
+/* Per-variant color overrides for text/heart */
+.ib-deck-item[data-variant="solid"] .ib-cover-top-label,
+.ib-deck-item[data-variant="solid"] .ib-cover-name,
+.ib-deck-item[data-variant="solid"] .ib-cover-tagline,
+.ib-deck-item[data-variant="solid"] .ib-cover-brand,
+.ib-deck-item[data-variant="solid"] .ib-cover-heart { color: #ffffff; }
+
+.ib-deck-item[data-variant="soft"] .ib-cover-top-label,
+.ib-deck-item[data-variant="soft"] .ib-cover-name,
+.ib-deck-item[data-variant="soft"] .ib-cover-tagline,
+.ib-deck-item[data-variant="soft"] .ib-cover-brand,
+.ib-deck-item[data-variant="soft"] .ib-cover-heart { color: var(--purple-deep); }
+
+.ib-deck-item[data-variant="white-purple"] .ib-cover-top-label,
+.ib-deck-item[data-variant="white-purple"] .ib-cover-name,
+.ib-deck-item[data-variant="white-purple"] .ib-cover-tagline,
+.ib-deck-item[data-variant="white-purple"] .ib-cover-brand,
+.ib-deck-item[data-variant="white-purple"] .ib-cover-heart { color: var(--purple-deep); }
+
+.ib-deck-item[data-variant="white-pink"] .ib-cover-top-label { color: var(--pink-2); }
+.ib-deck-item[data-variant="white-pink"] .ib-cover-name,
+.ib-deck-item[data-variant="white-pink"] .ib-cover-tagline,
+.ib-deck-item[data-variant="white-pink"] .ib-cover-brand { color: var(--ink); }
+.ib-deck-item[data-variant="white-pink"] .ib-cover-heart { color: var(--pink); }
 
 .ib-deck-caption { padding-top: 6px; }
 .ib-deck-caption-name {
@@ -314,19 +434,12 @@ a.ib-deck-stack { text-decoration: none; }
 .ib-detail-stack .ib-st-layer[data-i="2"] { transform: translate(-22px, 12px) rotate(-10deg); }
 .ib-detail-stack .ib-st-layer[data-i="1"] { transform: translate(20px, 8px)  rotate(8deg); }
 .ib-detail-stack .ib-st-layer[data-i="0"] { transform: translate(0, 0); }
-.ib-detail-stack .ib-cover-heart { width: 82px; height: 82px; }
-.ib-detail-stack .ib-cover-name  { font-size: 26px; }
-.ib-detail-stack .ib-cover-inner { gap: 14px; }
-.ib-detail-kicker {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2.4px;
-  color: rgba(255, 255, 255, 0.75);
-  margin-top: 6px;
-  position: relative;
-  z-index: 1;
-}
-.ib-deck-item[data-variant="soft"] .ib-detail-kicker { color: var(--lavender-ink); opacity: 0.7; }
+.ib-detail-stack .ib-cover-heart     { width: 60px; height: 60px; }
+.ib-detail-stack .ib-cover-name      { font-size: 26px; }
+.ib-detail-stack .ib-cover-tagline   { font-size: 12px; max-width: 24ch; }
+.ib-detail-stack .ib-cover-top-label { font-size: 10px; letter-spacing: 2.8px; }
+.ib-detail-stack .ib-cover-brand     { font-size: 9px;  letter-spacing: 3px; }
+.ib-detail-stack .ib-cover-inner     { padding: 24px 20px 18px; gap: 10px; }
 
 .ib-detail-title {
   font-size: 30px;
@@ -682,9 +795,10 @@ a.ib-deck-stack { text-decoration: none; }
 
   /* Deck detail — center it as a focused composition, not stretched */
   .ib-view-detail { max-width: 560px; padding: 16px 40px 60px; }
-  .ib-detail-stack { width: 280px; }
-  .ib-detail-stack .ib-cover-heart { width: 92px; height: 92px; }
-  .ib-detail-stack .ib-cover-name { font-size: 30px; }
+  .ib-detail-stack { width: 300px; }
+  .ib-detail-stack .ib-cover-heart { width: 68px; height: 68px; }
+  .ib-detail-stack .ib-cover-name  { font-size: 30px; }
+  .ib-detail-stack .ib-cover-tagline { font-size: 13px; }
   .ib-detail-title { font-size: 36px; }
   .ib-detail-sub { font-size: 16px; }
 

@@ -151,8 +151,10 @@ class IcebreakerEngine extends BaseEngine
             // in the admin form so Nina can autocomplete or type a new one.
             'categories' => $this->buildAdminCategorySuggestions(),
             'variants' => [
-                ['id' => CardDeck::VARIANT_SOLID, 'label' => 'Solid purple (deep)'],
-                ['id' => CardDeck::VARIANT_SOFT,  'label' => 'Soft lavender (light)'],
+                ['id' => CardDeck::VARIANT_SOLID,        'label' => 'Deep purple (hero)'],
+                ['id' => CardDeck::VARIANT_SOFT,         'label' => 'Soft lavender'],
+                ['id' => CardDeck::VARIANT_WHITE_PURPLE, 'label' => 'White with purple accent'],
+                ['id' => CardDeck::VARIANT_WHITE_PINK,   'label' => 'White with pink accent'],
             ],
         ]);
     }

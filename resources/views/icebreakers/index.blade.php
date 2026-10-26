@@ -60,9 +60,16 @@
                                 @if (!empty($deck['cover_image_url']))
                                     <img src="{{ $deck['cover_image_url'] }}" alt="" class="ib-cover-photo">
                                 @endif
-                                @include('icebreakers.partials._heart-svg', ['class' => 'ib-cover-heart'])
-                                <span class="ib-cover-name">{{ $deck['name'] }}</span>
-                                <span class="ib-cover-underline"></span>
+                                <span class="ib-cover-top-label">Icebreakers</span>
+                                <span class="ib-cover-middle">
+                                    @include('icebreakers.partials._heart-svg', ['class' => 'ib-cover-heart'])
+                                    <span class="ib-cover-name">{{ $deck['name'] }}</span>
+                                    @if (!empty($deck['caption']))
+                                        <span class="ib-cover-tagline">{{ $deck['caption'] }}</span>
+                                    @endif
+                                    <span class="ib-cover-underline"></span>
+                                </span>
+                                <span class="ib-cover-brand">LoversNmore</span>
                             </span>
                         </span>
                     </a>

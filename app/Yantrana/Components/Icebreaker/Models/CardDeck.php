@@ -28,10 +28,16 @@ class CardDeck extends BaseModel
     const STATUS_PUBLISHED = 1;
 
     /**
-     * Cover variants — solid = deep purple, soft = light lavender
+     * Cover variants — each gives the deck a distinct personality on the grid.
+     *   solid        → deep purple cover, white elements (hero/anchor deck)
+     *   soft         → light lavender cover, purple elements (gentle sibling)
+     *   white-purple → white cover with purple outline heart + ink type (airy)
+     *   white-pink   → white cover with pink outline heart + ink type (playful)
      */
     const VARIANT_SOLID = 'solid';
     const VARIANT_SOFT = 'soft';
+    const VARIANT_WHITE_PURPLE = 'white-purple';
+    const VARIANT_WHITE_PINK = 'white-pink';
 
     /**
      * Category values (extensible via admin)

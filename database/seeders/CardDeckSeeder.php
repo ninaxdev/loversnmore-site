@@ -23,7 +23,7 @@ class CardDeckSeeder extends Seeder
                 'caption' => 'Skip the small talk.',
                 'description' => 'The questions that turn a first date into a second one. Playful, sharp, and just a little honest.',
                 'category' => CardDeck::CATEGORY_DATING,
-                'variant' => CardDeck::VARIANT_SOLID,
+                'variant' => CardDeck::VARIANT_WHITE_PURPLE,
                 'vibe_label' => 'Playful',
                 'sort_order' => 1,
                 'cards' => [
@@ -40,10 +40,10 @@ class CardDeckSeeder extends Seeder
             [
                 'name' => 'Couples',
                 'slug' => 'couples',
-                'caption' => "There's always more to discover.",
+                'caption' => 'Deeper conversations. Stronger connections.',
                 'description' => 'For couples who want to keep learning each other. Some soft, some deep, all worth asking.',
                 'category' => CardDeck::CATEGORY_COUPLES,
-                'variant' => CardDeck::VARIANT_SOFT,
+                'variant' => CardDeck::VARIANT_WHITE_PINK,
                 'vibe_label' => 'Deep',
                 'sort_order' => 2,
                 'cards' => [
@@ -63,7 +63,7 @@ class CardDeckSeeder extends Seeder
                 'caption' => 'The questions that start the stories.',
                 'description' => "Pour a drink. Get comfy. These are the questions that turn a hangout into a story you'll retell for years.",
                 'category' => CardDeck::CATEGORY_FRIENDS,
-                'variant' => CardDeck::VARIANT_SOLID,
+                'variant' => CardDeck::VARIANT_SOLID,  // hero deck — deep purple
                 'vibe_label' => 'Unfiltered',
                 'sort_order' => 3,
                 'cards' => [
