@@ -73,10 +73,6 @@
                             </span>
                         </span>
                     </a>
-                    <div class="ib-deck-caption">
-                        <p class="ib-deck-caption-name">{{ $deck['name'] }}</p>
-                        <p class="ib-deck-caption-sub">{{ $deck['caption'] ?? '' }}</p>
-                    </div>
                 </div>
             @endforeach
         </div>

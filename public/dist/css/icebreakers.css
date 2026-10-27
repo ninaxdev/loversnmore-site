@@ -26,8 +26,8 @@
   --pink-tint:     #ffe0ea;
   --pink-2:        #e63566;
 
-  --radius:        26px;
-  --radius-tight:  12px;
+  --radius:        14px;   /* tighter corner — reads as "card", not "iOS tile" */
+  --radius-tight:  10px;
 
   /* Softer, more diffused shadows — matches the "feminine, elegant" direction
      Nina asked for. Lower opacity + longer blur = feels like paper, not UI. */
@@ -45,8 +45,9 @@
   overflow-x: hidden;
   position: relative;
 }
-/* Whimsical background — faint scattered hearts + a soft gradient wash.
-   Hearts are inline SVG as a data URI so there's zero extra request. */
+/* Whimsical background — very subtle flowing linework (abstract contour curves)
+   plus a soft gradient wash. Keeps the white from feeling plain without ever
+   competing with the decks. */
 .ib-body::before {
   content: "";
   position: fixed;
@@ -54,11 +55,11 @@
   z-index: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(circle at 8% 6%, rgba(107, 63, 214, 0.045) 0%, transparent 38%),
-    radial-gradient(circle at 92% 94%, rgba(255, 71, 120, 0.04) 0%, transparent 38%),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'><g fill='%236b3fd6' fill-opacity='0.045'><path d='M30 48 C30 36, 42 30, 48 42 C54 30, 66 36, 66 48 C66 60, 48 72, 48 72 C48 72, 30 60, 30 48 Z'/><path d='M240 100 C240 92, 248 88, 252 96 C256 88, 264 92, 264 100 C264 108, 252 116, 252 116 C252 116, 240 108, 240 100 Z'/><path d='M60 220 C60 210, 72 206, 78 216 C84 206, 96 210, 96 220 C96 230, 78 242, 78 242 C78 242, 60 230, 60 220 Z'/><path d='M270 260 C270 252, 278 248, 282 256 C286 248, 294 252, 294 260 C294 268, 282 276, 282 276 C282 276, 270 268, 270 260 Z'/><path d='M170 50 C170 44, 176 42, 180 48 C184 42, 190 44, 190 50 C190 56, 180 64, 180 64 C180 64, 170 56, 170 50 Z'/></g></svg>");
+    radial-gradient(circle at 8% 6%, rgba(107, 63, 214, 0.05) 0%, transparent 42%),
+    radial-gradient(circle at 92% 94%, rgba(255, 71, 120, 0.045) 0%, transparent 42%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='560' viewBox='0 0 560 560'><g fill='none' stroke='%236b3fd6' stroke-opacity='0.055' stroke-width='1' stroke-linecap='round'><path d='M-40 90 C 90 50, 180 150, 300 110 S 500 60, 620 130'/><path d='M-40 160 C 100 120, 200 220, 320 170 S 520 120, 620 200'/><path d='M-40 300 C 110 240, 230 360, 340 300 S 520 240, 620 320'/><path d='M-40 380 C 120 320, 230 440, 360 380 S 520 320, 620 400'/><path d='M-40 500 C 100 450, 220 540, 340 490 S 520 440, 620 520'/></g><g fill='none' stroke='%23f81f72' stroke-opacity='0.04' stroke-width='1' stroke-linecap='round'><path d='M-40 230 C 120 180, 240 290, 360 240 S 540 180, 620 250'/><path d='M-40 450 C 130 400, 240 500, 360 450 S 540 400, 620 470'/></g></svg>");
   background-repeat: no-repeat, no-repeat, repeat;
-  background-size: auto, auto, 320px 320px;
+  background-size: auto, auto, 560px 560px;
   background-attachment: fixed;
 }
 .ib-body > * { position: relative; z-index: 1; }
@@ -215,33 +216,66 @@
 
 .ib-deck-stack {
   position: relative;
-  aspect-ratio: 3.2 / 4.2;
-  perspective: 1000px;
+  aspect-ratio: 2.6 / 3.6;         /* narrower, closer to a real card (~1.38:1) */
   padding: 0;
-  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
   display: block;
   cursor: pointer;
+  margin: 4px 10px 12px;           /* breathing room so the ground shadow isn't clipped */
+  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
 }
 a.ib-deck-stack { text-decoration: none; }
-.ib-deck-stack:hover { transform: translateY(-6px); }
-.ib-deck-stack:hover .ib-st-layer[data-i="0"] { transform: translate(0, -4px); }
+.ib-deck-stack:hover { transform: translateY(-3px); }
+.ib-deck-stack:hover::after { opacity: 0.9; transform: translate(-50%, 4px) scaleX(0.95); }
+
+/* Soft ground shadow — makes the deck feel like it's sitting on a surface,
+   not floating. Separate from the per-card shadows so the shape stays elliptical. */
+.ib-deck-stack::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  width: 82%;
+  height: 14px;
+  transform: translate(-50%, 0);
+  background: radial-gradient(ellipse at center, rgba(74, 30, 170, 0.18) 0%, transparent 70%);
+  filter: blur(4px);
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
 
 .ib-st-layer {
   position: absolute;
   inset: 0;
   border-radius: var(--radius);
-  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
+  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
   will-change: transform;
-  box-shadow: var(--shadow-card);
 }
-.ib-st-layer[data-i="2"] { transform: translate(-14px, 8px) rotate(-8deg); z-index: 1; }
-.ib-st-layer[data-i="1"] { transform: translate(12px, 5px)  rotate(6deg);  z-index: 2; }
+/* Tight stack: back cards shifted down a few pixels only — just enough
+   that their top edge peeks above the front card. Each back card has a
+   small opposite tilt so the deck reads as hand-stacked (matches Nina's
+   reference where back cards fan slightly, not perfectly aligned).
+   The hairline shadow on each layer gives the "paper thickness" look. */
+.ib-st-layer[data-i="2"] {
+  transform: translate(-2px, 7px) rotate(-2.5deg);
+  z-index: 1;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03), 0 3px 10px rgba(74, 30, 170, 0.08);
+}
+.ib-st-layer[data-i="1"] {
+  transform: translate(2px, 4px) rotate(2deg);
+  z-index: 2;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03), 0 2px 6px rgba(74, 30, 170, 0.08);
+}
 .ib-st-layer[data-i="0"] {
   z-index: 3;
   padding: 0;
   display: grid;
   place-items: center;
   overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(74, 30, 170, 0.06),
+    0 4px 12px rgba(74, 30, 170, 0.08),
+    0 10px 24px rgba(74, 30, 170, 0.06);
 }
 
 /* ========================================================
@@ -251,35 +285,29 @@ a.ib-deck-stack { text-decoration: none; }
    feel like siblings, not a theme park.
    ======================================================== */
 
-/* 1. SOLID — the hero deck. Deep brand purple cover, white type. */
-.ib-deck-item[data-variant="solid"] .ib-st-layer {
-  background: linear-gradient(160deg, #4a1eaa 0%, #2d0d7a 100%);
-}
-.ib-deck-item[data-variant="solid"] .ib-st-layer[data-i="1"] { background: linear-gradient(160deg, #7a49e6 0%, #5928c4 100%); opacity: 0.6; }
-.ib-deck-item[data-variant="solid"] .ib-st-layer[data-i="2"] { background: linear-gradient(160deg, #ffb3ce 0%, #e4a0bd 100%); opacity: 0.65; }
+/* Back-layer colors sit behind the top card with just a thin edge visible.
+   Kept close to (but slightly deeper than) the front card so the peek reads
+   as "another card in the deck", not "colored background shape". */
 
-/* 2. SOFT — gentle lavender. Purple ink on light background. */
-.ib-deck-item[data-variant="soft"] .ib-st-layer {
-  background: linear-gradient(160deg, #e2d3f7 0%, #cfb8ef 100%);
-}
-.ib-deck-item[data-variant="soft"] .ib-st-layer[data-i="1"] { background: #ddc9f3; opacity: 0.95; }
-.ib-deck-item[data-variant="soft"] .ib-st-layer[data-i="2"] { background: #cfb8ef; opacity: 0.9; }
+/* 1. SOLID — deep purple cover, slightly deeper back cards */
+.ib-deck-item[data-variant="solid"] .ib-st-layer       { background: linear-gradient(160deg, #4a1eaa 0%, #2d0d7a 100%); }
+.ib-deck-item[data-variant="solid"] .ib-st-layer[data-i="1"] { background: #3a1593; }
+.ib-deck-item[data-variant="solid"] .ib-st-layer[data-i="2"] { background: #2d0d7a; }
 
-/* 3. WHITE-PURPLE — airy. White cover with purple heart. */
-.ib-deck-item[data-variant="white-purple"] .ib-st-layer {
-  background: #ffffff;
-  box-shadow: 0 1px 2px rgba(74,30,170,0.05), 0 14px 36px rgba(74,30,170,0.08);
-}
-.ib-deck-item[data-variant="white-purple"] .ib-st-layer[data-i="1"] { background: #f1eaff; opacity: 1; }
-.ib-deck-item[data-variant="white-purple"] .ib-st-layer[data-i="2"] { background: #e2d3f7; opacity: 0.9; }
+/* 2. SOFT — lavender cover, slightly deeper back cards */
+.ib-deck-item[data-variant="soft"] .ib-st-layer       { background: linear-gradient(160deg, #e2d3f7 0%, #cfb8ef 100%); }
+.ib-deck-item[data-variant="soft"] .ib-st-layer[data-i="1"] { background: #d4bff0; }
+.ib-deck-item[data-variant="soft"] .ib-st-layer[data-i="2"] { background: #c5aae8; }
 
-/* 4. WHITE-PINK — playful. White cover with pink heart + hairline. */
-.ib-deck-item[data-variant="white-pink"] .ib-st-layer {
-  background: #ffffff;
-  box-shadow: 0 1px 2px rgba(248,31,114,0.05), 0 14px 36px rgba(248,31,114,0.09);
-}
-.ib-deck-item[data-variant="white-pink"] .ib-st-layer[data-i="1"] { background: #ffe4ee; opacity: 1; }
-.ib-deck-item[data-variant="white-pink"] .ib-st-layer[data-i="2"] { background: #ffcbdf; opacity: 0.9; }
+/* 3. WHITE-PURPLE — white cover, lavender edge peek */
+.ib-deck-item[data-variant="white-purple"] .ib-st-layer       { background: #ffffff; }
+.ib-deck-item[data-variant="white-purple"] .ib-st-layer[data-i="1"] { background: #efe5fc; }
+.ib-deck-item[data-variant="white-purple"] .ib-st-layer[data-i="2"] { background: #e2d3f7; }
+
+/* 4. WHITE-PINK — white cover, pink blush edge peek */
+.ib-deck-item[data-variant="white-pink"] .ib-st-layer       { background: #ffffff; }
+.ib-deck-item[data-variant="white-pink"] .ib-st-layer[data-i="1"] { background: #ffdce7; }
+.ib-deck-item[data-variant="white-pink"] .ib-st-layer[data-i="2"] { background: #ffc8d8; }
 
 /* ========================================================
    Cover inner layout — new structure per Nina's reference:
@@ -524,17 +552,32 @@ a.ib-deck-stack { text-decoration: none; }
   position: absolute;
   inset: 0;
   border-radius: var(--radius);
-  background: linear-gradient(160deg, #7a49e6 0%, #5928c4 100%);
-  box-shadow: var(--shadow-card);
+  background: #e2d3f7;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03), 0 3px 10px rgba(74, 30, 170, 0.08);
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s;
 }
-.ib-behind-layer[data-i="3"] { transform: translate(-22px, 14px) rotate(-10deg); z-index: 1; }
-.ib-behind-layer[data-i="2"] { transform: translate(18px, 10px)  rotate(8deg);   z-index: 2; }
-.ib-behind-layer[data-i="1"] { transform: translate(-8px, 4px)   rotate(-3deg);  z-index: 3; }
-.ib-behind-layer[data-i="0"] { transform: translate(6px, 2px)    rotate(2deg);   z-index: 4; }
-.ib-play-scope[data-variant="soft"] .ib-behind-layer {
-  background: linear-gradient(160deg, #d1bef0 0%, #b89fe5 100%);
-}
+/* Tight stack matching the listing (small offsets + subtle alternating tilts) */
+.ib-behind-layer[data-i="3"] { transform: translate(-3px, 9px)  rotate(-2.5deg); z-index: 1; }
+.ib-behind-layer[data-i="2"] { transform: translate(3px, 7px)   rotate(2deg);    z-index: 2; }
+.ib-behind-layer[data-i="1"] { transform: translate(-2px, 4px)  rotate(-1.5deg); z-index: 3; }
+.ib-behind-layer[data-i="0"] { transform: translate(2px, 2px)   rotate(1.2deg);  z-index: 4; }
+
+/* Each variant's behind-layer peek color mirrors the listing stack colors */
+.ib-play-scope[data-variant="solid"] .ib-behind-layer        { background: #2d0d7a; }
+.ib-play-scope[data-variant="solid"] .ib-behind-layer[data-i="0"],
+.ib-play-scope[data-variant="solid"] .ib-behind-layer[data-i="1"] { background: #3a1593; }
+
+.ib-play-scope[data-variant="soft"] .ib-behind-layer        { background: #c5aae8; }
+.ib-play-scope[data-variant="soft"] .ib-behind-layer[data-i="0"],
+.ib-play-scope[data-variant="soft"] .ib-behind-layer[data-i="1"] { background: #d4bff0; }
+
+.ib-play-scope[data-variant="white-purple"] .ib-behind-layer        { background: #e2d3f7; }
+.ib-play-scope[data-variant="white-purple"] .ib-behind-layer[data-i="0"],
+.ib-play-scope[data-variant="white-purple"] .ib-behind-layer[data-i="1"] { background: #efe5fc; }
+
+.ib-play-scope[data-variant="white-pink"] .ib-behind-layer        { background: #ffc8d8; }
+.ib-play-scope[data-variant="white-pink"] .ib-behind-layer[data-i="0"],
+.ib-play-scope[data-variant="white-pink"] .ib-behind-layer[data-i="1"] { background: #ffdce7; }
 
 .ib-play-card {
   position: absolute;
@@ -619,18 +662,37 @@ a.ib-deck-stack { text-decoration: none; }
 
 .ib-face-back {
   transform: rotateY(180deg);
-  background: linear-gradient(160deg, #7a49e6 0%, #5928c4 100%);
-  color: white;
+  background: #ffffff;
+  color: var(--purple-deep);
   padding: 32px;
   align-items: center;
   justify-content: center;
   text-align: center;
   gap: 16px;
 }
-.ib-back-heart { width: 88px; height: 88px; color: white; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15)); }
-.ib-back-brand { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
-.ib-back-tag   { font-size: 11px; font-weight: 700; letter-spacing: 2px; opacity: 0.75; }
+.ib-back-heart { width: 88px; height: 88px; color: currentColor; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08)); }
+.ib-back-brand { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; color: currentColor; }
+.ib-back-tag   { font-size: 11px; font-weight: 700; letter-spacing: 2px; opacity: 0.75; color: currentColor; }
 .ib-back-underline { width: 32px; height: 3px; border-radius: 3px; background: var(--pink); }
+
+/* Each deck's card-back matches its listing cover */
+.ib-play-scope[data-variant="solid"] .ib-face-back {
+  background: linear-gradient(160deg, #4a1eaa 0%, #2d0d7a 100%);
+  color: #ffffff;
+}
+.ib-play-scope[data-variant="soft"] .ib-face-back {
+  background: linear-gradient(160deg, #e2d3f7 0%, #cfb8ef 100%);
+  color: var(--purple-deep);
+}
+.ib-play-scope[data-variant="white-purple"] .ib-face-back {
+  background: #ffffff;
+  color: var(--purple-deep);
+}
+.ib-play-scope[data-variant="white-pink"] .ib-face-back {
+  background: #ffffff;
+  color: var(--ink);
+}
+.ib-play-scope[data-variant="white-pink"] .ib-face-back .ib-back-heart { color: var(--pink); }
 
 .ib-counter {
   text-align: center;
