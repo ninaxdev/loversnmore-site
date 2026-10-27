@@ -37,13 +37,40 @@
   --shadow-stack-back: 0 4px 12px rgba(74, 30, 170, 0.06);
 }
 
+/* Hard viewport guard. Belt + braces because mobile browsers vary:
+   `overflow-x: hidden` works everywhere; `clip` is the modern upgrade
+   that prevents scroll-containers from forming. Both html AND body
+   must have it or iOS Safari lets descendants scroll the page sideways.
+   `width: 100%` + `max-width: 100%` (not 100vw — vw includes scrollbar
+   on some desktops) locks the box to the parent instead of the viewport. */
+html {
+  overflow-x: hidden;
+  overflow-x: clip;
+  max-width: 100%;
+  width: 100%;
+}
+body.ib-body {
+  overflow-x: hidden;
+  overflow-x: clip;
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  position: relative;
+}
+/* Also clip the three top-level view wrappers. Transformed descendants
+   (the rotated deck layers) can bleed past a plain `overflow: hidden`
+   on an ancestor; clipping at the view wrapper is where it reliably stops. */
+.ib-view-select,
+.ib-view-detail,
+.ib-view-play {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
 .ib-body {
   background: var(--ground);
   color: var(--ink);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  position: relative;
 }
 /* Whimsical background — very subtle flowing linework (abstract contour curves)
    plus a soft gradient wash. Keeps the white from feeling plain without ever
@@ -174,15 +201,14 @@
 
 .ib-category-pills {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  overflow-x: auto;
   padding: 8px 0 20px;
-  scrollbar-width: none;
 }
-.ib-category-pills::-webkit-scrollbar { display: none; }
 .ib-cat-pill {
-  flex-shrink: 0;
-  padding: 9px 18px;
+  flex: 0 0 auto;
+  max-width: 100%;
+  padding: 9px 16px;
   border-radius: 999px;
   background: var(--ground-soft);
   color: var(--ink-soft);
@@ -192,6 +218,7 @@
   transition: background 0.15s, color 0.15s, border-color 0.15s;
   text-decoration: none;
   display: inline-block;
+  white-space: nowrap;
 }
 .ib-cat-pill:hover { background: var(--purple-tint); color: var(--purple-2); }
 .ib-cat-pill.is-active {
@@ -456,11 +483,15 @@ a.ib-deck-stack { text-decoration: none; }
 .ib-detail-stack {
   position: relative;
   width: 240px;
-  aspect-ratio: 3.2 / 4.2;
+  max-width: 100%;
+  aspect-ratio: 2.6 / 3.6;
   margin: 0 auto;
 }
-.ib-detail-stack .ib-st-layer[data-i="2"] { transform: translate(-22px, 12px) rotate(-10deg); }
-.ib-detail-stack .ib-st-layer[data-i="1"] { transform: translate(20px, 8px)  rotate(8deg); }
+/* Match the listing's tight stack (small offsets, subtle alternating tilt).
+   Keeping these inside ~5px prevents rotation from inflating the box past
+   the viewport on narrow screens. */
+.ib-detail-stack .ib-st-layer[data-i="2"] { transform: translate(-3px, 9px) rotate(-2.5deg); }
+.ib-detail-stack .ib-st-layer[data-i="1"] { transform: translate(3px, 4.5px) rotate(2deg); }
 .ib-detail-stack .ib-st-layer[data-i="0"] { transform: translate(0, 0); }
 .ib-detail-stack .ib-cover-heart     { width: 60px; height: 60px; }
 .ib-detail-stack .ib-cover-name      { font-size: 26px; }

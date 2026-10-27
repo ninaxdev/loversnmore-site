@@ -25,6 +25,23 @@
     <link rel="stylesheet" href="{{ asset('dist/css/icebreakers.css') }}?v={{ filemtime(public_path('dist/css/icebreakers.css')) }}">
 </head>
 <body class="ib-body">
+<script>
+  // Opt-in overflow diagnostic. Append ?debug=overflow to the URL and any
+  // element wider than the viewport is outlined in red with its selector
+  // logged to the console. Safe to leave in; does nothing without the flag.
+  if (location.search.indexOf('debug=overflow') !== -1) {
+    window.addEventListener('load', function () {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('*').forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.right > vw + 1 || r.left < -1) {
+          el.style.outline = '2px solid red';
+          console.warn('OVERFLOW:', el.tagName, el.className || '(no class)', 'rect:', Math.round(r.left) + '..' + Math.round(r.right), 'vw=' + vw);
+        }
+      });
+    });
+  }
+</script>
 
 @include('icebreakers.partials._topbar')
 
