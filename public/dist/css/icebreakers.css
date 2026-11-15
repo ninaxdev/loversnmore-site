@@ -48,6 +48,11 @@ html {
   overflow-x: clip;
   max-width: 100%;
   width: 100%;
+  /* Stops iOS Safari from auto-scaling text when it thinks an element
+     is wider than the viewport — the scaling itself was triggering
+     cascading layout overflow. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 body.ib-body {
   overflow-x: hidden;
@@ -87,7 +92,10 @@ body.ib-body {
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='560' height='560' viewBox='0 0 560 560'><g fill='none' stroke='%236b3fd6' stroke-opacity='0.055' stroke-width='1' stroke-linecap='round'><path d='M-40 90 C 90 50, 180 150, 300 110 S 500 60, 620 130'/><path d='M-40 160 C 100 120, 200 220, 320 170 S 520 120, 620 200'/><path d='M-40 300 C 110 240, 230 360, 340 300 S 520 240, 620 320'/><path d='M-40 380 C 120 320, 230 440, 360 380 S 520 320, 620 400'/><path d='M-40 500 C 100 450, 220 540, 340 490 S 520 440, 620 520'/></g><g fill='none' stroke='%23f81f72' stroke-opacity='0.04' stroke-width='1' stroke-linecap='round'><path d='M-40 230 C 120 180, 240 290, 360 240 S 540 180, 620 250'/><path d='M-40 450 C 130 400, 240 500, 360 450 S 540 400, 620 470'/></g></svg>");
   background-repeat: no-repeat, no-repeat, repeat;
   background-size: auto, auto, 560px 560px;
-  background-attachment: fixed;
+  /* No background-attachment: fixed — iOS Safari sizes it to the full
+     document height instead of the viewport, which can push the layout
+     sideways. `position: fixed` on the pseudo-element already pins the
+     background to the viewport, so attachment is redundant. */
 }
 .ib-body > * { position: relative; z-index: 1; }
 .ib-body * { box-sizing: border-box; }
@@ -861,12 +869,14 @@ a.ib-deck-stack { text-decoration: none; }
    type, atmospheric background — without changing the brand feel. */
 
 @media (min-width: 720px) {
-  /* Soft atmospheric background so empty space feels designed, not empty */
+  /* Soft atmospheric background so empty space feels designed, not empty.
+     No background-attachment: fixed — triggers iPad Safari layout bugs
+     (same reason as the mobile ::before). The gradient scrolling with
+     content is visually imperceptible for a wash this subtle. */
   .ib-body {
     background-image:
       radial-gradient(circle at 10% 15%, rgba(107, 63, 214, 0.07) 0%, transparent 42%),
       radial-gradient(circle at 90% 85%, rgba(255, 71, 120, 0.06) 0%, transparent 42%);
-    background-attachment: fixed;
   }
 
   .ib-topbar { max-width: 1100px; padding: 24px 40px; }
